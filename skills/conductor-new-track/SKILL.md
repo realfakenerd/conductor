@@ -1,8 +1,8 @@
 ---
 name: conductor-new-track
-description: Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.
+description: Plans a new track (feature, bug fix, or chore) using Grill with Docs, generates spec/plan documents, updates domain documentation, and registers the track.
 metadata:
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Conductor New Track Skill
@@ -39,32 +39,37 @@ Adhere to this sequence precisely.
     type (e.g., MVP, Feature, Bug, Chore, Refactor). Ask the user for
     confirmation using a **Yes/No question**.
 
-### 2.2 Interactive Specification Generation (`spec.md`)
+### 2.2 Specification Generation via Grill with Docs (`spec.md`)
 
-1.  **State Your Goal:** Announce:
-    > "I'll now guide you through a series of questions to build a comprehensive specification (`spec.md`) for this track."
+Transform track specification from flat Q&A into a relentless, context-grounded interrogation that sharpens requirements and produces living documentation (`CONTEXT.md` / ADRs) as side effects.
 
-2.  **Strategic Action:** Explain that the `spec.md` is the "Source of Truth" for the feature. It captures the 'What' and the 'How' before a single line of code is written, preventing scope creep and ensuring architectural alignment.
+1.  **State Your Goal & Ground in Context:**
+    -   Announce: *"I will now grill you on this track's design, constraints, and architecture to build a comprehensive specification (`spec.md`), updating domain docs and ADRs as we go."*
+    -   **Read Existing Context:** Load `CONTEXT.md` and any existing ADRs in `docs/adr/`. Ground all terminology and architectural bounds in these documents.
 
-3.  **Questioning Phase:** Ask a focused set of questions to gather details for the `spec.md`. Tailor questions based on the track type.
-    *   **General Guidelines:**
-        *   Refer to information in **Product Definition**, **Tech Stack**, etc., to ask context-aware questions.
-        *   Provide a brief explanation and clear examples for each question.
-        *   **Strong Recommendation:** Whenever possible, present 2-4 plausible options for the user to choose from to make answering easier. Always imply or provide an "Other" option.
-    *   **Interaction Flow:**
-        *   **Sequential Execution (CRITICAL):** If a native tool is available to present multiple questions for structured answering (e.g., a modal or form tool), you may use it to group questions. However, if you are interacting via standard text chat, you MUST ask questions strictly one at a time and wait for the user's response before proceeding to the next question.
-        *   Wait for the user's response after presenting your questions.
-        *   Confirm your understanding by summarizing before moving on to drafting.
-    *   **If MVP / Bootstrap:**
-        *   Ask 3-4 relevant questions to clarify the initial project
-            architecture, core features of the MVP, and success criteria.
-    *   **If FEATURE:**
-        *   Ask 3-4 relevant questions to clarify the feature request (e.g., UI interactions, business logic, inputs/outputs).
-    *   **If SOMETHING ELSE (Bug, Chore, etc.):**
-        *   Ask 2-3 relevant questions to obtain necessary details (e.g., reproduction steps for bugs, specific scope for chores, or success criteria).
-    *   **Loop Control (CRITICAL):** At the end of your questioning phase, ALWAYS ask: *"Is this sufficient information to draft the spec, or would you like me to ask more questions to clarify further?"* Repeat the Q&A loop until the user confirms they are ready to proceed.
+2.  **Design Tree & Frontier Questioning:**
+    -   Map the track requirements as a **design tree**: every decision branches into the decisions that hang off it.
+    -   Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask *now* without guessing at answers you haven't heard yet.
+    -   **Facts vs. Decisions:** Finding *facts* is your job, never the user's. When a frontier question needs a fact from the codebase (files, existing implementations, config), inspect the repo directly; do not ask the user for anything you can look up yourself.
+    -   **Interaction Protocol:** Present the frontier questions using native interactive GUI modals (`ask_question`) or structured choice menus. Format each question with a clear title, context, plausible options (formatted as user direct responses), and a recommended option prefixed with `(Recommended)`.
+    -   **Loop Termination:** Recompute the frontier after each user response. The grilling session is complete ONLY when the frontier is empty: every branch explored, edge cases probed, and no assumptions left unverified.
 
-4.  **Draft `spec.md`:** Once sufficient information is gathered, draft the content for the track's `spec.md` file, including sections like Overview, Functional Requirements, Non-Functional Requirements (if any), Acceptance Criteria, and Out of Scope.
+3.  **Domain Modeling & Living Documentation Side-Effects:**
+    -   **Challenge against Glossary:** When discussion introduces new concepts or conflicts with `CONTEXT.md`, call it out immediately and propose precise canonical terms.
+    -   **Update `CONTEXT.md` Inline:** The moment a domain term or boundary crystallizes, update `CONTEXT.md` immediately following the domain modeling format (tight 1-2 sentence definitions, opinionated `_Avoid_` lists, zero implementation details).
+    -   **Offer ADRs Sparingly:** When a decision meets all three criteria:
+        1. *Hard to reverse* (meaningful cost to change later)
+        2. *Surprising without context* (future maintainers will wonder why)
+        3. *Result of a real trade-off* (genuine alternatives existed)
+        Offer to record an ADR in `docs/adr/NNNN-slug.md` (following standard ADR format).
+
+4.  **Draft `spec.md`:**
+    -   Once the design tree is fully settled, synthesize the agreed decisions into `spec.md`:
+        -   **Overview**: Core problem and objective.
+        -   **Functional Requirements**: Inputs, outputs, behaviors, and invariants.
+        -   **Non-Functional Requirements**: Performance, constraints, security, and compatibility.
+        -   **Acceptance Criteria**: Verifiable test conditions.
+        -   **Out of Scope**: Explicit boundaries established during grilling.
 
 5.  **User Confirmation:**
     -   Present the drafted Specification to the user for review.

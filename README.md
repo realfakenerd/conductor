@@ -186,10 +186,12 @@ components or features by you or anyone on your team.
 
 When you’re ready to take on a new feature or bug fix, run
 `/conductor:conductor-new-track`. This initializes a **track** — a high-level
-unit of work. Conductor helps you generate two critical artifacts:
+unit of work. Conductor grills you on requirements, constraints, and architecture
+using **Grill with Docs**, updating your domain model (`CONTEXT.md` / ADRs)
+while generating two critical artifacts:
 
--   **Specs**: The detailed requirements for the specific job. What are we
-    building and why?
+-   **Specs**: The detailed requirements for the specific job, stress-tested
+    against your domain model and architectural trade-offs.
 -   **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
 
 **Generated Artifacts:**
