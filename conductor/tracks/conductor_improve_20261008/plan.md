@@ -12,7 +12,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [91c0547]
 
 ## Phase 2: Catalog Registration & Domain Context
-- [ ] Task: Register `conductor-improve` in catalog
+- [x] Task: Register `conductor-improve` in catalog [b6af92b]
     - [ ] Add `conductor-improve` entry to `assets/catalog.md` with description, signals, and 1p status
 - [ ] Task: Update domain context and documentation
     - [ ] Update `CONTEXT.md` with Architecture Discovery and Deepening definitions
