@@ -80,7 +80,7 @@ class TestSkillsAndManifests(unittest.TestCase):
         self.assertTrue((setup_dir / "scripts" / "resume.py").exists(), "conductor-setup scripts/resume.py missing")
 
     def test_conductor_improve_skill_and_assets(self):
-        """conductor-improve skill and its HTML-REPORT template asset must exist and be registered."""
+        """conductor-improve skill and its HTML-REPORT template asset must exist and follow standards."""
         improve_dir = REPO_ROOT / "skills" / "conductor-improve"
         self.assertTrue(improve_dir.exists(), "skills/conductor-improve directory missing")
         self.assertTrue((improve_dir / "SKILL.md").exists(), "conductor-improve/SKILL.md missing")
@@ -90,6 +90,8 @@ class TestSkillsAndManifests(unittest.TestCase):
         self.assertIn("conductor_standards.md", content, "conductor-improve must adhere to conductor_standards.md")
         self.assertIn("ask_question", content, "conductor-improve must use ask_question modal protocol")
 
+    def test_conductor_improve_catalog_registration(self):
+        """conductor-improve must be registered in root assets/catalog.md."""
         catalog_text = (REPO_ROOT / "assets" / "catalog.md").read_text(encoding="utf-8")
         self.assertIn("conductor-improve", catalog_text, "conductor-improve must be registered in assets/catalog.md")
 
