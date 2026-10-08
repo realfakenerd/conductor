@@ -12,4 +12,4 @@
 ## Tooling & Host Environments
 - **Supported Hosts**: Antigravity CLI & IDE (`agy`), Claude Code
 - **Version Control**: Git (atomic commits, semantic prefixes)
-- **Validation**: Python compilation (`py_compile`), Markdown formatting
+- **Validation**: Python compilation (`py_compile`), Markdown formatting, `pytest` / `unittest` test suite
