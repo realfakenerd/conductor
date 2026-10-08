@@ -120,3 +120,15 @@ Skills for inspecting codebase structure, detecting architectural friction, and 
 -   **Detection Signals**:
     -   **Keywords**: `architecture`, `refactor`, `deep module`, `seam`, `improve codebase`, `shallow module`, `locality`
 
+## Agent Efficiency & Terse Communication Skills
+
+Skills for minimizing token consumption, stripping conversational ceremony, and compressing agent outputs.
+
+### caveman
+
+-   **Description**: Terse caveman communication mode: answer first, conversational fluff gone, all technical substance, commands, paths, and code payload strictly preserved.
+-   **URL**: https://raw.githubusercontent.com/JuliusBrussee/caveman/refs/heads/main/skills/caveman/
+-   **Party**: 3p
+-   **Detection Signals**:
+    -   **Keywords**: `caveman`, `terse`, `concise`, `less tokens`, `token diet`, `brevity`, `compact output`
+

@@ -22,3 +22,11 @@ These invariant standards govern agent behavior during any Conductor skill execu
 
 ## 3. Handshake & Context Verification
 - Before beginning track planning, implementation, or review, verify that `conductor/index.md` exists and all linked context documents (`product.md`, `tech-stack.md`, `workflow.md`) are present on disk.
+
+## 4. Terse Communication Invariant (Caveman Default)
+- **Signal-to-Noise Ratio**: Maximize information density across all natural language interactions. Respond terse like smart caveman: all technical substance stays, only fluff dies.
+- **Pattern**: Answer first, followed by reason, then next step (`[thing] [action] [reason]. [next step].`).
+- **Kill Ceremony**: Drop greetings, conversational preambles, pleasantries, re-summarizing unchanged context, and filler ("Sure!", "Let me", "I will now").
+- **Concise Words**: Use plain technical terminology without decoration. Articles (a/an/the) are optional when meaning is unimpacted. Never drop negations (`not`, `never`, `no`).
+- **Preserve Payload**: Keep code blocks, terminal commands, file paths, numbers, parameters, and error outputs 100% exact and uncompressed.
+- **Auto-Clarity Safety Boundary**: Suspend terse compression for destructive operations (`git reset --hard`), error traces/debugging diagnostics, and formal specification acceptance criteria.

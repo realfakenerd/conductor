@@ -10,7 +10,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [967e9d3]
 
 ## Phase 2: Standards Rule Adapter & Catalog Registration
-- [ ] Task: Update `rules/conductor_standards.md` with Terse Communication Invariant
+- [~] Task: Update `rules/conductor_standards.md` with Terse Communication Invariant
     - [ ] Add Section 4 specifying answer-first pattern, ceremony elimination, and Auto-Clarity safety boundaries
 - [ ] Task: Register `caveman` companion skill in `assets/catalog.md`
     - [ ] Add 3rd-party skill entry for `caveman` with frozen URL and detection signals

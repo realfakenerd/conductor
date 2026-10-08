@@ -95,6 +95,19 @@ class TestSkillsAndManifests(unittest.TestCase):
         catalog_text = (REPO_ROOT / "assets" / "catalog.md").read_text(encoding="utf-8")
         self.assertIn("conductor-improve", catalog_text, "conductor-improve must be registered in assets/catalog.md")
 
+    def test_caveman_integration_and_standards(self):
+        """conductor_standards.md must specify Terse Invariant and catalog.md must register caveman."""
+        standards_text = (REPO_ROOT / "rules" / "conductor_standards.md").read_text(encoding="utf-8")
+        self.assertIn("Terse Communication Invariant (Caveman Default)", standards_text)
+        self.assertIn("Auto-Clarity Safety Boundary", standards_text)
+
+        catalog_text = (REPO_ROOT / "assets" / "catalog.md").read_text(encoding="utf-8")
+        self.assertIn("### caveman", catalog_text)
+        self.assertIn("JuliusBrussee/caveman", catalog_text)
+
+        caveman_skill = REPO_ROOT / ".agents" / "skills" / "caveman" / "SKILL.md"
+        self.assertTrue(caveman_skill.exists(), ".agents/skills/caveman/SKILL.md should exist")
+
 
 if __name__ == "__main__":
     unittest.main()
