@@ -17,7 +17,7 @@
   - [x] Write `tests/test_skills.py` validating YAML frontmatter for all `skills/*/SKILL.md`
   - [x] Write tests validating `plugin.json` and `.claude-plugin/marketplace.json` schema
   - [x] Run tests and verify assertions
-- [ ] Task: Validate & Pass Skill Validation Tests (Green Phase)
-  - [ ] Fix any detected formatting or frontmatter discrepancies
-  - [ ] Verify all skill tests pass
+- [x] Task: Validate & Pass Skill Validation Tests (Green Phase) [2ae6b7c]
+  - [x] Fix any detected formatting or frontmatter discrepancies
+  - [x] Verify all skill tests pass
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
