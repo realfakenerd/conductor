@@ -52,36 +52,120 @@ def determine_resumption(root_dir="."):
     }
 
 
-def verify_handshake(root_dir="."):
-    """Verifies that conductor/index.md exists and all linked files exist on disk."""
-    conductor_dir = Path(root_dir) / "conductor"
-    index_file = conductor_dir / "index.md"
+class IntegrityAuditor:
+    """Verifies workspace integrity, link validity, track parity, and git commit reconciliation."""
 
-    if not index_file.exists():
+    def __init__(self, root_dir="."):
+        self.root_dir = Path(root_dir)
+        self.conductor_dir = self.root_dir / "conductor"
+        self.index_file = self.conductor_dir / "index.md"
+        self.tracks_dir = self.conductor_dir / "tracks"
+        self.registry_file = self.conductor_dir / "tracks.md"
+
+    def audit(self, fast=False):
+        """Audits workspace. If fast=True, skips track parity and git commit checks."""
+        if not self.index_file.exists():
+            return {
+                "valid": False,
+                "error": "Missing conductor/index.md handshake",
+                "missing_links": [],
+                "broken_tracks": [],
+                "ghost_commits": [],
+            }
+
+        # 1. Handshake link validation
+        content = self.index_file.read_text(encoding="utf-8")
+        link_pattern = re.compile(r"\[.*?\]\((.*?)\)")
+        links = link_pattern.findall(content)
+
+        missing_links = []
+        for link in links:
+            if link.startswith("http") or link.startswith("#"):
+                continue
+            target = (self.conductor_dir / link).resolve()
+            if not target.exists():
+                missing_links.append(link)
+
+        if fast:
+            return {
+                "valid": len(missing_links) == 0,
+                "total_links": len(links),
+                "missing_links": missing_links,
+                "broken_tracks": [],
+                "ghost_commits": [],
+            }
+
+        # 2. Track parity validation
+        broken_tracks = []
+        if self.registry_file.exists():
+            reg_content = self.registry_file.read_text(encoding="utf-8")
+            track_pattern = re.compile(r"-\s*\[([ x~])\]\s*\*\*Track:\s*(.*?)\*\*\s*\n\s*\*Link:\s*\[\./tracks/(.*?)/index\.md\]")
+            for marker, title, tid in track_pattern.findall(reg_content):
+                track_dir = self.tracks_dir / tid
+                track_idx = track_dir / "index.md"
+                track_meta = track_dir / "metadata.json"
+
+                reasons = []
+                if not track_dir.exists():
+                    reasons.append("Missing workspace directory")
+                if not track_idx.exists():
+                    reasons.append("Missing index.md")
+                if not track_meta.exists():
+                    reasons.append("Missing metadata.json")
+
+                if reasons:
+                    broken_tracks.append({
+                        "track_id": tid,
+                        "title": title.strip(),
+                        "reasons": reasons,
+                    })
+
+        # 3. Git commit reconciliation across track plans
+        ghost_commits = []
+        sha_task_regex = re.compile(r"^-\s*\[x\]\s*Task:\s*(.*?)\s*\[([a-f0-9]{7,40})\]")
+
+        def commit_exists(commit_sha):
+            try:
+                cmd = ["git", "cat-file", "-e", f"{commit_sha}^{{commit}}"]
+                res = subprocess.run(cmd, cwd=str(self.root_dir), capture_output=True, text=True)
+                return res.returncode == 0
+            except Exception:
+                return True
+
+        if self.tracks_dir.exists():
+            for t_dir in self.tracks_dir.iterdir():
+                if t_dir.is_dir():
+                    plan_file = t_dir / "plan.md"
+                    if plan_file.exists():
+                        plan_lines = plan_file.read_text(encoding="utf-8").splitlines()
+                        for line in plan_lines:
+                            m = sha_task_regex.match(line.strip())
+                            if m:
+                                task_title = m.group(1).strip()
+                                sha = m.group(2)
+                                if not commit_exists(sha):
+                                    ghost_commits.append({
+                                        "track_id": t_dir.name,
+                                        "task": task_title,
+                                        "sha": sha,
+                                    })
+
+        is_valid = (len(missing_links) == 0 and len(broken_tracks) == 0 and len(ghost_commits) == 0)
+
         return {
-            "valid": False,
-            "error": "Missing conductor/index.md handshake",
-            "missing_links": [],
+            "valid": is_valid,
+            "total_links": len(links),
+            "missing_links": missing_links,
+            "broken_tracks": broken_tracks,
+            "ghost_commits": ghost_commits,
         }
 
-    content = index_file.read_text(encoding="utf-8")
-    link_pattern = re.compile(r"\[.*?\]\((.*?)\)")
-    links = link_pattern.findall(content)
 
-    missing = []
-    for link in links:
-        # Ignore external or anchor links
-        if link.startswith("http") or link.startswith("#"):
-            continue
-        target = (conductor_dir / link).resolve()
-        if not target.exists():
-            missing.append(link)
+def verify_handshake(root_dir=".", fast=False):
+    """Verifies that conductor/index.md exists and validates workspace integrity."""
+    auditor = IntegrityAuditor(root_dir=root_dir)
+    return auditor.audit(fast=fast)
 
-    return {
-        "valid": len(missing) == 0,
-        "total_links": len(links),
-        "missing_links": missing,
-    }
 
 
 class EngineError(Exception):
@@ -494,6 +578,7 @@ def main():
 
     # Verify subcommand
     verify_parser = subparsers.add_parser("verify", help="Verify handshake and context links")
+    verify_parser.add_argument("--fast", action="store_true", help="Perform link-only check without deep git/workspace audit")
     verify_parser.add_argument("--root-dir", default=".", help="Project root directory")
 
     # Status subcommand
@@ -550,8 +635,9 @@ def main():
         result = determine_resumption(root_dir=args.root_dir)
         print(json.dumps(result, indent=2))
     elif args.command == "verify":
-        result = verify_handshake(root_dir=args.root_dir)
+        result = verify_handshake(root_dir=args.root_dir, fast=args.fast)
         print(json.dumps(result, indent=2))
+
     elif args.command == "list":
         tracks = list_tracks(root_dir=args.root_dir)
         if args.json:
