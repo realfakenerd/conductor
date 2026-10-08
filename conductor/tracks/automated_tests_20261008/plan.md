@@ -1,6 +1,6 @@
 # Implementation Plan: Automated Test Suite for Conductor
 
-## Phase 1: Test Runner & Resume Script Verification
+## Phase 1: Test Runner & Resume Script Verification [checkpoint: 96560e5]
 - [x] Task: Configure Pytest Environment [dcc5fa9]
   - [x] Create `pyproject.toml` with pytest configuration
   - [x] Verify test discovery operates cleanly
@@ -10,7 +10,7 @@
 - [x] Task: Implement & Refactor Resume Script Support (Green Phase) [96560e5]
   - [x] Ensure `resume.py` cleanly handles isolated paths or test fixtures
   - [x] Run test suite and confirm all tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [96560e5]
 
 ## Phase 2: Agent Skill & Manifest Validation Suite
 - [ ] Task: Write Skill Manifest Validation Tests (Red Phase)
