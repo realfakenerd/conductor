@@ -17,5 +17,5 @@
   *Link: [./tracks/caveman_default_20261008/index.md](./tracks/caveman_default_20261008/index.md)*
 
 ---
-- [~] **Track: Deepen Engine Core with TrackRepository, PlanDocument, and IntegrityAuditor**
+- [x] **Track: Deepen Engine Core with TrackRepository, PlanDocument, and IntegrityAuditor**
   *Link: [./tracks/improve_engine_core_deepening_20261008/index.md](./tracks/improve_engine_core_deepening_20261008/index.md)*
