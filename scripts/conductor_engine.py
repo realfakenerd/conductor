@@ -426,6 +426,7 @@ def main():
     # Status subcommand
     status_parser = subparsers.add_parser("status", help="Get project and track progress overview")
     status_parser.add_argument("--track", default=None, help="Specific track ID")
+    status_parser.add_argument("--verbose", action="store_true", help="Output expanded diagnostic overview")
     status_parser.add_argument("--json", action="store_true", help="Output as JSON")
     status_parser.add_argument("--root-dir", default=".", help="Project root directory")
 
@@ -494,7 +495,7 @@ def main():
         status = get_project_status(root_dir=args.root_dir, track_id=args.track)
         if args.json:
             print(json.dumps(status, indent=2))
-        else:
+        elif args.verbose:
             t = status["tracks"]
             print(f"Project Status Overview ({status['timestamp']})")
             print(f"Tracks: {t['total']} total ({t['complete']} complete, {t['in_progress']} in_progress, {t['pending']} pending)")
@@ -509,6 +510,16 @@ def main():
                     print(f"Next Pending: {at['next_pending_task']}")
             else:
                 print("\nNo active track.")
+        else:
+            t = status["tracks"]
+            at = status.get("active_track")
+            if at:
+                active_str = f"{at['track_id']} [{at['completed_tasks']}/{at['total_tasks']}]"
+                if at.get("current_task"):
+                    active_str += f" -> Task: {at['current_task']}"
+            else:
+                active_str = "none"
+            print(f"conductor: {t['complete']}/{t['total']} tracks complete | active: {active_str}")
     elif args.command == "track":
         if args.track_command == "init":
             res = init_track(args.track_id, args.type, args.description, root_dir=args.root_dir)
