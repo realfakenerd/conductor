@@ -69,7 +69,11 @@ class TestSkillsAndManifests(unittest.TestCase):
             self.assertTrue(len(data["description"].strip()) > 0, f"{skill_name} description must not be empty")
 
     def test_skill_assets_integrity(self):
-        """Conductor setup and new-track assets must exist on disk."""
+        """Conductor assets, rules, and scripts must exist on disk."""
+        self.assertTrue((REPO_ROOT / "assets" / "catalog.md").exists(), "root assets/catalog.md missing")
+        self.assertTrue((REPO_ROOT / "rules" / "conductor_standards.md").exists(), "rules/conductor_standards.md missing")
+        self.assertTrue((REPO_ROOT / "scripts" / "conductor_engine.py").exists(), "scripts/conductor_engine.py missing")
+
         setup_dir = REPO_ROOT / "skills" / "conductor-setup"
         self.assertTrue((setup_dir / "assets" / "workflow.md").exists(), "conductor-setup assets/workflow.md missing")
         self.assertTrue((setup_dir / "assets" / "catalog.md").exists(), "conductor-setup assets/catalog.md missing")

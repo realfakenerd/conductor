@@ -1,54 +1,22 @@
-"""Determines the next unblocked setup step in the Conductor workflow."""
+"""Determines the next unblocked setup step in the Conductor workflow.
+
+Backward-compatible forwarder to scripts.conductor_engine.
+"""
 
 import json
 import os
 import sys
 
+# Ensure repository root is on sys.path
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
 
-def determine_resumption(root_dir="."):
-  """Checks existing setup artifacts and returns the next unblocked step."""
-  conductor_dir = os.path.join(root_dir, "conductor")
-  files = [
-      "product.md",
-      "product-guidelines.md",
-      "tech-stack.md",
-      "code_styleguides",
-      "workflow.md",
-  ]
-
-  checklist = {}
-  for filename in files:
-    path = os.path.join(conductor_dir, filename)
-    checklist[filename] = os.path.exists(path)
-
-  setup_complete = os.path.exists(os.path.join(conductor_dir, "index.md"))
-
-  next_step = None
-
-  chain = [
-      ("product.md", "Product Definition"),
-      ("product-guidelines.md", "Product Guidelines"),
-      ("tech-stack.md", "Technology Stack"),
-      ("code_styleguides", "Code Style Guides"),
-      ("workflow.md", "Workflow Configuration"),
-  ]
-
-  for filename, step_name in chain:
-    if not checklist[filename]:
-      next_step = {
-          "step": step_name,
-          "file": filename,
-      }
-      break
-
-  return {
-      "setup_complete": setup_complete,
-      "checklist": checklist,
-      "next_step": next_step,
-  }
+from scripts.conductor_engine import determine_resumption
 
 
 if __name__ == "__main__":
-  result = determine_resumption()
-  print(json.dumps(result, indent=2))
-  sys.exit(0)
+    root_arg = sys.argv[1] if len(sys.argv) > 1 else "."
+    result = determine_resumption(root_dir=root_arg)
+    print(json.dumps(result, indent=2))
+    sys.exit(0)
