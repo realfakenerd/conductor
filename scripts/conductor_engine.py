@@ -254,42 +254,124 @@ def init_track(track_id, track_type, description, root_dir="."):
     return repo.init_track(track_id, track_type, description)
 
 
+class PlanDocument:
+    """Represents a track's plan.md as a parsed AST, supporting non-destructive mutations and metrics."""
+
+    def __init__(self, content, file_path=None):
+        self.raw_content = content
+        self.file_path = Path(file_path) if file_path else None
+        self.lines = content.splitlines()
+
+    @classmethod
+    def from_file(cls, path):
+        p = Path(path)
+        if not p.exists():
+            raise FileNotFoundError(f"Plan file not found: {p}")
+        return cls(p.read_text(encoding="utf-8"), file_path=p)
+
+    def summary(self):
+        """Calculates plan progress metrics, phases, and current state."""
+        phases = []
+        tasks = []
+        current_phase_name = None
+
+        phase_regex = re.compile(r"^##\s+(?:Phase\s+\d+:?\s*)?(.*?)(?:\s*\[.*\])?$")
+        task_regex = re.compile(r"^-\s*\[([ x~])\]\s*Task:\s*(.*?)(?:\s*\[[a-f0-9]+\])?$")
+
+        for line in self.lines:
+            line_str = line.strip()
+            phase_m = phase_regex.match(line_str)
+            if phase_m:
+                current_phase_name = phase_m.group(1).strip()
+                phases.append(current_phase_name)
+                continue
+
+            task_m = task_regex.match(line_str)
+            if task_m:
+                marker = task_m.group(1)
+                task_desc = task_m.group(2).strip()
+                status = "complete" if marker == "x" else ("in_progress" if marker == "~" else "pending")
+                tasks.append({
+                    "phase": current_phase_name,
+                    "task": task_desc,
+                    "status": status,
+                })
+
+        total = len(tasks)
+        completed = sum(1 for t in tasks if t["status"] == "complete")
+        in_progress = sum(1 for t in tasks if t["status"] == "in_progress")
+        pending = sum(1 for t in tasks if t["status"] == "pending")
+
+        current_task = next((t["task"] for t in tasks if t["status"] == "in_progress"), None)
+        current_phase = next((t["phase"] for t in tasks if t["status"] == "in_progress"), None)
+        next_pending = next((t["task"] for t in tasks if t["status"] == "pending"), None)
+
+        percent = round((completed / total) * 100, 1) if total > 0 else 0.0
+
+        return {
+            "phases": phases,
+            "tasks": tasks,
+            "total_tasks": total,
+            "completed_tasks": completed,
+            "in_progress_tasks": in_progress,
+            "pending_tasks": pending,
+            "current_phase": current_phase,
+            "current_task": current_task,
+            "next_pending_task": next_pending,
+            "progress_percent": percent,
+        }
+
+    def advance(self, task_name, status, sha=None):
+        """Non-destructively updates a task's marker and SHA in self.lines."""
+        marker_map = {
+            "pending": "[ ]",
+            "in_progress": "[~]",
+            "done": "[x]",
+            "complete": "[x]",
+        }
+        target_marker = marker_map.get(status, "[~]")
+
+        task_regex = re.compile(rf"^(\s*-\s*)\[[ x~]\](\s*Task:\s*{re.escape(task_name)})(?:\s*\[[a-f0-9]+\])?(.*)$")
+        updated = False
+        new_lines = []
+
+        for line in self.lines:
+            m = task_regex.match(line)
+            if m:
+                indent_prefix = m.group(1)
+                task_part = m.group(2)
+                trailing = m.group(3) or ""
+                sha_part = f" [{sha[:7]}]" if (target_marker == "[x]" and sha) else ""
+                new_line = f"{indent_prefix}{target_marker}{task_part}{sha_part}{trailing}"
+                new_lines.append(new_line)
+                updated = True
+            else:
+                new_lines.append(line)
+
+        if not updated:
+            raise EngineError(f"Task '{task_name}' not found in plan")
+
+        self.lines = new_lines
+        self.raw_content = "\n".join(self.lines) + ("\n" if self.lines else "")
+        return True
+
+    def save(self, file_path=None):
+        """Saves lines back to disk."""
+        target = Path(file_path) if file_path else self.file_path
+        if not target:
+            raise EngineError("Cannot save PlanDocument: no target path specified")
+        target.write_text("\n".join(self.lines) + "\n", encoding="utf-8")
+
+
 def advance_task(track_id, task_name, status, sha=None, root_dir="."):
     """Updates task status in track's plan.md."""
     plan_path = Path(root_dir) / "conductor" / "tracks" / track_id / "plan.md"
     if not plan_path.exists():
         raise FileNotFoundError(f"Plan file not found: {plan_path}")
 
-    content = plan_path.read_text(encoding="utf-8")
-    lines = content.splitlines()
-    updated = False
-
-    marker_map = {
-        "pending": "[ ]",
-        "in_progress": "[~]",
-        "done": "[x]",
-        "complete": "[x]",
-    }
-    target_marker = marker_map.get(status, "[~]")
-
-    new_lines = []
-    task_regex = re.compile(rf"^(-\s*\[[ x~]\]\s*Task:\s*{re.escape(task_name)}.*)$")
-
-    for line in lines:
-        if task_regex.match(line):
-            # Replace marker
-            prefix = f"- {target_marker} Task: {task_name}"
-            if target_marker == "[x]" and sha:
-                new_line = f"{prefix} [{sha[:7]}]"
-            else:
-                new_line = prefix
-            new_lines.append(new_line)
-            updated = True
-        else:
-            new_lines.append(line)
-
-    if updated:
-        plan_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+    doc = PlanDocument.from_file(plan_path)
+    updated = doc.advance(task_name, status=status, sha=sha)
+    doc.save()
 
     return {
         "track_id": track_id,
@@ -340,59 +422,8 @@ def parse_plan(plan_path):
             "next_pending_task": None,
             "progress_percent": 0.0,
         }
+    return PlanDocument.from_file(path).summary()
 
-    content = path.read_text(encoding="utf-8")
-    lines = content.splitlines()
-
-    phases = []
-    tasks = []
-    current_phase_name = None
-
-    phase_regex = re.compile(r"^##\s+(?:Phase\s+\d+:?\s*)?(.*?)(?:\s*\[.*\])?$")
-    task_regex = re.compile(r"^-\s*\[([ x~])\]\s*Task:\s*(.*?)(?:\s*\[[a-f0-9]+\])?$")
-
-    for line in lines:
-        line_str = line.strip()
-        phase_m = phase_regex.match(line_str)
-        if phase_m:
-            current_phase_name = phase_m.group(1).strip()
-            phases.append(current_phase_name)
-            continue
-
-        task_m = task_regex.match(line_str)
-        if task_m:
-            marker = task_m.group(1)
-            task_desc = task_m.group(2).strip()
-            status = "complete" if marker == "x" else ("in_progress" if marker == "~" else "pending")
-            tasks.append({
-                "phase": current_phase_name,
-                "task": task_desc,
-                "status": status,
-            })
-
-    total = len(tasks)
-    completed = sum(1 for t in tasks if t["status"] == "complete")
-    in_progress = sum(1 for t in tasks if t["status"] == "in_progress")
-    pending = sum(1 for t in tasks if t["status"] == "pending")
-
-    current_task = next((t["task"] for t in tasks if t["status"] == "in_progress"), None)
-    current_phase = next((t["phase"] for t in tasks if t["status"] == "in_progress"), None)
-    next_pending = next((t["task"] for t in tasks if t["status"] == "pending"), None)
-
-    percent = round((completed / total) * 100, 1) if total > 0 else 0.0
-
-    return {
-        "phases": phases,
-        "tasks": tasks,
-        "total_tasks": total,
-        "completed_tasks": completed,
-        "in_progress_tasks": in_progress,
-        "pending_tasks": pending,
-        "current_phase": current_phase,
-        "current_task": current_task,
-        "next_pending_task": next_pending,
-        "progress_percent": percent,
-    }
 
 
 def get_project_status(root_dir=".", track_id=None):
