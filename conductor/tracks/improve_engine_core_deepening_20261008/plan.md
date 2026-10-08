@@ -1,7 +1,7 @@
 # Implementation Plan: Deepen Engine Core with TrackRepository, PlanDocument, and IntegrityAuditor
 
 ## Phase 1: TrackRepository Deepening (TDD Red -> Green)
-- [~] Task: Write failing unit tests for TrackRepository atomic operations and rollbacks
+- [x] Task: Write failing unit tests for TrackRepository atomic operations and rollbacks [afd488f]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for `TrackRepository` lifecycle mutations, rollback on write error, and typed `EngineError`
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement TrackRepository with atomic dual-writes and error handling in `conductor_engine.py`
