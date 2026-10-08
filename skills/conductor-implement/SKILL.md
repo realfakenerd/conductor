@@ -29,18 +29,17 @@ Adhere to this sequence to identify and select the track to be implemented.
 
 1.  **Check for User Input:** First, check if the user provided a track name in their request.
 
-2.  **Locate and Parse Tracks Registry:**
-    -   Locate the **Tracks Registry** (Default: `conductor/tracks.md`).
-    -   Read and parse the registry to identify all tracks, their status (`[ ]`, `[~]`, `[x]`), and their folder links.
-    -   **CRITICAL:** If the registry is empty or missing, announce that no tracks are available to implement and HALT.
+2.  **Locate and Query Tracks:**
+    -   Execute `python3 scripts/conductor_engine.py list --json` to inspect registered tracks and their statuses.
+    -   **CRITICAL:** If no tracks are available, announce that no tracks are available to implement and HALT.
 
 3.  **Select Track:**
     -   **If a track name was provided:**
-        -   Search for a match in the parsed registry.
+        -   Search for a match in the registered tracks list.
         -   **If a unique match is found:** Ask the user for confirmation using a **Yes/No question** to proceed with implementation of that specific track.
-        -   **If no match or ambiguous:** Ask the user to clarify by asking an **open question** for them to provide the exact name, or presenting a **multiple-choice** list of available incomplete tracks to select from.
+        -   **If no match or ambiguous:** Ask the user to clarify by presenting a **multiple-choice** list of available incomplete tracks to select from.
     -   **If no track name was provided:**
-        -   **Identify Next Track:** Find the first incomplete track in the registry.
+        -   **Identify Next Track:** Find the first incomplete track from the query result.
         -   **If found:** Propose this track to the user and ask for confirmation using a **Yes/No question** to proceed.
         -   **If not found:** Announce that all tracks are complete and HALT.
 
@@ -53,8 +52,11 @@ Adhere to this sequence to execute the selected track.
 1.  **Announce Action:** Announce which track you are beginning to implement.
 
 2.  **Update Status to 'In Progress':**
-    -   Before beginning any work, update the status of the selected track to `[~]` in the **Tracks Registry** file.
-    -   Stage the file and commit: `chore(conductor): Mark track '<track_description>' as in progress`.
+    -   Before beginning any work, advance the track to in-progress using the engine:
+        ```bash
+        python3 scripts/conductor_engine.py track start <track_id>
+        ```
+    -   Stage the files and commit: `chore(conductor): Mark track '<track_description>' as in progress`.
 
 3.  **Load Track Context:**
     -   Identify the track folder from the tracks file to get the `<track_id>`.

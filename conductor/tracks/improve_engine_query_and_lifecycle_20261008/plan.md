@@ -11,7 +11,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [eae8d66]
 
 ## Phase 2: Skill Harmonization & Standards Rule Delegation
-- [ ] Task: Refactor remaining skills to delegate to `conductor_standards.md` and use engine verify
+- [~] Task: Refactor remaining skills to delegate to `conductor_standards.md` and use engine verify
     - [ ] Update `skills/conductor-status/SKILL.md` to reference rule adapter and consume `conductor_engine status`
     - [ ] Update `skills/conductor-implement/SKILL.md` to use `conductor_engine track start`
     - [ ] Update `skills/conductor-review/SKILL.md` and `skills/conductor-revert/SKILL.md` to reference rule adapter and query engine
