@@ -4,9 +4,9 @@
 - [x] Task: Configure Pytest Environment [dcc5fa9]
   - [x] Create `pyproject.toml` with pytest configuration
   - [x] Verify test discovery operates cleanly
-- [ ] Task: TDD Tests for resume.py (Red Phase)
-  - [ ] Write unit tests in `tests/test_resume.py` for greenfield, partial setup, and complete setup states
-  - [ ] Verify tests run and fail as expected if conditions are unmet
+- [x] Task: TDD Tests for resume.py (Red Phase) [3fcc5f5]
+  - [x] Write unit tests in `tests/test_resume.py` for greenfield, partial setup, and complete setup states
+  - [x] Verify tests run and fail as expected if conditions are unmet
 - [ ] Task: Implement & Refactor Resume Script Support (Green Phase)
   - [ ] Ensure `resume.py` cleanly handles isolated paths or test fixtures
   - [ ] Run test suite and confirm all tests pass
