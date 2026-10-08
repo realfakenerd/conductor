@@ -264,6 +264,53 @@ class TestConductorEngine(unittest.TestCase):
             self.assertIn("Project Status Overview", res_verbose.stdout)
             self.assertIn("Active Track:", res_verbose.stdout)
 
+    def test_track_repository_atomic_lifecycle_and_rollback(self):
+        """Test TrackRepository atomic dual-writes, typed EngineError, and rollback on failure."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = conductor_engine.TrackRepository(root_dir=tmpdir)
+
+            # 1. Init track
+            track = repo.init_track("track_alpha", "feature", "Alpha feature")
+            self.assertEqual(track["track_id"], "track_alpha")
+            self.assertEqual(track["status"], "new")
+
+            tracks = repo.list_tracks()
+            self.assertEqual(len(tracks), 1)
+            self.assertEqual(tracks[0]["status"], "new")
+
+            # 2. Start track -> in_progress
+            started = repo.start_track("track_alpha")
+            self.assertEqual(started["status"], "in_progress")
+            tracks = repo.list_tracks()
+            self.assertEqual(tracks[0]["status"], "in_progress")
+
+            # 3. Nonexistent track raises EngineError
+            with self.assertRaises(conductor_engine.EngineError):
+                repo.start_track("nonexistent_track")
+
+            with self.assertRaises(conductor_engine.EngineError):
+                repo.complete_track("nonexistent_track")
+
+            with self.assertRaises(conductor_engine.EngineError):
+                repo.reset_track("nonexistent_track")
+
+            # 4. Rollback on write failure:
+            # If metadata write fails, tracks.md must rollback and not leave inconsistent state
+            import unittest.mock as mock
+            target_meta = Path(tmpdir) / "conductor" / "tracks" / "track_alpha" / "metadata.json"
+            registry_file = Path(tmpdir) / "conductor" / "tracks.md"
+            registry_before = registry_file.read_text(encoding="utf-8")
+
+            with mock.patch("pathlib.Path.write_text", side_effect=[None, OSError("Disk write failed")]):
+                # When complete_track tries to update both, but second write fails
+                with self.assertRaises(conductor_engine.EngineError):
+                    repo.complete_track("track_alpha")
+
+            # Verify registry was rolled back or retained previous status
+            self.assertEqual(registry_file.read_text(encoding="utf-8"), registry_before)
+            meta_data = json.loads(target_meta.read_text(encoding="utf-8"))
+            self.assertEqual(meta_data["status"], "in_progress")
+
 
 if __name__ == "__main__":
     unittest.main()
