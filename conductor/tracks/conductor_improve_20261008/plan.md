@@ -1,7 +1,7 @@
 # Implementation Plan: Integrate `conductor-improve` Skill
 
 ## Phase 1: Test Suite & Skill Specification (TDD Red -> Green)
-- [ ] Task: Write failing unit tests for `conductor-improve` skill and assets
+- [x] Task: Write failing unit tests for `conductor-improve` skill and assets [bc59254]
     - [ ] Add tests in `tests/test_skills.py` verifying `conductor-improve/SKILL.md` exists, has metadata, links to `conductor_standards.md`, and validates asset presence
     - [ ] Run test suite and confirm failure (Red Phase)
 - [ ] Task: Implement HTML report template asset
