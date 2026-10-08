@@ -4,7 +4,7 @@
 - [x] Task: Write failing unit tests for TrackRepository atomic operations and rollbacks [afd488f]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for `TrackRepository` lifecycle mutations, rollback on write error, and typed `EngineError`
     - [ ] Run pytest suite and confirm test failures (Red Phase)
-- [ ] Task: Implement TrackRepository with atomic dual-writes and error handling in `conductor_engine.py`
+- [~] Task: Implement TrackRepository with atomic dual-writes and error handling in `conductor_engine.py`
     - [ ] Define `EngineError` exception class
     - [ ] Implement `TrackRepository` class handling `tracks.md` and `metadata.json` synchronization with transactional rollback
     - [ ] Wire existing module functions (`init_track`, `start_track`, `complete_track`, `reset_track`, `list_tracks`) to `TrackRepository`
