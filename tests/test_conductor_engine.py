@@ -366,6 +366,54 @@ class TestConductorEngine(unittest.TestCase):
             with self.assertRaises(conductor_engine.EngineError):
                 reloaded.advance("Non-existent task", status="done")
 
+    def test_integrity_auditor_deep_checks_and_ghost_commit_detection(self):
+        """Test IntegrityAuditor deep validation, workspace parity, ghost commit detection, and --fast flag."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            cond = root / "conductor"
+            cond.mkdir()
+
+            # Set up valid handshake index
+            (cond / "product.md").write_text("# Product", encoding="utf-8")
+            (cond / "index.md").write_text("# Index\n- [Product](./product.md)\n", encoding="utf-8")
+
+            # 1. Base audit with no tracks
+            auditor = conductor_engine.IntegrityAuditor(root_dir=tmpdir)
+            res = auditor.audit()
+            self.assertTrue(res["valid"])
+            self.assertEqual(len(res["missing_links"]), 0)
+            self.assertEqual(len(res["broken_tracks"]), 0)
+            self.assertEqual(len(res["ghost_commits"]), 0)
+
+            # 2. Add track to tracks.md without directory (broken track parity)
+            (cond / "tracks.md").write_text(
+                "# Tracks\n- [ ] **Track: Missing Dir**\n  *Link: [./tracks/ghost_track/index.md](./tracks/ghost_track/index.md)*\n",
+                encoding="utf-8",
+            )
+            res = auditor.audit()
+            self.assertFalse(res["valid"])
+            self.assertIn("ghost_track", [b["track_id"] for b in res["broken_tracks"]])
+
+            # Fast mode should skip deep track & git checks
+            res_fast = auditor.audit(fast=True)
+            self.assertTrue(res_fast["valid"])
+            self.assertEqual(len(res_fast["missing_links"]), 0)
+
+            # 3. Create valid workspace but add plan with ghost commit
+            track_dir = cond / "tracks" / "ghost_track"
+            track_dir.mkdir(parents=True)
+            (track_dir / "index.md").write_text("# Ghost Track", encoding="utf-8")
+            (track_dir / "metadata.json").write_text('{"track_id": "ghost_track", "status": "new"}', encoding="utf-8")
+            (track_dir / "plan.md").write_text(
+                "# Plan\n## Phase 1\n- [x] Task: Fake Task [deadbeef]\n",
+                encoding="utf-8",
+            )
+
+            # In git environment, deadbeef should be detected as ghost commit
+            res = auditor.audit()
+            self.assertFalse(res["valid"])
+            self.assertTrue(any(g["sha"].startswith("deadbeef") for g in res["ghost_commits"]))
+
 
 if __name__ == "__main__":
     unittest.main()
