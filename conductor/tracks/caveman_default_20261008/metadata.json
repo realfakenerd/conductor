@@ -1,8 +1,8 @@
 {
   "track_id": "caveman_default_20261008",
   "type": "feature",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-10-08T16:42:57.676140-03:00",
-  "updated_at": "2026-10-08T16:42:57.676140-03:00",
+  "updated_at": "2026-10-08T16:45:31.521816-03:00",
   "description": "Integrate Caveman Terse Communication and Token Diet as Conductor Default"
 }

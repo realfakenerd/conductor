@@ -13,5 +13,5 @@
   *Link: [./tracks/improve_engine_query_and_lifecycle_20261008/index.md](./tracks/improve_engine_query_and_lifecycle_20261008/index.md)*
 
 ---
-- [ ] **Track: Integrate Caveman Terse Communication and Token Diet as Conductor Default**
+- [~] **Track: Integrate Caveman Terse Communication and Token Diet as Conductor Default**
   *Link: [./tracks/caveman_default_20261008/index.md](./tracks/caveman_default_20261008/index.md)*
