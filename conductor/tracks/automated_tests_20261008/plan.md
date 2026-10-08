@@ -12,7 +12,7 @@
   - [x] Run test suite and confirm all tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [96560e5]
 
-## Phase 2: Agent Skill & Manifest Validation Suite
+## Phase 2: Agent Skill & Manifest Validation Suite [checkpoint: 2ae6b7c]
 - [x] Task: Write Skill Manifest Validation Tests (Red Phase) [78ebc91]
   - [x] Write `tests/test_skills.py` validating YAML frontmatter for all `skills/*/SKILL.md`
   - [x] Write tests validating `plugin.json` and `.claude-plugin/marketplace.json` schema
@@ -20,4 +20,4 @@
 - [x] Task: Validate & Pass Skill Validation Tests (Green Phase) [2ae6b7c]
   - [x] Fix any detected formatting or frontmatter discrepancies
   - [x] Verify all skill tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [2ae6b7c]
