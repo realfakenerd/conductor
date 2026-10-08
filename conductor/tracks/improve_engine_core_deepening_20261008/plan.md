@@ -12,7 +12,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [1d34953]
 
 ## Phase 2: PlanDocument Model & AST Mutation (TDD Red -> Green)
-- [ ] Task: Write failing unit tests for PlanDocument AST parsing and formatting preservation
+- [~] Task: Write failing unit tests for PlanDocument AST parsing and formatting preservation
     - [ ] Add unit tests in `tests/test_conductor_engine.py` verifying parsing of phases, tasks, subtasks, non-destructive status mutation, and metrics calculation
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement PlanDocument class and wire advance_task and parse_plan
