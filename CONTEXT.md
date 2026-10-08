@@ -19,3 +19,12 @@ A canonical registry (`assets/catalog.md`) enumerating curated 1st-party and 3rd
 
 ### Phase & Task Lifecycle
 A strict progression within a track's plan following Test-Driven Development (TDD): Red Phase (failing tests) -> Green Phase (passing implementation) -> Refactor -> Commit & Git Note -> Phase Verification Checkpoint.
+
+### Architecture Discovery
+A proactive diagnostic process (`conductor-improve`) that surveys commit hotspots and module boundaries to surface architectural friction, shallow abstractions, and leaky seams before code is written.
+_Avoid_: "Code audit", "linter pass", "tech debt ticket".
+
+### Deepening Opportunity
+A structural refactoring candidate that consolidates scattered wrappers or shallow interfaces into a deep module with high testability, strong locality, and narrow interface surface area.
+_Avoid_: "Clean code refactor", "file cleanup", "re-architecting".
+

@@ -243,6 +243,15 @@ following commands:
     /conductor:conductor-review
     ```
 
+### 4. Proactively Improve Codebase Architecture
+
+Before writing new features or when addressing technical debt, run `/conductor:conductor-improve`.
+This skill inspects Git commit hot spots and module shallowness, renders an interactive HTML report with Before/After Mermaid diagrams, conducts a **Grill with Docs** interview on chosen refactoring candidates, and auto-scaffolds a Conductor refactor track ready for implementation.
+
+```bash
+/conductor:conductor-improve
+```
+
 --------------------------------------------------------------------------------
 
 ## 📋 Commands Reference
@@ -252,6 +261,7 @@ Command                          | Description                                  
 `/conductor:conductor-setup`     | Scaffolds the project and sets up the Conductor environment. Run this once per project. | `conductor/product.md`<br>`conductor/product-guidelines.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/tracks.md`
 `/conductor:conductor-new-track` | Starts a new feature or bug track. Generates `spec.md` and `plan.md`.                   | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md`
 `/conductor:conductor-implement` | Executes the tasks defined in the current track's plan.                                 | `conductor/tracks.md`<br>`conductor/tracks/<id>/plan.md`
+`/conductor:conductor-improve`   | Scans architecture for friction, renders visual HTML report, and scaffolds refactors.   | `<tmpdir>/architecture-review-*.html`<br>`conductor/tracks/<id>/`
 `/conductor:conductor-status`    | Displays the current progress of the tracks file and active tracks.                     | Reads `conductor/tracks.md`
 `/conductor:conductor-revert`    | Reverts a track, phase, or task by analyzing git history.                               | Reverts git history
 `/conductor:conductor-review`    | Reviews completed work against guidelines and the plan.                                 | Reads `plan.md`, `product-guidelines.md`
