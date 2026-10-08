@@ -231,6 +231,39 @@ class TestConductorEngine(unittest.TestCase):
             self.assertEqual(len(list_data), 1)
             self.assertEqual(list_data[0]["track_id"], "cli_t")
 
+    def test_cli_status_terse_default_and_verbose(self):
+        """Test default status is compact/terse receipt and --verbose provides expanded diagnostics."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            script_path = str(REPO_ROOT / "scripts" / "conductor_engine.py")
+            # Init and start a track
+            subprocess.run(
+                [sys.executable, script_path, "track", "init", "t_terse", "--type", "feature", "--description", "Terse feature", "--root-dir", tmpdir],
+                capture_output=True, text=True,
+            )
+            subprocess.run(
+                [sys.executable, script_path, "track", "start", "t_terse", "--root-dir", tmpdir],
+                capture_output=True, text=True,
+            )
+
+            # Default status should be compact (terse receipt, <= 4 lines, contains 'conductor:')
+            res_default = subprocess.run(
+                [sys.executable, script_path, "status", "--root-dir", tmpdir],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res_default.returncode, 0)
+            lines = [l for l in res_default.stdout.strip().splitlines() if l.strip()]
+            self.assertLessEqual(len(lines), 4)
+            self.assertTrue(any("conductor:" in l.lower() for l in lines))
+
+            # Verbose status should include detailed sections (Project Status Overview, Tracks:, Active Track:)
+            res_verbose = subprocess.run(
+                [sys.executable, script_path, "status", "--root-dir", tmpdir, "--verbose"],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res_verbose.returncode, 0)
+            self.assertIn("Project Status Overview", res_verbose.stdout)
+            self.assertIn("Active Track:", res_verbose.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()

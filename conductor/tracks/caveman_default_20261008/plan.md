@@ -1,7 +1,7 @@
 # Implementation Plan: Integrate Caveman Terse Communication and Token Diet as Conductor Default
 
 ## Phase 1: Engine Terse Status & CLI Modes (TDD Red -> Green)
-- [ ] Task: Write failing unit tests for default compact status and --verbose flag
+- [~] Task: Write failing unit tests for default compact status and --verbose flag
     - [ ] Add tests in `tests/test_conductor_engine.py` for default terse status formatting and `--verbose` output
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement compact status default and --verbose flag in `scripts/conductor_engine.py`
