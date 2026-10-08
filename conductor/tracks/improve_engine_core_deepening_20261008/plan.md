@@ -25,7 +25,7 @@
 - [x] Task: Write failing unit tests for IntegrityAuditor deep checks and ghost commit detection [3707ae8]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for workspace parity, ghost commit detection, and `--fast` link-only flag
     - [ ] Run pytest suite and confirm test failures (Red Phase)
-- [ ] Task: Implement IntegrityAuditor and update verify subcommand
+- [~] Task: Implement IntegrityAuditor and update verify subcommand
     - [ ] Implement `IntegrityAuditor` class performing index links, track workspace integrity, and git commit SHA validation
     - [ ] Update `verify_handshake` and CLI `verify` parser with default deep checks and `--fast` option
     - [ ] Run pytest suite and confirm all Phase 3 tests pass (Green Phase)
