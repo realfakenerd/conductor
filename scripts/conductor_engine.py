@@ -84,45 +84,174 @@ def verify_handshake(root_dir="."):
     }
 
 
+class EngineError(Exception):
+    """Base exception for deterministic conductor engine errors."""
+    pass
+
+
+class TrackRepository:
+    """Encapsulates track state persistence across tracks.md and metadata.json with atomic rollback."""
+
+    def __init__(self, root_dir="."):
+        self.root_dir = Path(root_dir)
+        self.conductor_dir = self.root_dir / "conductor"
+        self.tracks_dir = self.conductor_dir / "tracks"
+        self.registry_path = self.conductor_dir / "tracks.md"
+
+    def list_tracks(self):
+        """Returns structured list of registered tracks."""
+        if not self.registry_path.exists():
+            return []
+
+        content = self.registry_path.read_text(encoding="utf-8")
+        pattern = re.compile(r"-\s*\[([ x~])\]\s*\*\*Track:\s*(.*?)\*\*\s*\n\s*\*Link:\s*\[\./tracks/(.*?)/index\.md\]")
+        matches = pattern.findall(content)
+
+        status_map = {
+            " ": "new",
+            "~": "in_progress",
+            "x": "complete",
+        }
+
+        tracks = []
+        for marker, title, track_id in matches:
+            track_info = {
+                "track_id": track_id,
+                "title": title.strip(),
+                "status": status_map.get(marker, "new"),
+                "path": f"tracks/{track_id}",
+            }
+            meta_file = self.tracks_dir / track_id / "metadata.json"
+            if meta_file.exists():
+                try:
+                    meta = json.loads(meta_file.read_text(encoding="utf-8"))
+                    track_info["type"] = meta.get("type")
+                    track_info["created_at"] = meta.get("created_at")
+                    track_info["updated_at"] = meta.get("updated_at")
+                except Exception:
+                    pass
+            tracks.append(track_info)
+
+        return tracks
+
+    def get_track(self, track_id):
+        """Returns track info dictionary or None."""
+        for t in self.list_tracks():
+            if t["track_id"] == track_id:
+                return t
+        return None
+
+    def init_track(self, track_id, track_type, description):
+        """Initializes workspace, metadata.json, and appends to tracks registry with rollback."""
+        track_workspace = self.tracks_dir / track_id
+        self.tracks_dir.mkdir(parents=True, exist_ok=True)
+        track_workspace.mkdir(parents=True, exist_ok=True)
+
+        now_iso = datetime.now().astimezone().isoformat()
+        metadata = {
+            "track_id": track_id,
+            "type": track_type.lower(),
+            "status": "new",
+            "created_at": now_iso,
+            "updated_at": now_iso,
+            "description": description,
+        }
+
+        metadata_path = track_workspace / "metadata.json"
+        entry = f"\n---\n- [ ] **Track: {description}**\n  *Link: [./tracks/{track_id}/index.md](./tracks/{track_id}/index.md)*\n"
+
+        prev_registry = self.registry_path.read_text(encoding="utf-8") if self.registry_path.exists() else None
+        prev_meta = metadata_path.read_text(encoding="utf-8") if metadata_path.exists() else None
+
+        try:
+            metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+            if not self.registry_path.exists():
+                self.registry_path.write_text(f"# Tracks Registry\n{entry}", encoding="utf-8")
+            else:
+                existing = self.registry_path.read_text(encoding="utf-8")
+                if track_id not in existing:
+                    self.registry_path.write_text(existing + entry, encoding="utf-8")
+        except Exception as e:
+            if prev_meta is not None:
+                metadata_path.write_text(prev_meta, encoding="utf-8")
+            elif metadata_path.exists():
+                metadata_path.unlink()
+            if prev_registry is not None:
+                self.registry_path.write_text(prev_registry, encoding="utf-8")
+            elif self.registry_path.exists():
+                self.registry_path.unlink()
+            raise EngineError(f"Failed to initialize track '{track_id}': {e}") from e
+
+        return {
+            "track_id": track_id,
+            "workspace": str(track_workspace),
+            "metadata_file": str(metadata_path),
+            "registry_file": str(self.registry_path),
+            "status": "new",
+        }
+
+    def _transition_track(self, track_id, new_status, marker):
+        """Atomically transitions track status in tracks.md and metadata.json with rollback."""
+        metadata_path = self.tracks_dir / track_id / "metadata.json"
+        if not metadata_path.exists():
+            raise EngineError(f"Track '{track_id}' not found: missing metadata.json at {metadata_path}")
+
+        prev_meta_text = metadata_path.read_text(encoding="utf-8")
+        prev_registry_text = self.registry_path.read_text(encoding="utf-8") if self.registry_path.exists() else None
+
+        try:
+            meta = json.loads(prev_meta_text)
+            meta["status"] = new_status
+            meta["updated_at"] = datetime.now().astimezone().isoformat()
+            new_meta_text = json.dumps(meta, indent=2)
+
+            new_registry_text = prev_registry_text
+            if prev_registry_text:
+                pattern = re.compile(rf"-\s*\[[ x~]\]\s*(\*\*Track:.*?\*\*\s*\n\s*\*Link:\s*\[\./tracks/{re.escape(track_id)}/index\.md\])")
+                if not pattern.search(prev_registry_text):
+                    raise EngineError(f"Track '{track_id}' not registered in tracks.md")
+                new_registry_text = pattern.sub(rf"- [{marker}] \1", prev_registry_text)
+
+            # Atomic dual-write
+            if new_registry_text is not None:
+                self.registry_path.write_text(new_registry_text, encoding="utf-8")
+            metadata_path.write_text(new_meta_text, encoding="utf-8")
+
+        except Exception as e:
+            # Rollback both files on failure
+            if prev_registry_text is not None and self.registry_path.exists():
+                try:
+                    self.registry_path.write_text(prev_registry_text, encoding="utf-8")
+                except Exception:
+                    pass
+            if metadata_path.exists():
+                try:
+                    metadata_path.write_text(prev_meta_text, encoding="utf-8")
+                except Exception:
+                    pass
+            if isinstance(e, EngineError):
+                raise
+            raise EngineError(f"Failed to transition track '{track_id}' to '{new_status}': {e}") from e
+
+        return {
+            "track_id": track_id,
+            "status": new_status,
+        }
+
+    def start_track(self, track_id):
+        return self._transition_track(track_id, "in_progress", "~")
+
+    def complete_track(self, track_id):
+        return self._transition_track(track_id, "complete", "x")
+
+    def reset_track(self, track_id):
+        return self._transition_track(track_id, "new", " ")
+
+
 def init_track(track_id, track_type, description, root_dir="."):
     """Initializes a new track workspace, metadata.json, and updates tracks registry."""
-    conductor_dir = Path(root_dir) / "conductor"
-    tracks_dir = conductor_dir / "tracks"
-    track_workspace = tracks_dir / track_id
-
-    tracks_dir.mkdir(parents=True, exist_ok=True)
-    track_workspace.mkdir(parents=True, exist_ok=True)
-
-    now_iso = datetime.now().astimezone().isoformat()
-    metadata = {
-        "track_id": track_id,
-        "type": track_type.lower(),
-        "status": "new",
-        "created_at": now_iso,
-        "updated_at": now_iso,
-        "description": description,
-    }
-
-    metadata_path = track_workspace / "metadata.json"
-    metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-
-    # Update tracks registry (conductor/tracks.md)
-    registry_path = conductor_dir / "tracks.md"
-    entry = f"\n---\n- [ ] **Track: {description}**\n  *Link: [./tracks/{track_id}/index.md](./tracks/{track_id}/index.md)*\n"
-
-    if not registry_path.exists():
-        registry_path.write_text(f"# Tracks Registry\n{entry}", encoding="utf-8")
-    else:
-        existing = registry_path.read_text(encoding="utf-8")
-        if track_id not in existing:
-            registry_path.write_text(existing + entry, encoding="utf-8")
-
-    return {
-        "track_id": track_id,
-        "workspace": str(track_workspace),
-        "metadata_file": str(metadata_path),
-        "registry_file": str(registry_path),
-    }
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.init_track(track_id, track_type, description)
 
 
 def advance_task(track_id, task_name, status, sha=None, root_dir="."):
@@ -172,114 +301,27 @@ def advance_task(track_id, task_name, status, sha=None, root_dir="."):
 
 def complete_track(track_id, root_dir="."):
     """Marks track complete in tracks.md and metadata.json."""
-    conductor_dir = Path(root_dir) / "conductor"
-    metadata_path = conductor_dir / "tracks" / track_id / "metadata.json"
-    registry_path = conductor_dir / "tracks.md"
-
-    if metadata_path.exists():
-        meta = json.loads(metadata_path.read_text(encoding="utf-8"))
-        meta["status"] = "complete"
-        meta["updated_at"] = datetime.now().astimezone().isoformat()
-        metadata_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-
-    if registry_path.exists():
-        content = registry_path.read_text(encoding="utf-8")
-        # Match track entry linking to track_id
-        pattern = re.compile(rf"-\s*\[[ ~]\]\s*(\*\*Track:.*?\*\*\s*\n\s*\*Link:\s*\[\./tracks/{re.escape(track_id)}/index\.md\])")
-        content = pattern.sub(r"- [x] \1", content)
-        registry_path.write_text(content, encoding="utf-8")
-
-    return {
-        "track_id": track_id,
-        "status": "complete",
-    }
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.complete_track(track_id)
 
 
 def start_track(track_id, root_dir="."):
     """Marks track in_progress in tracks.md and metadata.json."""
-    conductor_dir = Path(root_dir) / "conductor"
-    metadata_path = conductor_dir / "tracks" / track_id / "metadata.json"
-    registry_path = conductor_dir / "tracks.md"
-
-    if metadata_path.exists():
-        meta = json.loads(metadata_path.read_text(encoding="utf-8"))
-        meta["status"] = "in_progress"
-        meta["updated_at"] = datetime.now().astimezone().isoformat()
-        metadata_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-
-    if registry_path.exists():
-        content = registry_path.read_text(encoding="utf-8")
-        pattern = re.compile(rf"-\s*\[[ x~]\]\s*(\*\*Track:.*?\*\*\s*\n\s*\*Link:\s*\[\./tracks/{re.escape(track_id)}/index\.md\])")
-        content = pattern.sub(r"- [~] \1", content)
-        registry_path.write_text(content, encoding="utf-8")
-
-    return {
-        "track_id": track_id,
-        "status": "in_progress",
-    }
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.start_track(track_id)
 
 
 def reset_track(track_id, root_dir="."):
     """Resets track back to new/pending in tracks.md and metadata.json."""
-    conductor_dir = Path(root_dir) / "conductor"
-    metadata_path = conductor_dir / "tracks" / track_id / "metadata.json"
-    registry_path = conductor_dir / "tracks.md"
-
-    if metadata_path.exists():
-        meta = json.loads(metadata_path.read_text(encoding="utf-8"))
-        meta["status"] = "new"
-        meta["updated_at"] = datetime.now().astimezone().isoformat()
-        metadata_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-
-    if registry_path.exists():
-        content = registry_path.read_text(encoding="utf-8")
-        pattern = re.compile(rf"-\s*\[[ x~]\]\s*(\*\*Track:.*?\*\*\s*\n\s*\*Link:\s*\[\./tracks/{re.escape(track_id)}/index\.md\])")
-        content = pattern.sub(r"- [ ] \1", content)
-        registry_path.write_text(content, encoding="utf-8")
-
-    return {
-        "track_id": track_id,
-        "status": "new",
-    }
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.reset_track(track_id)
 
 
 def list_tracks(root_dir="."):
     """Returns structured list of registered tracks."""
-    conductor_dir = Path(root_dir) / "conductor"
-    registry_path = conductor_dir / "tracks.md"
-    if not registry_path.exists():
-        return []
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.list_tracks()
 
-    content = registry_path.read_text(encoding="utf-8")
-    pattern = re.compile(r"-\s*\[([ x~])\]\s*\*\*Track:\s*(.*?)\*\*\s*\n\s*\*Link:\s*\[\./tracks/(.*?)/index\.md\]")
-    matches = pattern.findall(content)
-
-    status_map = {
-        " ": "new",
-        "~": "in_progress",
-        "x": "complete",
-    }
-
-    tracks = []
-    for marker, title, track_id in matches:
-        track_info = {
-            "track_id": track_id,
-            "title": title.strip(),
-            "status": status_map.get(marker, "new"),
-            "path": f"tracks/{track_id}",
-        }
-        meta_file = conductor_dir / "tracks" / track_id / "metadata.json"
-        if meta_file.exists():
-            try:
-                meta = json.loads(meta_file.read_text(encoding="utf-8"))
-                track_info["type"] = meta.get("type")
-                track_info["created_at"] = meta.get("created_at")
-                track_info["updated_at"] = meta.get("updated_at")
-            except Exception:
-                pass
-        tracks.append(track_info)
-
-    return tracks
 
 
 def parse_plan(plan_path):
