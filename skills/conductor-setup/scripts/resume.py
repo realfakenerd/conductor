@@ -5,9 +5,9 @@ import os
 import sys
 
 
-def determine_resumption():
+def determine_resumption(root_dir="."):
   """Checks existing setup artifacts and returns the next unblocked step."""
-  conductor_dir = "conductor"
+  conductor_dir = os.path.join(root_dir, "conductor")
   files = [
       "product.md",
       "product-guidelines.md",
