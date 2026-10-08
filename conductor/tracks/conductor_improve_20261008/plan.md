@@ -4,7 +4,7 @@
 - [x] Task: Write failing unit tests for `conductor-improve` skill and assets [bc59254]
     - [ ] Add tests in `tests/test_skills.py` verifying `conductor-improve/SKILL.md` exists, has metadata, links to `conductor_standards.md`, and validates asset presence
     - [ ] Run test suite and confirm failure (Red Phase)
-- [ ] Task: Implement HTML report template asset
+- [x] Task: Implement HTML report template asset [644b96c]
     - [ ] Create `skills/conductor-improve/assets/HTML-REPORT.md` with Tailwind CDN, Mermaid CDN, and card layout
 - [ ] Task: Implement `conductor-improve` skill definition
     - [ ] Create `skills/conductor-improve/SKILL.md` with exploration, report generation, modal selection (`ask_question`), Grill with Docs, and track handoff
