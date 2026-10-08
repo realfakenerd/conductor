@@ -1,7 +1,7 @@
 # Implementation Plan: Deepen Conductor Engine with State Machine and Query Seam
 
 ## Phase 1: Engine Query Seam & Lifecycle State Machine (TDD Red -> Green)
-- [ ] Task: Write failing unit tests for engine status, list, track start, and track reset
+- [~] Task: Write failing unit tests for engine status, list, track start, and track reset
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for `list_tracks`, `get_project_status`, `start_track`, and `reset_track`
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement query seam and track lifecycle transitions in `conductor_engine.py`

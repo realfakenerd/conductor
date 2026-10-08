@@ -118,6 +118,119 @@ class TestConductorEngine(unittest.TestCase):
         self.assertIn("setup_complete", data)
         self.assertIn("checklist", data)
 
+    def test_track_lifecycle_start_and_reset(self):
+        """Test starting and resetting track lifecycle state."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            track_id = "test_lifecycle_track"
+            conductor_engine.init_track(
+                track_id=track_id,
+                track_type="refactor",
+                description="Lifecycle test",
+                root_dir=tmpdir,
+            )
+
+            meta_file = root / "conductor" / "tracks" / track_id / "metadata.json"
+            reg_file = root / "conductor" / "tracks.md"
+
+            # Initial status is new / [ ]
+            meta = json.loads(meta_file.read_text(encoding="utf-8"))
+            self.assertEqual(meta["status"], "new")
+            self.assertIn("- [ ] **Track: Lifecycle test**", reg_file.read_text(encoding="utf-8"))
+
+            # Start track -> in_progress / [~]
+            start_res = conductor_engine.start_track(track_id=track_id, root_dir=tmpdir)
+            self.assertEqual(start_res["status"], "in_progress")
+            meta = json.loads(meta_file.read_text(encoding="utf-8"))
+            self.assertEqual(meta["status"], "in_progress")
+            self.assertIn("- [~] **Track: Lifecycle test**", reg_file.read_text(encoding="utf-8"))
+
+            # Reset track -> pending / [ ]
+            reset_res = conductor_engine.reset_track(track_id=track_id, root_dir=tmpdir)
+            self.assertEqual(reset_res["status"], "new")
+            meta = json.loads(meta_file.read_text(encoding="utf-8"))
+            self.assertEqual(meta["status"], "new")
+            self.assertIn("- [ ] **Track: Lifecycle test**", reg_file.read_text(encoding="utf-8"))
+
+    def test_list_tracks_and_get_project_status(self):
+        """Test deterministic track listing and project status inspection."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            # Create two tracks
+            conductor_engine.init_track("t1", "feature", "Track 1", root_dir=tmpdir)
+            conductor_engine.init_track("t2", "bug", "Track 2", root_dir=tmpdir)
+
+            # Complete track 1
+            conductor_engine.complete_track("t1", root_dir=tmpdir)
+            # Start track 2
+            conductor_engine.start_track("t2", root_dir=tmpdir)
+
+            # Create plan for track 2
+            plan2 = root / "conductor" / "tracks" / "t2" / "plan.md"
+            plan2.write_text(
+                "# Plan\n## Phase 1\n- [x] Task: Step 1 [sha1]\n- [~] Task: Step 2\n- [ ] Task: Step 3\n",
+                encoding="utf-8",
+            )
+
+            # List tracks
+            tracks = conductor_engine.list_tracks(root_dir=tmpdir)
+            self.assertEqual(len(tracks), 2)
+            self.assertEqual(tracks[0]["track_id"], "t1")
+            self.assertEqual(tracks[0]["status"], "complete")
+            self.assertEqual(tracks[1]["track_id"], "t2")
+            self.assertEqual(tracks[1]["status"], "in_progress")
+
+            # Get project status
+            status = conductor_engine.get_project_status(root_dir=tmpdir)
+            self.assertEqual(status["tracks"]["total"], 2)
+            self.assertEqual(status["tracks"]["complete"], 1)
+            self.assertEqual(status["tracks"]["in_progress"], 1)
+            self.assertEqual(status["active_track"]["track_id"], "t2")
+            self.assertEqual(status["active_track"]["current_task"], "Step 2")
+            self.assertEqual(status["active_track"]["next_pending_task"], "Step 3")
+            self.assertEqual(status["active_track"]["total_tasks"], 3)
+            self.assertEqual(status["active_track"]["completed_tasks"], 1)
+            self.assertEqual(status["active_track"]["progress_percent"], 33.3)
+
+    def test_cli_status_and_lifecycle(self):
+        """Test CLI subcommands list, status, track start, track reset."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            script_path = str(REPO_ROOT / "scripts" / "conductor_engine.py")
+            # Init track via CLI
+            res = subprocess.run(
+                [sys.executable, script_path, "track", "init", "cli_t", "--type", "feature", "--description", "CLI Track", "--root-dir", tmpdir],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+
+            # Start track via CLI
+            res = subprocess.run(
+                [sys.executable, script_path, "track", "start", "cli_t", "--root-dir", tmpdir],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            data = json.loads(res.stdout)
+            self.assertEqual(data["status"], "in_progress")
+
+            # Status via CLI --json
+            res = subprocess.run(
+                [sys.executable, script_path, "status", "--root-dir", tmpdir, "--json"],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            status_data = json.loads(res.stdout)
+            self.assertEqual(status_data["tracks"]["in_progress"], 1)
+
+            # List via CLI --json
+            res = subprocess.run(
+                [sys.executable, script_path, "list", "--root-dir", tmpdir, "--json"],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            list_data = json.loads(res.stdout)
+            self.assertEqual(len(list_data), 1)
+            self.assertEqual(list_data[0]["track_id"], "cli_t")
+
 
 if __name__ == "__main__":
     unittest.main()
