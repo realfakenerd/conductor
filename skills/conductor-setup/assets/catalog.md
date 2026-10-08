@@ -107,3 +107,16 @@ Skills for designing, building, and managing CI/CD pipelines and infrastructure 
 -   **Detection Signals**:
     -   **Dependencies**: `terraform`
     -   **Keywords**: `Terraform`, `GCP`, `GCS Backend`, `Infrastructure as Code`, `IaC`
+
+## Code Architecture Skills
+
+Skills for inspecting codebase structure, detecting architectural friction, and proposing deep module refactors.
+
+### conductor-improve
+
+-   **Description**: Scans codebase for architectural friction and deepening opportunities, renders visual HTML reports with Before/After Mermaid diagrams, conducts Grill with Docs design interviews, and scaffolds Conductor refactor tracks.
+-   **URL**: https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/improve-codebase-architecture/
+-   **Party**: 1p
+-   **Detection Signals**:
+-   **Keywords**: `architecture`, `refactor`, `deep module`, `seam`, `improve codebase`, `shallow module`, `locality`
+
