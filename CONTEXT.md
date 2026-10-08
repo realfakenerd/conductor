@@ -38,3 +38,15 @@ The closed set of deterministic state transitions (`init` -> `start` -> `complet
 The operational invariant enforcing maximum signal-to-noise communication across all Conductor agent skills: answer first, eliminate pleasantries and boilerplate ceremony, compress progress reporting, while strictly preserving technical accuracy, code integrity, and destructive safety warnings.
 _Avoid_: "Chatty persona", "pleasantries", "filler intros".
 
+### Track Repository
+The encapsulated data store within Conductor Engine responsible for atomic synchronization between human-readable markdown (`tracks.md`) and machine metadata (`metadata.json`).
+_Avoid_: "Tracks helper", "registry writer".
+
+### Plan Document Model
+The deterministic document parser and mutator representing track implementation plans (`plan.md`) as an abstract syntax tree, preserving phase hierarchy, checkpoints, and task markers without lossy string splicing.
+_Avoid_: "Regex task replacer", "plan script".
+
+### Integrity Auditor
+The verification subsystem that cross-validates workspace structure, handshake links, track metadata parity, and git commit SHA existence across recorded task plans.
+_Avoid_: "Handshake checker", "link validator".
+

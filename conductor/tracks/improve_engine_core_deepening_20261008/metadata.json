@@ -1,0 +1,8 @@
+{
+  "track_id": "improve_engine_core_deepening_20261008",
+  "type": "refactor",
+  "status": "in_progress",
+  "created_at": "2026-10-08T17:14:03.786251-03:00",
+  "updated_at": "2026-10-08T17:26:29.345817-03:00",
+  "description": "Deepen Engine Core with TrackRepository, PlanDocument, and IntegrityAuditor"
+}
