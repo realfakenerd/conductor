@@ -11,10 +11,11 @@
     - [x] Run test suite and verify tests pass (Green Phase)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [91c0547]
 
-## Phase 2: Catalog Registration & Domain Context
+## Phase 2: Catalog Registration & Domain Context [checkpoint: 56ec813]
 - [x] Task: Register `conductor-improve` in catalog [b6af92b]
-    - [ ] Add `conductor-improve` entry to `assets/catalog.md` with description, signals, and 1p status
+    - [x] Add `conductor-improve` entry to `assets/catalog.md` with description, signals, and 1p status
 - [x] Task: Update domain context and documentation [56ec813]
-    - [ ] Update `CONTEXT.md` with Architecture Discovery and Deepening definitions
-    - [ ] Update `README.md` to document `/conductor:conductor-improve`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+    - [x] Update `CONTEXT.md` with Architecture Discovery and Deepening definitions
+    - [x] Update `README.md` to document `/conductor:conductor-improve`
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [56ec813]
+
