@@ -6,7 +6,7 @@
     - [ ] Run test suite and confirm failure (Red Phase)
 - [x] Task: Implement HTML report template asset [644b96c]
     - [ ] Create `skills/conductor-improve/assets/HTML-REPORT.md` with Tailwind CDN, Mermaid CDN, and card layout
-- [ ] Task: Implement `conductor-improve` skill definition
+- [x] Task: Implement `conductor-improve` skill definition [91c0547]
     - [ ] Create `skills/conductor-improve/SKILL.md` with exploration, report generation, modal selection (`ask_question`), Grill with Docs, and track handoff
     - [ ] Run test suite and verify tests pass (Green Phase)
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
