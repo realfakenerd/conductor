@@ -15,7 +15,7 @@
 - [x] Task: Write failing unit tests for PlanDocument AST parsing and formatting preservation [5b5cf3d]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` verifying parsing of phases, tasks, subtasks, non-destructive status mutation, and metrics calculation
     - [ ] Run pytest suite and confirm test failures (Red Phase)
-- [~] Task: Implement PlanDocument class and wire advance_task and parse_plan
+- [x] Task: Implement PlanDocument class and wire advance_task and parse_plan [122d483]
     - [ ] Implement `PlanDocument` class with AST node models and clean `advance(task_name, status, sha)` mutation
     - [ ] Wire `advance_task` and `parse_plan` to delegate to `PlanDocument`
     - [ ] Run pytest suite and confirm all Phase 2 tests pass (Green Phase)
