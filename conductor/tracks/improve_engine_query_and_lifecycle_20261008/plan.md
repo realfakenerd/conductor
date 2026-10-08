@@ -8,7 +8,7 @@
     - [ ] Add `list_tracks`, `parse_plan`, and `get_project_status` functions with CLI subcommands `status` and `list`
     - [ ] Implement `start_track` (`track start`) and `reset_track` (`track reset`) updating `tracks.md` and `metadata.json`
     - [ ] Run pytest suite and confirm all tests pass (Green Phase)
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b8c3a82]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b089857]
 
 ## Phase 2: Skill Harmonization & Standards Rule Delegation [checkpoint: b8c3a82]
 - [x] Task: Refactor remaining skills to delegate to `conductor_standards.md` and use engine verify [b8c3a82]
@@ -17,10 +17,10 @@
     - [ ] Update `skills/conductor-review/SKILL.md` and `skills/conductor-revert/SKILL.md` to reference rule adapter and query engine
 - [x] Task: Verify skill frontmatter and manifest validation test suite [b8c3a82]
     - [ ] Run `pytest tests/test_skills.py` and ensure all assertions pass
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b8c3a82]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b089857]
 
-## Phase 3: Project Verification & Handshake Checkpoint
-- [ ] Task: Execute full test suite and verify Conductor handshake
+## Phase 3: Project Verification & Handshake Checkpoint [checkpoint: b089857]
+- [x] Task: Execute full test suite and verify Conductor handshake [b089857]
     - [ ] Run `uv run pytest` across all test suites
     - [ ] Run `python3 scripts/conductor_engine.py verify`
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b8c3a82]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b089857]
