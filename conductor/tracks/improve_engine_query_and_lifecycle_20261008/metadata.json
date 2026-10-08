@@ -1,0 +1,8 @@
+{
+  "track_id": "improve_engine_query_and_lifecycle_20261008",
+  "type": "refactor",
+  "status": "in_progress",
+  "created_at": "2026-10-08T15:57:51.870219-03:00",
+  "updated_at": "2026-10-08T15:57:51.870219-03:00",
+  "description": "Deepen Conductor Engine with State Machine and Query Seam"
+}
