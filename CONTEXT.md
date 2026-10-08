@@ -34,3 +34,7 @@ A deterministic engine interface (`status`, `list`) exposing aggregate project p
 ### Track Lifecycle State Machine
 The closed set of deterministic state transitions (`init` -> `start` -> `complete` -> `reset`) governing track progression across `tracks.md` and `metadata.json` without direct caller file mutation.
 
+### Terse Communication Invariant
+The operational invariant enforcing maximum signal-to-noise communication across all Conductor agent skills: answer first, eliminate pleasantries and boilerplate ceremony, compress progress reporting, while strictly preserving technical accuracy, code integrity, and destructive safety warnings.
+_Avoid_: "Chatty persona", "pleasantries", "filler intros".
+
