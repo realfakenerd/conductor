@@ -1,0 +1,21 @@
+# Domain Context: Conductor
+
+## Glossary
+
+### Conductor Engine
+The centralized execution module (`scripts/conductor_engine.py`) responsible for deterministic state operations: auditing setup resumption, scaffolding tracks, advancing task checkboxes (`[ ]` -> `[~]` -> `[x]`), attaching git notes, and validating handshake integrity.
+
+### Track
+A bounded, trackable unit of software work (feature, bug fix, chore, or MVP bootstrap) composed of a specification (`spec.md`), an actionable implementation plan (`plan.md`), metadata (`metadata.json`), and an index handshake (`index.md`).
+
+### Handshake (Index)
+The root context document (`conductor/index.md`) that serves as the single source of truth for the project. Maps product definition, guidelines, tech stack, workflow, style guides, and tracks registry.
+
+### Standards Rule Adapter
+A global plugin rule (`rules/conductor_standards.md`) establishing invariant operational constraints for AI agents: tool output validation, path integrity, non-interactive execution, and sequential dialog protocols.
+
+### Skill Catalog
+A canonical registry (`assets/catalog.md`) enumerating curated 1st-party and 3rd-party agent capabilities with detection signals, security trust disclosures, and frozen installation URLs.
+
+### Phase & Task Lifecycle
+A strict progression within a track's plan following Test-Driven Development (TDD): Red Phase (failing tests) -> Green Phase (passing implementation) -> Refactor -> Commit & Git Note -> Phase Verification Checkpoint.
