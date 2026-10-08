@@ -9,7 +9,7 @@
     - [ ] Implement `TrackRepository` class handling `tracks.md` and `metadata.json` synchronization with transactional rollback
     - [ ] Wire existing module functions (`init_track`, `start_track`, `complete_track`, `reset_track`, `list_tracks`) to `TrackRepository`
     - [ ] Run pytest suite and confirm all Phase 1 tests pass (Green Phase)
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [cbe81fa]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [d2d96c6]
 
 ## Phase 2: PlanDocument Model & AST Mutation (TDD Red -> Green)
 - [x] Task: Write failing unit tests for PlanDocument AST parsing and formatting preservation [5b5cf3d]
@@ -19,7 +19,7 @@
     - [ ] Implement `PlanDocument` class with AST node models and clean `advance(task_name, status, sha)` mutation
     - [ ] Wire `advance_task` and `parse_plan` to delegate to `PlanDocument`
     - [ ] Run pytest suite and confirm all Phase 2 tests pass (Green Phase)
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [cbe81fa]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [d2d96c6]
 
 ## Phase 3: IntegrityAuditor Deep Verification Seam (TDD Red -> Green)
 - [x] Task: Write failing unit tests for IntegrityAuditor deep checks and ghost commit detection [3707ae8]
@@ -29,10 +29,10 @@
     - [ ] Implement `IntegrityAuditor` class performing index links, track workspace integrity, and git commit SHA validation
     - [ ] Update `verify_handshake` and CLI `verify` parser with default deep checks and `--fast` option
     - [ ] Run pytest suite and confirm all Phase 3 tests pass (Green Phase)
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [cbe81fa]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [d2d96c6]
 
 ## Phase 4: Full Suite Integration & Handshake Checkpoint
 - [x] Task: Execute full test suite and verify Conductor handshake [d22c1ed]
     - [ ] Run `uv run pytest` across all test suites
     - [ ] Run `python3 scripts/conductor_engine.py verify`
-- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [cbe81fa]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [d2d96c6]
