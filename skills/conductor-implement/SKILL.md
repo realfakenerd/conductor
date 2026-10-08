@@ -11,30 +11,15 @@ You are the **Conductor Implementer**. Your goal is to execute the tasks defined
 
 ## Operational Standards
 
--   **Precise Execution:** Do not skip steps. Do not make assumptions about the project state; always verify via the terminal.
--   **Tool Validation:** You MUST validate the success of every tool call. If a command fails, review the error, attempt to self-correct once, or halt and ask for guidance.
--   **Path Integrity:** Always use relative paths starting from the project root (e.g., `conductor/tracks.md`).
--   **Interaction Protocol:** When gathering information or asking for decisions, you MUST provide either **single-choice** or **multiple-choice** options based on context-aware suggestions. If a specific option is preferred based on project standards or best practices, list it first, prefix it with '(Recommended)', and provide a brief, context-rich explanation of why it is the better choice. You MUST always include a custom or "Other" option to allow user-defined input. Avoid asking raw, open-ended questions without suggestions.
--   **Sequential Questioning (CRITICAL):** When gathering information or asking the user questions, if a native tool is available to present multiple questions for structured answering (e.g., a modal or form tool), you may use it to group questions. However, if you are interacting via standard text chat, you MUST ask questions strictly one at a time and wait for the user's response before proceeding to the next question. Do NOT output multiple questions in a single chat response.
-
----
+Adhere strictly to the invariant operational standards, tool validation gates, path integrity rules, and sequential interaction protocols defined in `rules/conductor_standards.md`.
 
 ## 1. Handshake & Context Initialization
 
-Before starting the implementation process, you MUST locate and read the project's foundational context.
+Verify project context using the Conductor Engine:
 
-1.  **Locate Index:** Check for the existence of `conductor/index.md` in the project root.
-    -   **If Missing:**
-        -   Announce: *"Conductor is not initialized properly. I cannot find the `conductor/index.md` file."*
-        -   Ask the user using a **Yes/No question** if they would like to run the setup process now to initialize Conductor.
-        -   **If Approved:** Internally invoke the `conductor-setup` skill.
-        -   **If Denied:** HALT and await further instructions.
-
-2.  **Load & Verify Context:** Read `conductor/index.md` and use the provided links to locate the core files:
-    -   **Product Definition** (`product.md`)
-    -   **Tech Stack** (`tech-stack.md`)
-    -   **Workflow** (`workflow.md`)
-    -   **Health Check:** You MUST verify that every linked file actually exists. If ANY of these core files are missing, HALT immediately. Announce which file is missing and ask the user if they would like to run the setup process to repair the environment.
+1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+    -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
+    -   **If Valid:** Proceed directly to Track Selection.
 
 ---
 
@@ -81,12 +66,30 @@ Adhere to this sequence to execute the selected track.
 
 4.  **Execute Tasks and Update Track Plan:**
     -   Loop through each task in the track's **Implementation Plan** one by one.
-    -   For each task, defer to the **Workflow** file as the single source of truth for implementation, testing, and committing.
-    -   Ensure every human-in-the-loop interaction mentioned in the **Workflow** is conducted using appropriate question types (Yes/No, open question, or multiple-choice).
+    -   **Start Task:** Execute the engine to advance the task to in-progress:
+        ```bash
+        python3 scripts/conductor_engine.py track advance <track_id> --task "<task_name>" --status in_progress
+        ```
+        Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as in progress`.
+    -   **Implement & Test:** Follow the **Workflow** file (Red-Green-Refactor TDD).
+    -   **Commit Code:** Commit implementation changes and obtain the `<commit_sha>`.
+    -   **Attach Git Note:** Execute the engine to attach the verification note:
+        ```bash
+        python3 scripts/conductor_engine.py note <commit_sha> --task "<task_name>" --summary "<summary>" --files "<files>"
+        ```
+    -   **Complete Task in Plan:** Execute the engine to record the SHA and mark complete:
+        ```bash
+        python3 scripts/conductor_engine.py track advance <track_id> --task "<task_name>" --status done --sha <commit_sha>
+        ```
+        Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as complete`.
 
 5.  **Finalize Track:**
-    -   After all tasks are completed, update the track status to `[x]` in the **Tracks Registry**.
-    -   Stage the **Tracks Registry** file and commit: `chore(conductor): Mark track '<track_description>' as complete`.
+    -   After all tasks are completed, execute the engine to mark the track complete:
+        ```bash
+        python3 scripts/conductor_engine.py track complete <track_id>
+        ```
+    -   Stage registry and metadata: `git add conductor/tracks.md conductor/tracks/<track_id>/metadata.json`
+    -   Commit: `chore(conductor): Mark track '<track_description>' as complete`.
     -   Announce that the track is fully complete.
 
 ---

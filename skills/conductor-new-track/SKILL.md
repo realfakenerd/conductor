@@ -11,32 +11,15 @@ You are the **Conductor Planner**. Your goal is to guide the user through defini
 
 ## Operational Standards
 
--   **Precise Execution:** Do not skip steps. Do not make assumptions about the project state; always verify via the terminal.
--   **Tool Validation:** You MUST validate the success of every tool call. If a command fails, review the error, attempt to self-correct once, or halt and ask for guidance.
--   **Path Integrity:** Always use relative paths starting from the project root (e.g., `conductor/tracks.md`).
--   **Strategic Transparency:** Before executing a tool call that creates or modifies crucial infrastructure (like track artifacts, plans, or registry entries), you MUST explain its strategic value to the project. Don't just execute; act as a mentor guiding the user through the 'Why' behind the planning process.
--   **Interaction Protocol:** When gathering information or asking for decisions, you MUST provide either **single-choice** or **multiple-choice** options based on context-aware suggestions. If a specific option is preferred based on project standards or best practices, list it first, prefix it with '(Recommended)', and provide a brief, context-rich explanation in italics of why it is the better choice. You MUST always include a custom or "Other" option to allow user-defined input. Avoid asking raw, open-ended questions without suggestions. Example:
-    -   Description of choice 1 (Recommended): *<Brief explanation of why it is the better choice>*
-    -   (Description of choice 2)
-    -   Other (User-defined input)
--   **Sequential Questioning (CRITICAL):** When gathering information or asking the user questions, if a native tool is available to present multiple questions for structured answering (e.g., a modal or form tool), you may use it to group questions. However, if you are interacting via standard text chat, you MUST ask questions strictly one at a time and wait for the user's response before proceeding to the next question. Do NOT output multiple questions in a single chat response.
+Adhere strictly to the invariant operational standards, tool validation gates, path integrity rules, and sequential interaction protocols defined in `rules/conductor_standards.md`.
 
 ## 1. Handshake & Context Initialization
 
-Before starting the planning process, you MUST locate and read the project's foundational context.
+Verify project context using the Conductor Engine:
 
-1.  **Locate Index:** Check for the existence of `conductor/index.md` in the project root.
-    -   **If Missing:**
-        -   Announce: *"Conductor is not initialized properly. I cannot find the `conductor/index.md` file."*
-        -   Ask the user using a **Yes/No question** if they would like to run the setup process now to initialize Conductor or repair the environment.
-        -   **If Approved:** Internally invoke the `conductor-setup` skill to begin initialization.
-        -   **If Denied:** HALT and await further instructions.
-
-2.  **Load & Verify Context:** Read `conductor/index.md` and use the provided links to locate the core files:
-    -   **Product Definition** (`product.md`)
-    -   **Tech Stack** (`tech-stack.md`)
-    -   **Workflow** (`workflow.md`)
-    -   **Health Check:** You MUST verify that every linked file actually exists. If ANY of these core files are missing, HALT immediately. Announce which file is missing and ask the user if they would like to run the setup process to repair the environment.
+1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+    -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
+    -   **If Valid:** Proceed directly to Track Initialization.
 
 ---
 
@@ -112,7 +95,7 @@ Adhere to this sequence precisely.
 ### 2.4 Interactive Skill Recommendation
 
 1.  **Analyze Needs & Trust Model:**
-    -   Read the skill catalog from `assets/catalog.md` (relative to this skill's directory).
+    -   Read the skill catalog from `assets/catalog.md` in the project root.
     -   Analyze the confirmed `spec.md` and `plan.md` against the `Detection Signals` in the loaded `catalog.md`.
     -   Identify any relevant skills that are NOT yet installed.
     -   **Trust Assessment:** Note the `Party` status (1p or 3p) for each identified skill.
@@ -139,39 +122,32 @@ Adhere to this sequence precisely.
 
 ### 2.5 Create Track Artifacts and Registry Update
 
-1.  **Strategic Action:** Explain that you are about to "commit the track to history." This involves creating a dedicated workspace for the track, initializing its metadata, and updating the central registry so that your progress is trackable by any tool or collaborator.
+1.  **Strategic Action:** Explain that you are about to "commit the track to history" using the Conductor Engine.
 
-2.  **Resolve Tracks Path:**
-    -   Identify the tracks directory and registry using the links provided in `conductor/index.md`.
-    -   **Fallback/Initialization:** If the index does not yet link to a tracks directory or registry, use the default paths: `conductor/tracks/` for the directory and `conductor/tracks.md` for the registry.
-    -   **Collision Check:** List existing track directories in the resolved path. If a track with a matching short name exists, halt and ask the user to choose between providing a unique name or resuming the existing track using a **single-choice question**.
+2.  **Execute Engine Track Initialization:**
+    -   Generate a unique Track ID (e.g., `shortname_YYYYMMDD`).
+    -   Execute the engine command to scaffold the workspace, metadata, registry entry, and handshake:
+        ```bash
+        python3 scripts/conductor_engine.py track init <track_id> --type <type> --description "<track_description>"
+        ```
 
-3.  **Generate Track ID & Directory:**
-    -   Create a unique Track ID (e.g., `shortname_YYYYMMDD`).
-    -   Create the track's workspace at `conductor/tracks/<track_id>/`.
+3.  **Write Track Documents:**
+    -   Write the confirmed `spec.md` and `plan.md` into `conductor/tracks/<track_id>/`.
+    -   Create `conductor/tracks/<track_id>/index.md` linking to local artifacts:
+        ```markdown
+        # Track: <track_description>
 
-4.  **Write Track Artifacts:**
-    -   **Metadata:** Create `metadata.json` with the track ID, type, status ("new"), and timestamps.
-    -   **Documents:** Write the confirmed `spec.md` and `plan.md` to the track directory.
-    -   **Track Handshake:** Create `conductor/tracks/<track_id>/index.md` linking to the local spec, plan, and metadata.
+        ## Artifacts
+        - [Specification](./spec.md)
+        - [Implementation Plan](./plan.md)
+        - [Metadata](./metadata.json)
+        ```
 
-5.  **Update Tracks Registry:**
-    -   Open the **Tracks Registry** file (resolved via `conductor/index.md`).
-    -   Append the new track entry at the end of the file. Create the file if this is the first track.
-    -   Format: `markdown --- - [ ] **Track: <Track Description>** *Link: [<Relative path to the new track's index.md>](<Relative path to the new track's index.md>)*`
-    -   **CRITICAL:** The link MUST be a valid relative path from the `Tracks Registry` file to the new track's `index.md` file.
+4.  **Finalize Changes:**
+    -   Stage the changes: `git add conductor/`
+    -   Commit: `chore(conductor): initialize track '<track_id>'`
 
-6.  **Register Tracks in Handshake:**
-    -   You MUST ensure that the project's primary source of truth (`conductor/index.md`) points to the tracks infrastructure.
-    -   If the links are missing (typically during the first track), update `conductor/index.md` to include a "## Tracks" section with links to both the **Tracks Registry** and the **Tracks Directory**.
-    -   **Example Addition:** `markdown ## Tracks - [Tracks Registry](./tracks.md) - [Tracks Directory](./tracks/)`
-    -   **Integrity:** Ensure the links use valid relative paths from `conductor/index.md`.
-
-7.  **Finalize Changes:**
-    -   Stage the entire `conductor/` directory.
-    -   Commit all changes with the message: `chore(conductor): initialize track '<track_id>'`.
-
-8.  **Completion & Next Steps:**
+5.  **Completion & Next Steps:**
     -   Inform the user that the track creation is complete and the registry has been updated.
     -   Ask the user if they would like to start the implementation right now using a **Yes/No question**.
     -   **Internal Handoff:** If the user agrees, you MUST use the `conductor-implement` skill to begin work. Present the transition as a natural progression without mentioning the skill name.
