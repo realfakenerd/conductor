@@ -7,9 +7,9 @@
 - [x] Task: TDD Tests for resume.py (Red Phase) [3fcc5f5]
   - [x] Write unit tests in `tests/test_resume.py` for greenfield, partial setup, and complete setup states
   - [x] Verify tests run and fail as expected if conditions are unmet
-- [ ] Task: Implement & Refactor Resume Script Support (Green Phase)
-  - [ ] Ensure `resume.py` cleanly handles isolated paths or test fixtures
-  - [ ] Run test suite and confirm all tests pass
+- [x] Task: Implement & Refactor Resume Script Support (Green Phase) [96560e5]
+  - [x] Ensure `resume.py` cleanly handles isolated paths or test fixtures
+  - [x] Run test suite and confirm all tests pass
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: Agent Skill & Manifest Validation Suite
