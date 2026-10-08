@@ -311,6 +311,61 @@ class TestConductorEngine(unittest.TestCase):
             meta_data = json.loads(target_meta.read_text(encoding="utf-8"))
             self.assertEqual(meta_data["status"], "in_progress")
 
+    def test_plan_document_ast_parsing_mutation_and_formatting_preservation(self):
+        """Test PlanDocument parses AST, mutates task markers non-destructively, and preserves plan formatting."""
+        markdown_plan = (
+            "# Implementation Plan: Sample Feature\n\n"
+            "<!-- Custom Header Comment -->\n\n"
+            "## Phase 1: Foundation (Red -> Green) [checkpoint: abc1234]\n"
+            "- [ ] Task: Scaffold base data model\n"
+            "    - [ ] Create schemas\n"
+            "    - [ ] Add migrations\n"
+            "- [ ] Task: Implement repository interface\n"
+            "- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)\n\n"
+            "## Phase 2: Execution\n"
+            "- [ ] Task: Connect external API\n"
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            plan_file = Path(tmpdir) / "plan.md"
+            plan_file.write_text(markdown_plan, encoding="utf-8")
+
+            doc = conductor_engine.PlanDocument.from_file(plan_file)
+
+            # Test initial summary
+            summary = doc.summary()
+            self.assertEqual(summary["total_tasks"], 4)
+            self.assertEqual(summary["completed_tasks"], 0)
+            self.assertEqual(summary["pending_tasks"], 4)
+            self.assertEqual(summary["current_phase"], None)
+            self.assertEqual(summary["next_pending_task"], "Scaffold base data model")
+
+            # Advance task 1 to in_progress
+            doc.advance("Scaffold base data model", status="in_progress")
+            doc.save()
+
+            reloaded = conductor_engine.PlanDocument.from_file(plan_file)
+            sum2 = reloaded.summary()
+            self.assertEqual(sum2["in_progress_tasks"], 1)
+            self.assertEqual(sum2["current_task"], "Scaffold base data model")
+            self.assertEqual(sum2["current_phase"], "Foundation (Red -> Green)")
+
+            # Advance task 1 to done with commit sha
+            reloaded.advance("Scaffold base data model", status="done", sha="1234567abcdef")
+            reloaded.save()
+
+            content = plan_file.read_text(encoding="utf-8")
+            self.assertIn("- [x] Task: Scaffold base data model [1234567]", content)
+            # Preserves comments, subtasks, and phase checkpoint
+            self.assertIn("<!-- Custom Header Comment -->", content)
+            self.assertIn("    - [ ] Create schemas", content)
+            self.assertIn("    - [ ] Add migrations", content)
+            self.assertIn("[checkpoint: abc1234]", content)
+
+            # Advancing non-existent task raises EngineError
+            with self.assertRaises(conductor_engine.EngineError):
+                reloaded.advance("Non-existent task", status="done")
+
 
 if __name__ == "__main__":
     unittest.main()
