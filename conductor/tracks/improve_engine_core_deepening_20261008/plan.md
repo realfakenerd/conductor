@@ -22,7 +22,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f0b60a3]
 
 ## Phase 3: IntegrityAuditor Deep Verification Seam (TDD Red -> Green)
-- [~] Task: Write failing unit tests for IntegrityAuditor deep checks and ghost commit detection
+- [x] Task: Write failing unit tests for IntegrityAuditor deep checks and ghost commit detection [3707ae8]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for workspace parity, ghost commit detection, and `--fast` link-only flag
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement IntegrityAuditor and update verify subcommand
