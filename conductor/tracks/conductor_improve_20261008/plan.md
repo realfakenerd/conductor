@@ -1,15 +1,15 @@
 # Implementation Plan: Integrate `conductor-improve` Skill
 
-## Phase 1: Test Suite & Skill Specification (TDD Red -> Green)
+## Phase 1: Test Suite & Skill Specification (TDD Red -> Green) [checkpoint: 91c0547]
 - [x] Task: Write failing unit tests for `conductor-improve` skill and assets [bc59254]
-    - [ ] Add tests in `tests/test_skills.py` verifying `conductor-improve/SKILL.md` exists, has metadata, links to `conductor_standards.md`, and validates asset presence
-    - [ ] Run test suite and confirm failure (Red Phase)
+    - [x] Add tests in `tests/test_skills.py` verifying `conductor-improve/SKILL.md` exists, has metadata, links to `conductor_standards.md`, and validates asset presence
+    - [x] Run test suite and confirm failure (Red Phase)
 - [x] Task: Implement HTML report template asset [644b96c]
-    - [ ] Create `skills/conductor-improve/assets/HTML-REPORT.md` with Tailwind CDN, Mermaid CDN, and card layout
+    - [x] Create `skills/conductor-improve/assets/HTML-REPORT.md` with Tailwind CDN, Mermaid CDN, and card layout
 - [x] Task: Implement `conductor-improve` skill definition [91c0547]
-    - [ ] Create `skills/conductor-improve/SKILL.md` with exploration, report generation, modal selection (`ask_question`), Grill with Docs, and track handoff
-    - [ ] Run test suite and verify tests pass (Green Phase)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+    - [x] Create `skills/conductor-improve/SKILL.md` with exploration, report generation, modal selection (`ask_question`), Grill with Docs, and track handoff
+    - [x] Run test suite and verify tests pass (Green Phase)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [91c0547]
 
 ## Phase 2: Catalog Registration & Domain Context
 - [ ] Task: Register `conductor-improve` in catalog
