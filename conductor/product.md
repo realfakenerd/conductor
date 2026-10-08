@@ -15,6 +15,7 @@ Conductor transforms AI coding assistants into disciplined, spec-driven engineer
    - `conductor-review`: Conducts verification against specs and architectural standards.
    - `conductor-status`: Inspects active tracks, phases, and task progress.
    - `conductor-revert`: Intelligently rolls back units of work (tracks, phases, tasks).
+   - `conductor-improve`: Diagnoses architectural friction, generates visual HTML reports, and scaffolds refactor tracks.
 2. **Adaptive User Experience (View Layer)**:
    - Native GUI interactive modal prompts (`ask_question`) in visual IDE environments.
    - Clean, numbered textual CLI fallback in terminal consoles.
