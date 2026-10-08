@@ -1,9 +1,9 @@
 # Implementation Plan: Automated Test Suite for Conductor
 
 ## Phase 1: Test Runner & Resume Script Verification
-- [ ] Task: Configure Pytest Environment
-  - [ ] Create `pyproject.toml` with pytest configuration
-  - [ ] Verify test discovery operates cleanly
+- [x] Task: Configure Pytest Environment [dcc5fa9]
+  - [x] Create `pyproject.toml` with pytest configuration
+  - [x] Verify test discovery operates cleanly
 - [ ] Task: TDD Tests for resume.py (Red Phase)
   - [ ] Write unit tests in `tests/test_resume.py` for greenfield, partial setup, and complete setup states
   - [ ] Verify tests run and fail as expected if conditions are unmet
