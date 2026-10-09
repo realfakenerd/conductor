@@ -1,6 +1,6 @@
 # Implementation Plan: Deepen Conductor Implement and Engine Seams
 
-## Phase 1: Track Resolution Seam (TDD Red -> Green)
+## Phase 1: Track Resolution Seam (TDD Red -> Green) [checkpoint: f0d39b8]
 - [x] Task: Write failing unit tests for track resolve seam [e800141]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` for exact match, substring match, ambiguous match, and first incomplete fallback
     - [ ] Run pytest suite and confirm test failures (Red Phase)
@@ -8,7 +8,7 @@
     - [ ] Implement `TrackRepository.resolve_track(query=None)`
     - [ ] Add `track resolve` CLI subcommand with `--query` and `--json` options
     - [ ] Run pytest suite and confirm Phase 1 tests pass (Green Phase)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f0d39b8]
 
 ## Phase 2: Atomic Task Finish Seam (TDD Red -> Green)
 - [ ] Task: Write failing unit tests for track finish seam
