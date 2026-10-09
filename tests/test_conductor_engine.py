@@ -414,6 +414,50 @@ class TestConductorEngine(unittest.TestCase):
             self.assertFalse(res["valid"])
             self.assertTrue(any(g["sha"].startswith("deadbeef") for g in res["ghost_commits"]))
 
+    def test_track_resolve_seam(self):
+        """Test track resolve seam: exact match, substring match, ambiguous candidates, and incomplete fallback."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            script_path = str(REPO_ROOT / "scripts" / "conductor_engine.py")
+
+            conductor_engine.init_track("feat_auth_20261009", "feature", "User Authentication", root_dir=tmpdir)
+            conductor_engine.init_track("feat_audio_20261009", "feature", "Audio Streaming", root_dir=tmpdir)
+            conductor_engine.init_track("bug_fix_ui_20261009", "bug", "UI Bug Fix", root_dir=tmpdir)
+
+            # Complete feat_auth
+            conductor_engine.complete_track("feat_auth_20261009", root_dir=tmpdir)
+
+            repo = conductor_engine.TrackRepository(root_dir=tmpdir)
+
+            # 1. Exact match by track_id
+            resolved = repo.resolve_track("feat_auth_20261009")
+            self.assertEqual(resolved["status"], "matched")
+            self.assertEqual(resolved["track"]["track_id"], "feat_auth_20261009")
+
+            # 2. Substring match on title or id
+            resolved = repo.resolve_track("ui bug")
+            self.assertEqual(resolved["status"], "matched")
+            self.assertEqual(resolved["track"]["track_id"], "bug_fix_ui_20261009")
+
+            # 3. Ambiguous match ("feat" matches both auth and audio)
+            resolved = repo.resolve_track("feat")
+            self.assertEqual(resolved["status"], "ambiguous")
+            self.assertEqual(len(resolved["candidates"]), 2)
+
+            # 4. Incomplete fallback when no query provided (should pick feat_audio since feat_auth is complete)
+            resolved = repo.resolve_track()
+            self.assertEqual(resolved["status"], "matched")
+            self.assertEqual(resolved["track"]["track_id"], "feat_audio_20261009")
+
+            # 5. CLI execution of track resolve
+            res = subprocess.run(
+                [sys.executable, script_path, "track", "resolve", "--query", "audio", "--root-dir", tmpdir, "--json"],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            data = json.loads(res.stdout)
+            self.assertEqual(data["status"], "matched")
+            self.assertEqual(data["track"]["track_id"], "feat_audio_20261009")
+
 
 if __name__ == "__main__":
     unittest.main()
