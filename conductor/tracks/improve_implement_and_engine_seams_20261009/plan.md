@@ -31,10 +31,10 @@
     - [ ] Run pytest suite and confirm Phase 3 tests pass (Green Phase)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [8db9abd]
 
-## Phase 4: Skill Modernization & Handshake Verification
+## Phase 4: Skill Modernization & Handshake Verification [checkpoint: becbffe]
 - [x] Task: Refactor skills/conductor-implement/SKILL.md to consume new seams [8afc689]
     - [ ] Update track selection protocol to use `track resolve`
     - [ ] Update task loop to use `track finish`
     - [ ] Add explicit phase completion step using `track checkpoint`
     - [ ] Run full test suite `uv run pytest` and `python3 scripts/conductor_engine.py verify`
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [becbffe]
