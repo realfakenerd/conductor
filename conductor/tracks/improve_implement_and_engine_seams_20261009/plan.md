@@ -14,7 +14,7 @@
 - [x] Task: Write failing unit tests for track finish seam [a8a7637]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` verifying git note attachment and plan advance coordination
     - [ ] Run pytest suite and confirm test failures (Red Phase)
-- [ ] Task: Implement track finish seam in conductor_engine.py
+- [~] Task: Implement track finish seam in conductor_engine.py
     - [ ] Implement `finish_task(track_id, task, sha, summary, files=None, root_dir=".")`
     - [ ] Wire `track finish` CLI subcommand with `--task`, `--sha`, `--summary`, and optional `--files`
     - [ ] Run pytest suite and confirm Phase 2 tests pass (Green Phase)
