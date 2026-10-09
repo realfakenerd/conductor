@@ -225,6 +225,43 @@ class TrackRepository:
                 return t
         return None
 
+    def resolve_track(self, query=None):
+        """Resolves track target deterministically by exact ID, query search, or next incomplete track."""
+        all_tracks = self.list_tracks()
+        if not all_tracks:
+            return {"status": "none", "track": None, "candidates": []}
+
+        if query:
+            q_clean = query.strip().lower()
+            # 1. Exact ID match
+            for t in all_tracks:
+                if t["track_id"].lower() == q_clean:
+                    return {"status": "matched", "track": t, "candidates": []}
+
+            # 2. Substring match across ID and Title
+            matches = [
+                t for t in all_tracks
+                if q_clean in t["track_id"].lower() or q_clean in t["title"].lower()
+            ]
+
+            if len(matches) == 1:
+                return {"status": "matched", "track": matches[0], "candidates": []}
+            elif len(matches) > 1:
+                return {"status": "ambiguous", "track": None, "candidates": matches}
+            else:
+                return {"status": "not_found", "track": None, "candidates": []}
+
+        # No query: return first incomplete track (in_progress first, then new/pending)
+        for t in all_tracks:
+            if t["status"] == "in_progress":
+                return {"status": "matched", "track": t, "candidates": []}
+
+        for t in all_tracks:
+            if t["status"] in ("new", "pending"):
+                return {"status": "matched", "track": t, "candidates": []}
+
+        return {"status": "all_complete", "track": None, "candidates": []}
+
     def init_track(self, track_id, track_type, description):
         """Initializes workspace, metadata.json, and appends to tracks registry with rollback."""
         track_workspace = self.tracks_dir / track_id
@@ -489,6 +526,12 @@ def list_tracks(root_dir="."):
     return repo.list_tracks()
 
 
+def resolve_track(query=None, root_dir="."):
+    """Resolves track target deterministically by query or returns first incomplete track."""
+    repo = TrackRepository(root_dir=root_dir)
+    return repo.resolve_track(query=query)
+
+
 
 def parse_plan(plan_path):
     """Parses a track's plan.md into structured tasks, phases, and status metrics."""
@@ -622,6 +665,11 @@ def main():
     comp_track_p.add_argument("track_id", help="Track identifier")
     comp_track_p.add_argument("--root-dir", default=".", help="Project root directory")
 
+    resolve_p = track_subs.add_parser("resolve", help="Deterministically resolve track by query or get next incomplete track")
+    resolve_p.add_argument("--query", default=None, help="Track name or query substring")
+    resolve_p.add_argument("--json", action="store_true", help="Output as JSON")
+    resolve_p.add_argument("--root-dir", default=".", help="Project root directory")
+
     # Note subcommand
     note_p = subparsers.add_parser("note", help="Manage git notes")
     note_p.add_argument("commit_sha", help="Commit SHA")
@@ -695,6 +743,24 @@ def main():
         elif args.track_command == "complete":
             res = complete_track(args.track_id, root_dir=args.root_dir)
             print(json.dumps(res, indent=2))
+        elif args.track_command == "resolve":
+            res = resolve_track(query=args.query, root_dir=args.root_dir)
+            if args.json:
+                print(json.dumps(res, indent=2))
+            else:
+                if res["status"] == "matched":
+                    t = res["track"]
+                    print(f"Matched Track: {t['track_id']} - {t['title']} [{t['status']}]")
+                elif res["status"] == "ambiguous":
+                    print("Ambiguous matches found:")
+                    for c in res["candidates"]:
+                        print(f"- {c['track_id']}: {c['title']} [{c['status']}]")
+                elif res["status"] == "not_found":
+                    print(f"No track matching query '{args.query}' found.")
+                elif res["status"] == "all_complete":
+                    print("All registered tracks are complete.")
+                elif res["status"] == "none":
+                    print("No registered tracks available.")
     elif args.command == "note":
         ok = attach_git_note(args.commit_sha, args.task, args.summary, files=args.files)
         print(json.dumps({"success": ok}))
