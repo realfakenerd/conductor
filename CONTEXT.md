@@ -50,3 +50,11 @@ _Avoid_: "Regex task replacer", "plan script".
 The verification subsystem that cross-validates workspace structure, handshake links, track metadata parity, and git commit SHA existence across recorded task plans.
 _Avoid_: "Handshake checker", "link validator".
 
+### Phase Checkpoint Seam
+The deterministic engine operation (`track checkpoint`) that encapsulates phase verification report validation, git note creation, and abstract syntax tree mutation of `[checkpoint: <sha>]` headers in `plan.md`.
+_Avoid_: "Heading splicer", "manual note adder".
+
+### Task Finish Seam
+The composite engine operation (`track finish`) that atomically attaches a verification git note to the commit and advances the task AST to `[x]` with commit SHA in `plan.md`.
+_Avoid_: "Multi-step task completion", "manual note script".
+
