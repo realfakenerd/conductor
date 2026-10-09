@@ -476,6 +476,63 @@ class PlanDocument:
         self.raw_content = "\n".join(self.lines) + ("\n" if self.lines else "")
         return True
 
+    def checkpoint(self, phase_name, sha):
+        """Non-destructively records [checkpoint: <sha>] on the specified phase heading and completes any checkpoint task."""
+        sha_short = sha[:7]
+        clean_phase = phase_name.strip()
+        # Normalizes matching whether caller passes "Phase 1: Foo" or just "Foo"
+        header_regex = re.compile(rf"^(##\s+(?:Phase\s+\d+:?\s*)?{re.escape(clean_phase)})(?:\s*\[checkpoint:\s*[a-f0-9]+\])?(.*)$", re.IGNORECASE)
+
+        # Fallback regex if clean_phase starts with "Phase N"
+        simple_regex = None
+        if re.match(r"^Phase\s+\d+", clean_phase, re.IGNORECASE):
+            phase_num_prefix = re.match(r"^(Phase\s+\d+)", clean_phase, re.IGNORECASE).group(1)
+            simple_regex = re.compile(rf"^(##\s+{phase_num_prefix}.*?)(?:\s*\[checkpoint:\s*[a-f0-9]+\])?(.*)$", re.IGNORECASE)
+
+        updated_header = False
+        new_lines = []
+        in_target_phase = False
+
+        checkpoint_task_regex = re.compile(r"^(\s*-\s*)\[[ x~]\](\s*Task:\s*Phase Verification & Checkpoint(?: \(.*?\))?)(?:\s*\[[a-f0-9]+\])?(.*)$", re.IGNORECASE)
+
+        for line in self.lines:
+            # Check if this line is a phase header
+            m = header_regex.match(line)
+            if not m and simple_regex and not updated_header:
+                m = simple_regex.match(line)
+
+            if m:
+                base_header = m.group(1).rstrip()
+                trailing = m.group(2) or ""
+                new_line = f"{base_header} [checkpoint: {sha_short}]{trailing}"
+                new_lines.append(new_line)
+                updated_header = True
+                in_target_phase = True
+                continue
+
+            # If we hit another phase header, we left target phase
+            if line.startswith("## ") and in_target_phase:
+                in_target_phase = False
+
+            # If in target phase and this is the checkpoint task, advance it to [x] [sha]
+            if in_target_phase:
+                chk_m = checkpoint_task_regex.match(line)
+                if chk_m:
+                    indent = chk_m.group(1)
+                    task_body = chk_m.group(2)
+                    trail = chk_m.group(3) or ""
+                    new_lines.append(f"{indent}[x]{task_body} [{sha_short}]{trail}")
+                    continue
+
+            new_lines.append(line)
+
+        if not updated_header:
+            raise EngineError(f"Phase '{phase_name}' not found in plan")
+
+        self.lines = new_lines
+        self.raw_content = "\n".join(self.lines) + ("\n" if self.lines else "")
+        return True
+
     def save(self, file_path=None):
         """Saves lines back to disk."""
         target = Path(file_path) if file_path else self.file_path
@@ -514,6 +571,36 @@ def finish_task(track_id, task_name, sha, summary, files=None, root_dir="."):
         "status": "done",
         "note_attached": note_ok,
         "updated": adv_res["updated"],
+    }
+
+
+def checkpoint_phase(track_id, phase_name, sha, report_file=None, summary=None, root_dir="."):
+    """Attaches phase verification git note and records [checkpoint: <sha>] in plan.md."""
+    plan_path = Path(root_dir) / "conductor" / "tracks" / track_id / "plan.md"
+    if not plan_path.exists():
+        raise FileNotFoundError(f"Plan file not found: {plan_path}")
+
+    note_body = f"Phase Checkpoint: {phase_name}"
+    if report_file and Path(report_file).exists():
+        note_body += f"\n\n{Path(report_file).read_text(encoding='utf-8')}"
+    elif summary:
+        note_body += f"\n\nVerification Summary:\n{summary}"
+
+    cmd = ["git", "notes", "add", "-f", "-m", note_body, sha]
+    note_res = subprocess.run(cmd, cwd=root_dir, capture_output=True, text=True)
+    note_ok = note_res.returncode == 0
+
+    doc = PlanDocument.from_file(plan_path)
+    updated = doc.checkpoint(phase_name, sha=sha)
+    doc.save()
+
+    return {
+        "track_id": track_id,
+        "phase": phase_name,
+        "sha": sha,
+        "status": "checkpointed",
+        "note_attached": note_ok,
+        "updated": updated,
     }
 
 
@@ -684,6 +771,14 @@ def main():
     finish_p.add_argument("--files", default=None, help="Modified files")
     finish_p.add_argument("--root-dir", default=".", help="Project root directory")
 
+    checkpoint_p = track_subs.add_parser("checkpoint", help="Record phase verification checkpoint in plan.md and attach git note")
+    checkpoint_p.add_argument("track_id", help="Track identifier")
+    checkpoint_p.add_argument("--phase", required=True, help="Phase name")
+    checkpoint_p.add_argument("--sha", required=True, help="Commit SHA")
+    checkpoint_p.add_argument("--report", default=None, help="Path to verification report markdown file")
+    checkpoint_p.add_argument("--summary", default=None, help="Inline verification summary")
+    checkpoint_p.add_argument("--root-dir", default=".", help="Project root directory")
+
     comp_track_p = track_subs.add_parser("complete", help="Mark track complete")
     comp_track_p.add_argument("track_id", help="Track identifier")
     comp_track_p.add_argument("--root-dir", default=".", help="Project root directory")
@@ -765,6 +860,9 @@ def main():
             print(json.dumps(res, indent=2))
         elif args.track_command == "finish":
             res = finish_task(args.track_id, args.task, args.sha, args.summary, files=args.files, root_dir=args.root_dir)
+            print(json.dumps(res, indent=2))
+        elif args.track_command == "checkpoint":
+            res = checkpoint_phase(args.track_id, args.phase, args.sha, report_file=args.report, summary=args.summary, root_dir=args.root_dir)
             print(json.dumps(res, indent=2))
         elif args.track_command == "complete":
             res = complete_track(args.track_id, root_dir=args.root_dir)

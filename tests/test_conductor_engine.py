@@ -514,15 +514,17 @@ class TestConductorEngine(unittest.TestCase):
             raw_plan = (
                 "# Implementation Plan\n\n"
                 "## Phase 1: Core Setup\n"
-                "- [x] Task: Init [abc1234]\n\n"
+                "- [x] Task: Init [abc1234]\n"
+                "- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)\n\n"
                 "## Phase 2: Engine Deepening\n"
                 "- [x] Task: Deepen [def5678]\n"
+                "- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)\n"
             )
             doc = conductor_engine.PlanDocument(raw_plan)
             doc.checkpoint("Phase 1: Core Setup", sha="111122223333")
             self.assertIn("## Phase 1: Core Setup [checkpoint: 1111222]", doc.lines[2])
             # Other phase untouched
-            self.assertEqual("## Phase 2: Engine Deepening", doc.lines[5])
+            self.assertEqual("## Phase 2: Engine Deepening", doc.lines[6])
 
             # 2. Test track checkpoint CLI in git repo
             conductor_engine.init_track("t_chk", "feature", "Checkpoint test", root_dir=tmpdir)
