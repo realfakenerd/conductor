@@ -32,7 +32,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [8db9abd]
 
 ## Phase 4: Skill Modernization & Handshake Verification
-- [ ] Task: Refactor skills/conductor-implement/SKILL.md to consume new seams
+- [~] Task: Refactor skills/conductor-implement/SKILL.md to consume new seams
     - [ ] Update track selection protocol to use `track resolve`
     - [ ] Update task loop to use `track finish`
     - [ ] Add explicit phase completion step using `track checkpoint`
