@@ -24,7 +24,7 @@
 - [x] Task: Write failing unit tests for PlanDocument.checkpoint and track checkpoint CLI [9bf2397]
     - [ ] Add unit tests for phase header regex matching, SHA appending, and verification git note creation
     - [ ] Run pytest suite and confirm test failures (Red Phase)
-- [ ] Task: Implement PlanDocument.checkpoint and track checkpoint subcommand
+- [~] Task: Implement PlanDocument.checkpoint and track checkpoint subcommand
     - [ ] Implement `PlanDocument.checkpoint(phase_name, sha)`
     - [ ] Implement `checkpoint_phase(track_id, phase, sha, report_file=None, summary=None, root_dir=".")`
     - [ ] Wire `track checkpoint` CLI subcommand
