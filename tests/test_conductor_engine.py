@@ -458,6 +458,53 @@ class TestConductorEngine(unittest.TestCase):
             self.assertEqual(data["status"], "matched")
             self.assertEqual(data["track"]["track_id"], "feat_audio_20261009")
 
+    def test_track_finish_seam(self):
+        """Test track finish seam atomically attaches git note and advances plan.md task."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            script_path = str(REPO_ROOT / "scripts" / "conductor_engine.py")
+
+            conductor_engine.init_track("t_finish", "feature", "Finish test", root_dir=tmpdir)
+            plan_file = Path(tmpdir) / "conductor" / "tracks" / "t_finish" / "plan.md"
+            plan_file.write_text(
+                "# Plan\n## Phase 1\n- [~] Task: Implement finish seam\n",
+                encoding="utf-8",
+            )
+
+            # We create a git commit in the temp repo to test real git note attachment
+            subprocess.run(["git", "init"], cwd=tmpdir, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.name", "TestUser"], cwd=tmpdir, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=tmpdir, check=True)
+            (Path(tmpdir) / "file.txt").write_text("content")
+            subprocess.run(["git", "add", "file.txt"], cwd=tmpdir, check=True)
+            subprocess.run(["git", "commit", "-m", "Initial commit"], cwd=tmpdir, check=True)
+            commit_sha = subprocess.check_output(["git", "log", "-1", "--format=%H"], cwd=tmpdir, text=True).strip()
+
+            # Execute track finish via CLI
+            res = subprocess.run(
+                [
+                    sys.executable, script_path, "track", "finish", "t_finish",
+                    "--task", "Implement finish seam",
+                    "--sha", commit_sha,
+                    "--summary", "Implemented atomic finish seam",
+                    "--files", "scripts/conductor_engine.py",
+                    "--root-dir", tmpdir,
+                ],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            data = json.loads(res.stdout)
+            self.assertEqual(data["status"], "done")
+            self.assertTrue(data["note_attached"])
+
+            # Verify plan.md updated
+            plan_content = plan_file.read_text(encoding="utf-8")
+            self.assertIn(f"- [x] Task: Implement finish seam [{commit_sha[:7]}]", plan_content)
+
+            # Verify git note attached
+            note_out = subprocess.check_output(["git", "notes", "show", commit_sha], cwd=tmpdir, text=True)
+            self.assertIn("Task: Implement finish seam", note_out)
+            self.assertIn("Summary: Implemented atomic finish seam", note_out)
+
 
 if __name__ == "__main__":
     unittest.main()
