@@ -502,6 +502,21 @@ def advance_task(track_id, task_name, status, sha=None, root_dir="."):
     }
 
 
+def finish_task(track_id, task_name, sha, summary, files=None, root_dir="."):
+    """Atomically attaches verification git note and advances plan.md task to done with sha."""
+    note_ok = attach_git_note(sha, task_name, summary, files=files, root_dir=root_dir)
+    adv_res = advance_task(track_id, task_name, status="done", sha=sha, root_dir=root_dir)
+
+    return {
+        "track_id": track_id,
+        "task_name": task_name,
+        "sha": sha,
+        "status": "done",
+        "note_attached": note_ok,
+        "updated": adv_res["updated"],
+    }
+
+
 def complete_track(track_id, root_dir="."):
     """Marks track complete in tracks.md and metadata.json."""
     repo = TrackRepository(root_dir=root_dir)
@@ -600,14 +615,14 @@ def get_project_status(root_dir=".", track_id=None):
     }
 
 
-def attach_git_note(commit_sha, task_name, summary, files=None):
+def attach_git_note(commit_sha, task_name, summary, files=None, root_dir="."):
     """Attaches a formatted task verification note to a commit."""
     note_content = f"Task: {task_name}\nSummary: {summary}"
     if files:
         note_content += f"\nFiles: {files}"
 
     cmd = ["git", "notes", "add", "-f", "-m", note_content, commit_sha]
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    res = subprocess.run(cmd, cwd=root_dir, capture_output=True, text=True)
     return res.returncode == 0
 
 
@@ -660,6 +675,14 @@ def main():
     advance_p.add_argument("--status", choices=["pending", "in_progress", "done", "complete"], required=True)
     advance_p.add_argument("--sha", default=None, help="Commit SHA if done")
     advance_p.add_argument("--root-dir", default=".", help="Project root directory")
+
+    finish_p = track_subs.add_parser("finish", help="Atomically attach git note and advance task in plan.md to done")
+    finish_p.add_argument("track_id", help="Track identifier")
+    finish_p.add_argument("--task", required=True, help="Task name")
+    finish_p.add_argument("--sha", required=True, help="Commit SHA")
+    finish_p.add_argument("--summary", required=True, help="Task summary for git note")
+    finish_p.add_argument("--files", default=None, help="Modified files")
+    finish_p.add_argument("--root-dir", default=".", help="Project root directory")
 
     comp_track_p = track_subs.add_parser("complete", help="Mark track complete")
     comp_track_p.add_argument("track_id", help="Track identifier")
@@ -739,6 +762,9 @@ def main():
             print(json.dumps(res, indent=2))
         elif args.track_command == "advance":
             res = advance_task(args.track_id, args.task, args.status, sha=args.sha, root_dir=args.root_dir)
+            print(json.dumps(res, indent=2))
+        elif args.track_command == "finish":
+            res = finish_task(args.track_id, args.task, args.sha, args.summary, files=args.files, root_dir=args.root_dir)
             print(json.dumps(res, indent=2))
         elif args.track_command == "complete":
             res = complete_track(args.track_id, root_dir=args.root_dir)
