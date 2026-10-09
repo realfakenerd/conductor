@@ -10,7 +10,7 @@
     - [ ] Run pytest suite and confirm Phase 1 tests pass (Green Phase)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f0d39b8]
 
-## Phase 2: Atomic Task Finish Seam (TDD Red -> Green)
+## Phase 2: Atomic Task Finish Seam (TDD Red -> Green) [checkpoint: 7855abf]
 - [x] Task: Write failing unit tests for track finish seam [a8a7637]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` verifying git note attachment and plan advance coordination
     - [ ] Run pytest suite and confirm test failures (Red Phase)
@@ -18,7 +18,7 @@
     - [ ] Implement `finish_task(track_id, task, sha, summary, files=None, root_dir=".")`
     - [ ] Wire `track finish` CLI subcommand with `--task`, `--sha`, `--summary`, and optional `--files`
     - [ ] Run pytest suite and confirm Phase 2 tests pass (Green Phase)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [7855abf]
 
 ## Phase 3: Phase Checkpoint Seam in PlanDocument & Engine (TDD Red -> Green)
 - [ ] Task: Write failing unit tests for PlanDocument.checkpoint and track checkpoint CLI
