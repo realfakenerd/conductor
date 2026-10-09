@@ -11,7 +11,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f0d39b8]
 
 ## Phase 2: Atomic Task Finish Seam (TDD Red -> Green)
-- [~] Task: Write failing unit tests for track finish seam
+- [x] Task: Write failing unit tests for track finish seam [a8a7637]
     - [ ] Add unit tests in `tests/test_conductor_engine.py` verifying git note attachment and plan advance coordination
     - [ ] Run pytest suite and confirm test failures (Red Phase)
 - [ ] Task: Implement track finish seam in conductor_engine.py
