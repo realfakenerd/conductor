@@ -1,8 +1,8 @@
 {
   "track_id": "migrate_bun_ts_mcp_engine_20261009",
   "type": "refactor",
-  "status": "new",
+  "status": "in_progress",
   "created_at": "2026-10-09T14:20:22.903783-03:00",
-  "updated_at": "2026-10-09T14:20:22.903783-03:00",
+  "updated_at": "2026-10-09T14:23:59.261358-03:00",
   "description": "Migrate Conductor Engine to Bun, TypeScript, and Native MCP (Zero Python)"
 }

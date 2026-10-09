@@ -25,5 +25,5 @@
   *Link: [./tracks/improve_implement_and_engine_seams_20261009/index.md](./tracks/improve_implement_and_engine_seams_20261009/index.md)*
 
 ---
-- [ ] **Track: Migrate Conductor Engine to Bun, TypeScript, and Native MCP (Zero Python)**
+- [~] **Track: Migrate Conductor Engine to Bun, TypeScript, and Native MCP (Zero Python)**
   *Link: [./tracks/migrate_bun_ts_mcp_engine_20261009/index.md](./tracks/migrate_bun_ts_mcp_engine_20261009/index.md)*
