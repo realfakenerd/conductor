@@ -58,3 +58,11 @@ _Avoid_: "Heading splicer", "manual note adder".
 The composite engine operation (`track finish`) that atomically attaches a verification git note to the commit and advances the task AST to `[x]` with commit SHA in `plan.md`.
 _Avoid_: "Multi-step task completion", "manual note script".
 
+### Conductor MCP Server
+The high-performance Model Context Protocol JSON-RPC server powered by Bun and TypeScript implementing `@modelcontextprotocol/sdk` over stdio, providing typed native agent tools for all Conductor state operations.
+_Avoid_: "Plugin API", "backend script", "web server".
+
+### TypeScript Engine Core
+The modular TypeScript engine (`src/core/`) providing deterministic AST mutation, git notes integration, workspace audit, and track repository lifecycle under Bun, completely replacing Python execution scripts.
+_Avoid_: "Node backend", "Python engine", "CLI script".
+
