@@ -27,21 +27,22 @@ Verify project context using the Conductor Engine:
 
 Adhere to this sequence to identify and select the track to be implemented.
 
-1.  **Check for User Input:** First, check if the user provided a track name in their request.
+1.  **Resolve Track:**
+    -   If the user provided a track name or query in their request:
+        ```bash
+        python3 scripts/conductor_engine.py track resolve --query "<query>" --json
+        ```
+    -   If no track name was provided:
+        ```bash
+        python3 scripts/conductor_engine.py track resolve --json
+        ```
 
-2.  **Locate and Query Tracks:**
-    -   Execute `python3 scripts/conductor_engine.py list --json` to inspect registered tracks and their statuses.
-    -   **CRITICAL:** If no tracks are available, announce that no tracks are available to implement and HALT.
-
-3.  **Select Track:**
-    -   **If a track name was provided:**
-        -   Search for a match in the registered tracks list.
-        -   **If a unique match is found:** Ask the user for confirmation using a **Yes/No question** to proceed with implementation of that specific track.
-        -   **If no match or ambiguous:** Ask the user to clarify by presenting a **multiple-choice** list of available incomplete tracks to select from.
-    -   **If no track name was provided:**
-        -   **Identify Next Track:** Find the first incomplete track from the query result.
-        -   **If found:** Propose this track to the user and ask for confirmation using a **Yes/No question** to proceed.
-        -   **If not found:** Announce that all tracks are complete and HALT.
+2.  **Handle Resolution Status:**
+    -   **`matched`:** Unique track identified. Ask the user for confirmation using a **Yes/No question** to proceed with implementation of `<track_id>` (`<title>`).
+    -   **`ambiguous`:** Present a **multiple-choice** list of returned candidates for the user to select.
+    -   **`not_found`:** Announce no track matched the query and list available incomplete tracks.
+    -   **`all_complete`:** Announce all tracks are complete and HALT.
+    -   **`none`:** Announce no tracks are registered and HALT.
 
 ---
 
@@ -56,15 +57,13 @@ Adhere to this sequence to execute the selected track.
         ```bash
         python3 scripts/conductor_engine.py track start <track_id>
         ```
-    -   Stage the files and commit: `chore(conductor): Mark track '<track_description>' as in progress`.
+    -   Stage files and commit: `chore(conductor): Mark track '<track_description>' as in progress`.
 
 3.  **Load Track Context:**
-    -   Identify the track folder from the tracks file to get the `<track_id>`.
-    -   Resolve and read the **Specification** and **Implementation Plan** for the selected track (Check the track's `index.md` for links, or use default paths).
-    -   Resolve and read the **Workflow** document (Check `conductor/index.md` for the link, or use default path).
+    -   Resolve and read the **Specification** and **Implementation Plan** for the selected track (`conductor/tracks/<track_id>/spec.md` and `plan.md`).
+    -   Resolve and read the **Workflow** document (`conductor/workflow.md`).
     -   If you fail to read any of these files, halt and inform the user.
-    -   Check for installed skills in `.agents/skills/` and `~/.agents/extensions/conductor/skills/`.
-    -   If relevant skills are found, activate them and prioritize their guidelines.
+    -   Check for installed skills in `.agents/skills/` and `~/.agents/extensions/conductor/skills/`. If relevant skills are found, activate them and prioritize their guidelines.
 
 4.  **Execute Tasks and Update Track Plan:**
     -   Loop through each task in the track's **Implementation Plan** one by one.
@@ -74,18 +73,24 @@ Adhere to this sequence to execute the selected track.
         ```
         Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as in progress`.
     -   **Implement & Test:** Follow the **Workflow** file (Red-Green-Refactor TDD).
-    -   **Commit Code:** Commit implementation changes and obtain the `<commit_sha>`.
-    -   **Attach Git Note:** Execute the engine to attach the verification note:
+    -   **Commit Code Changes:** Commit implementation changes and obtain the `<commit_sha>`.
+    -   **Finish Task Atomically:** Execute the engine's `track finish` seam to atomically attach the verification git note and advance the task to done in `plan.md`:
         ```bash
-        python3 scripts/conductor_engine.py note <commit_sha> --task "<task_name>" --summary "<summary>" --files "<files>"
-        ```
-    -   **Complete Task in Plan:** Execute the engine to record the SHA and mark complete:
-        ```bash
-        python3 scripts/conductor_engine.py track advance <track_id> --task "<task_name>" --status done --sha <commit_sha>
+        python3 scripts/conductor_engine.py track finish <track_id> --task "<task_name>" --sha <commit_sha> --summary "<summary>" --files "<files>"
         ```
         Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as complete`.
 
-5.  **Finalize Track:**
+5.  **Phase Verification & Checkpoint Protocol:**
+    -   When a completed task concludes a Phase in `plan.md`:
+    -   Run full automated test suite to verify the phase.
+    -   Present actionable manual verification plan to the user and obtain confirmation.
+    -   Execute the engine's `track checkpoint` seam to record the phase checkpoint and attach the auditable verification git note:
+        ```bash
+        python3 scripts/conductor_engine.py track checkpoint <track_id> --phase "<phase_name>" --sha <last_commit_sha> --summary "<verification_summary>"
+        ```
+        Stage `plan.md` and commit: `conductor(plan): Mark phase '<phase_name>' as complete`.
+
+6.  **Finalize Track:**
     -   After all tasks are completed, execute the engine to mark the track complete:
         ```bash
         python3 scripts/conductor_engine.py track complete <track_id>
