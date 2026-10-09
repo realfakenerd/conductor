@@ -20,7 +20,7 @@
     - [ ] Run pytest suite and confirm Phase 2 tests pass (Green Phase)
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [7855abf]
 
-## Phase 3: Phase Checkpoint Seam in PlanDocument & Engine (TDD Red -> Green)
+## Phase 3: Phase Checkpoint Seam in PlanDocument & Engine [checkpoint: 8db9abd] (TDD Red -> Green)
 - [x] Task: Write failing unit tests for PlanDocument.checkpoint and track checkpoint CLI [9bf2397]
     - [ ] Add unit tests for phase header regex matching, SHA appending, and verification git note creation
     - [ ] Run pytest suite and confirm test failures (Red Phase)
@@ -29,7 +29,7 @@
     - [ ] Implement `checkpoint_phase(track_id, phase, sha, report_file=None, summary=None, root_dir=".")`
     - [ ] Wire `track checkpoint` CLI subcommand
     - [ ] Run pytest suite and confirm Phase 3 tests pass (Green Phase)
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [8db9abd]
 
 ## Phase 4: Skill Modernization & Handshake Verification
 - [ ] Task: Refactor skills/conductor-implement/SKILL.md to consume new seams
