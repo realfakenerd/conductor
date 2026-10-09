@@ -505,6 +505,60 @@ class TestConductorEngine(unittest.TestCase):
             self.assertIn("Task: Implement finish seam", note_out)
             self.assertIn("Summary: Implemented atomic finish seam", note_out)
 
+    def test_phase_checkpoint_seam(self):
+        """Test PlanDocument.checkpoint AST method and track checkpoint CLI subcommand."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            script_path = str(REPO_ROOT / "scripts" / "conductor_engine.py")
+
+            # 1. Test PlanDocument.checkpoint unit behavior
+            raw_plan = (
+                "# Implementation Plan\n\n"
+                "## Phase 1: Core Setup\n"
+                "- [x] Task: Init [abc1234]\n\n"
+                "## Phase 2: Engine Deepening\n"
+                "- [x] Task: Deepen [def5678]\n"
+            )
+            doc = conductor_engine.PlanDocument(raw_plan)
+            doc.checkpoint("Phase 1: Core Setup", sha="111122223333")
+            self.assertIn("## Phase 1: Core Setup [checkpoint: 1111222]", doc.lines[2])
+            # Other phase untouched
+            self.assertEqual("## Phase 2: Engine Deepening", doc.lines[5])
+
+            # 2. Test track checkpoint CLI in git repo
+            conductor_engine.init_track("t_chk", "feature", "Checkpoint test", root_dir=tmpdir)
+            track_plan = Path(tmpdir) / "conductor" / "tracks" / "t_chk" / "plan.md"
+            track_plan.write_text(raw_plan, encoding="utf-8")
+
+            subprocess.run(["git", "init"], cwd=tmpdir, check=True, capture_output=True)
+            subprocess.run(["git", "config", "user.name", "TestUser"], cwd=tmpdir, check=True)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=tmpdir, check=True)
+            (Path(tmpdir) / "file.txt").write_text("chk content")
+            subprocess.run(["git", "add", "file.txt"], cwd=tmpdir, check=True)
+            subprocess.run(["git", "commit", "-m", "Phase 1 commit"], cwd=tmpdir, check=True)
+            commit_sha = subprocess.check_output(["git", "log", "-1", "--format=%H"], cwd=tmpdir, text=True).strip()
+
+            res = subprocess.run(
+                [
+                    sys.executable, script_path, "track", "checkpoint", "t_chk",
+                    "--phase", "Phase 1: Core Setup",
+                    "--sha", commit_sha,
+                    "--summary", "All tests green and verified",
+                    "--root-dir", tmpdir,
+                ],
+                capture_output=True, text=True,
+            )
+            self.assertEqual(res.returncode, 0)
+            data = json.loads(res.stdout)
+            self.assertEqual(data["status"], "checkpointed")
+            self.assertTrue(data["note_attached"])
+
+            updated_content = track_plan.read_text(encoding="utf-8")
+            self.assertIn(f"## Phase 1: Core Setup [checkpoint: {commit_sha[:7]}]", updated_content)
+            self.assertIn(f"- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [{commit_sha[:7]}]", updated_content)
+
+            note_out = subprocess.check_output(["git", "notes", "show", commit_sha], cwd=tmpdir, text=True)
+            self.assertIn("Phase Checkpoint: Phase 1: Core Setup", note_out)
+
 
 if __name__ == "__main__":
     unittest.main()
