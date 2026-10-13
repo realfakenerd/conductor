@@ -29,5 +29,5 @@
   *Link: [./tracks/migrate_bun_ts_mcp_engine_20261009/index.md](./tracks/migrate_bun_ts_mcp_engine_20261009/index.md)*
 
 ---
-- [ ] **Track: Add conductor-discover skill for codebase feature exploration and ideation**
+- [x] **Track: Add conductor-discover skill for codebase feature exploration and ideation**
   *Link: [./tracks/feature_conductor_discover_20261013/index.md](./tracks/feature_conductor_discover_20261013/index.md)*
