@@ -26,7 +26,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [31b021d]
 
 ## Phase 3: Native Model Context Protocol (MCP) Server (TDD Red -> Green)
-- [ ] Task: Write failing unit tests for Conductor MCP Server (Red Phase)
+- [~] Task: Write failing unit tests for Conductor MCP Server (Red Phase)
     - [ ] Create `tests/mcp_server.test.ts` testing in-memory MCP Client/Server tool listing and tool calls
     - [ ] Run `bun test tests/mcp_server.test.ts` and confirm test failures
 - [ ] Task: Implement `src/mcp/index.ts` with @modelcontextprotocol/sdk (Green Phase)
@@ -46,5 +46,6 @@
     - [ ] Update `conductor/tech-stack.md` and `conductor/workflow.md` to Bun and TypeScript
     - [ ] Run `bun test` and `bun run src/cli/index.ts verify` to ensure clean handshake
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
