@@ -1,4 +1,10 @@
 {
   "name": "conductor",
-  "description": "Conductor Agent Skills"
+  "description": "Conductor Agent Skills & MCP Server",
+  "mcpServers": {
+    "conductor": {
+      "command": "bun",
+      "args": ["run", "${pluginDir}/src/mcp/index.ts"]
+    }
+  }
 }
