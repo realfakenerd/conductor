@@ -33,7 +33,7 @@ Example (for a new project):
 
 ### 1.2 Audit Artifacts & Resumption Check
 
-Run the automated directory resumption script: `python3 scripts/conductor_engine.py resume` (or `python3 scripts/resume.py`)
+Run the automated directory resumption script: `bun run conductor resume` 
 
 Read the returned JSON object from `stdout`. **Do NOT mention the script name or path to the user.**
 

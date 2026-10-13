@@ -17,7 +17,7 @@ Adhere strictly to the invariant operational standards, tool validation gates, p
 
 Verify project context using the Conductor Engine:
 
-1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+1.  **Verify Handshake:** Execute `bun run conductor verify`.
     -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
     -   **If Valid:** Proceed directly to Track Selection.
 
@@ -30,11 +30,11 @@ Adhere to this sequence to identify and select the track to be implemented.
 1.  **Resolve Track:**
     -   If the user provided a track name or query in their request:
         ```bash
-        python3 scripts/conductor_engine.py track resolve --query "<query>" --json
+        bun run conductor track resolve --query "<query>" --json
         ```
     -   If no track name was provided:
         ```bash
-        python3 scripts/conductor_engine.py track resolve --json
+        bun run conductor track resolve --json
         ```
 
 2.  **Handle Resolution Status:**
@@ -55,7 +55,7 @@ Adhere to this sequence to execute the selected track.
 2.  **Update Status to 'In Progress':**
     -   Before beginning any work, advance the track to in-progress using the engine:
         ```bash
-        python3 scripts/conductor_engine.py track start <track_id>
+        bun run conductor track start <track_id>
         ```
     -   Stage files and commit: `chore(conductor): Mark track '<track_description>' as in progress`.
 
@@ -69,14 +69,14 @@ Adhere to this sequence to execute the selected track.
     -   Loop through each task in the track's **Implementation Plan** one by one.
     -   **Start Task:** Execute the engine to advance the task to in-progress:
         ```bash
-        python3 scripts/conductor_engine.py track advance <track_id> --task "<task_name>" --status in_progress
+        bun run conductor track advance <track_id> --task "<task_name>" --status in_progress
         ```
         Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as in progress`.
     -   **Implement & Test:** Follow the **Workflow** file (Red-Green-Refactor TDD).
     -   **Commit Code Changes:** Commit implementation changes and obtain the `<commit_sha>`.
     -   **Finish Task Atomically:** Execute the engine's `track finish` seam to atomically attach the verification git note and advance the task to done in `plan.md`:
         ```bash
-        python3 scripts/conductor_engine.py track finish <track_id> --task "<task_name>" --sha <commit_sha> --summary "<summary>" --files "<files>"
+        bun run conductor track finish <track_id> --task "<task_name>" --sha <commit_sha> --summary "<summary>" --files "<files>"
         ```
         Stage `plan.md` and commit: `conductor(plan): Mark task '<task_name>' as complete`.
 
@@ -86,14 +86,14 @@ Adhere to this sequence to execute the selected track.
     -   Present actionable manual verification plan to the user and obtain confirmation.
     -   Execute the engine's `track checkpoint` seam to record the phase checkpoint and attach the auditable verification git note:
         ```bash
-        python3 scripts/conductor_engine.py track checkpoint <track_id> --phase "<phase_name>" --sha <last_commit_sha> --summary "<verification_summary>"
+        bun run conductor track checkpoint <track_id> --phase "<phase_name>" --sha <last_commit_sha> --summary "<verification_summary>"
         ```
         Stage `plan.md` and commit: `conductor(plan): Mark phase '<phase_name>' as complete`.
 
 6.  **Finalize Track:**
     -   After all tasks are completed, execute the engine to mark the track complete:
         ```bash
-        python3 scripts/conductor_engine.py track complete <track_id>
+        bun run conductor track complete <track_id>
         ```
     -   Stage registry and metadata: `git add conductor/tracks.md conductor/tracks/<track_id>/metadata.json`
     -   Commit: `chore(conductor): Mark track '<track_description>' as complete`.

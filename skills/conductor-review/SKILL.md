@@ -25,7 +25,7 @@ Adhere strictly to the invariant operational standards, tool validation gates, p
 
 Verify project context using the Conductor Engine:
 
-1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+1.  **Verify Handshake:** Execute `bun run conductor verify`.
     -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
     -   **If Valid:** Proceed directly to Review Protocol.
 
@@ -41,7 +41,7 @@ Verify project context using the Conductor Engine:
     -   If arguments were provided, use them as the target scope.
 
 2.  **Auto-Detect Scope:**
-    -   If no input was provided, execute `python3 scripts/conductor_engine.py status --json` or `python3 scripts/conductor_engine.py list --json`.
+    -   If no input was provided, execute `bun run conductor status --json` or `bun run conductor list --json`.
     -   Check if an active track is marked as `in_progress`.
     -   **If one exists:** Ask the user for confirmation using a **Yes/No question** to proceed with reviewing that specific track.
     -   **If no track is in progress, or the user declines:** Ask the user to clarify what they would like to review by asking an **open question**, suggesting options like entering a specific track name or 'current' for uncommitted changes.

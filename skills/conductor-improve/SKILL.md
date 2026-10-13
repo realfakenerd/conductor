@@ -20,7 +20,7 @@ Whenever rendering choices or gathering user decisions, you MUST strictly use th
 
 Before scanning, verify project context and ground in domain language:
 
-1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`. If invalid or missing, pause and offer to run `conductor-setup`.
+1.  **Verify Handshake:** Execute `bun run conductor verify`. If invalid or missing, pause and offer to run `conductor-setup`.
 2.  **Domain Language & ADRs:**
     -   Read `CONTEXT.md` (or `GLOSSARY.md`) to adopt the project's canonical domain language.
     -   Read all existing ADRs in `docs/adr/`. Understand past decisions to avoid re-litigating settled boundaries without strong friction evidence.
@@ -112,7 +112,7 @@ Transform the settled design into an executable Conductor track:
     -   Generate a track ID: `improve_<candidate_slug>_YYYYMMDD`.
     -   Execute:
         ```bash
-        python3 scripts/conductor_engine.py track init <track_id> --type refactor --description "<candidate_title>"
+        bun run conductor track init <track_id> --type refactor --description "<candidate_title>"
         ```
 3.  **Write Track Documents:**
     -   Write `spec.md` with overview, functional requirements, before/after architecture, and acceptance criteria.

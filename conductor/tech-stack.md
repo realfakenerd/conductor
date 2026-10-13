@@ -6,10 +6,11 @@
 - **Agent Rule Engine**: Markdown context rules (`rules/*.md`)
 
 ## Scripting & Automation
-- **Runtime**: Python 3 (standard library preferred for zero-dependency execution)
-- **Shell**: Bash / POSIX-compliant shell commands
+- **Runtime**: Bun 1.x (native TypeScript execution, sub-15ms startup)
+- **Language**: TypeScript (strict mode, zero build step required under Bun)
+- **Protocol**: Model Context Protocol (MCP) over stdio (`@modelcontextprotocol/sdk`, Zod schemas)
 
 ## Tooling & Host Environments
-- **Supported Hosts**: Antigravity CLI & IDE (`agy`), Claude Code
-- **Version Control**: Git (atomic commits, semantic prefixes)
-- **Validation**: Python compilation (`py_compile`), Markdown formatting, `pytest` / `unittest` test suite
+- **Supported Hosts**: Antigravity CLI & IDE (`agy`), Claude Code, Cursor, JetBrains
+- **Version Control**: Git (atomic commits, semantic prefixes, Git Notes verification)
+- **Validation**: `bun test`, TypeScript compiler check (`bun --bun tsc --noEmit`), Markdown formatting

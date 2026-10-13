@@ -19,7 +19,7 @@ Adhere strictly to the invariant operational standards, tool validation gates, p
 
 Verify project context using the Conductor Engine:
 
-1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+1.  **Verify Handshake:** Execute `bun run conductor verify`.
     -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
     -   **If Valid:** Proceed directly to Interactive Target Selection.
 
@@ -42,7 +42,7 @@ Verify project context using the Conductor Engine:
         3.  If "yes", establish this as the `target_intent` and proceed to Phase 2. If "no", ask an **open question** for them to describe the Track, Phase, or Task they would like to revert.
 
     *   **PATH B: Guided Selection Menu**
-        1.  **Identify Revert Candidates:** Query the engine using `python3 scripts/conductor_engine.py status --json` and `python3 scripts/conductor_engine.py list --json`.
+        1.  **Identify Revert Candidates:** Query the engine using `bun run conductor status --json` and `bun run conductor list --json`.
             *   **Prioritize In-Progress:** First, find any Tracks or Tasks marked as in-progress (`[~]`).
             *   **Fallback to Completed:** If and only if NO in-progress items are found, find the most recently completed Tasks and Phases (`[x]`).
         2.  **Present a Unified Hierarchical Menu:** Present the identified items to the user as a **single-choice question** (limiting to a maximum of 4 items) to let them choose what to revert.

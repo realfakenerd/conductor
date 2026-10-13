@@ -17,7 +17,7 @@ Adhere strictly to the invariant operational standards, tool validation gates, p
 
 Verify project context using the Conductor Engine:
 
-1.  **Verify Handshake:** Execute `python3 scripts/conductor_engine.py verify`.
+1.  **Verify Handshake:** Execute `bun run conductor verify`.
     -   **If Invalid or Missing:** Announce the missing file or broken links, and ask the user using a **Yes/No question** if they would like to run setup to initialize or repair the environment.
     -   **If Valid:** Proceed directly to Track Initialization.
 
@@ -133,7 +133,7 @@ Transform track specification from flat Q&A into a relentless, context-grounded 
     -   Generate a unique Track ID (e.g., `shortname_YYYYMMDD`).
     -   Execute the engine command to scaffold the workspace, metadata, registry entry, and handshake:
         ```bash
-        python3 scripts/conductor_engine.py track init <track_id> --type <type> --description "<track_description>"
+        bun run conductor track init <track_id> --type <type> --description "<track_description>"
         ```
 
 3.  **Write Track Documents:**
