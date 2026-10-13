@@ -120,6 +120,14 @@ Skills for inspecting codebase structure, detecting architectural friction, and 
 -   **Detection Signals**:
     -   **Keywords**: `architecture`, `refactor`, `deep module`, `seam`, `improve codebase`, `shallow module`, `locality`
 
+### conductor-discover
+
+-   **Description**: Explores codebase across multiple analytical lenses, formulates high-impact feature opportunities, presents an interactive visual Value-Effort HTML report, and auto-scaffolds Conductor feature tracks.
+-   **URL**: https://raw.githubusercontent.com/gemini-cli-extensions/conductor/main/skills/conductor-discover/
+-   **Party**: 1p
+-   **Detection Signals**:
+    -   **Keywords**: `discover`, `ideate`, `explore features`, `feature suggestions`, `roadmap`, `propose features`, `value effort`
+
 ## Agent Efficiency & Terse Communication Skills
 
 Skills for minimizing token consumption, stripping conversational ceremony, and compressing agent outputs.
