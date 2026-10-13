@@ -29,7 +29,7 @@
 - [x] Task: Write failing unit tests for Conductor MCP Server (Red Phase) [62531f4]
     - [ ] Create `tests/mcp_server.test.ts` testing in-memory MCP Client/Server tool listing and tool calls
     - [ ] Run `bun test tests/mcp_server.test.ts` and confirm test failures
-- [~] Task: Implement `src/mcp/index.ts` with @modelcontextprotocol/sdk (Green Phase)
+- [x] Task: Implement `src/mcp/index.ts` with @modelcontextprotocol/sdk (Green Phase) [eda26ff]
     - [ ] Implement MCP Server with Zod schemas for all 12 Conductor tools
     - [ ] Add stdio transport bootstrap
     - [ ] Register MCP server in `plugin.json`
@@ -46,6 +46,7 @@
     - [ ] Update `conductor/tech-stack.md` and `conductor/workflow.md` to Bun and TypeScript
     - [ ] Run `bun test` and `bun run src/cli/index.ts verify` to ensure clean handshake
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
