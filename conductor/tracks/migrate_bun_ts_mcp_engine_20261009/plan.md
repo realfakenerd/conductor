@@ -16,7 +16,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f2249b0]
 
 ## Phase 2: Dual-Entry CLI Runner in TypeScript (TDD Red -> Green)
-- [~] Task: Write failing unit tests for Bun CLI runner (Red Phase)
+- [x] Task: Write failing unit tests for Bun CLI runner (Red Phase) [b7e257c]
     - [ ] Create `tests/cli.test.ts` verifying all CLI commands (`verify`, `status`, `list`, `resume`, `track init/start/advance/finish/checkpoint/complete/resolve`)
     - [ ] Run `bun test tests/cli.test.ts` and confirm test failures
 - [ ] Task: Implement `src/cli/index.ts` and wire package.json binary (Green Phase)
