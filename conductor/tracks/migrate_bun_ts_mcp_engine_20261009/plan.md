@@ -25,7 +25,7 @@
     - [ ] Run `bun test tests/cli.test.ts` and confirm all tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [31b021d]
 
-## Phase 3: Native Model Context Protocol (MCP) Server (TDD Red -> Green)
+## Phase 3: Native Model Context Protocol (MCP) Server [checkpoint: 078ff88] (TDD Red -> Green)
 - [x] Task: Write failing unit tests for Conductor MCP Server (Red Phase) [62531f4]
     - [ ] Create `tests/mcp_server.test.ts` testing in-memory MCP Client/Server tool listing and tool calls
     - [ ] Run `bun test tests/mcp_server.test.ts` and confirm test failures
@@ -34,7 +34,7 @@
     - [ ] Add stdio transport bootstrap
     - [ ] Register MCP server in `plugin.json`
     - [ ] Run `bun test tests/mcp_server.test.ts` and confirm all tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [078ff88]
 
 ## Phase 4: Zero Python Elimination & Skill Modernization
 - [ ] Task: Delete all Python scripts, tests, virtualenv, and configurations
@@ -46,6 +46,7 @@
     - [ ] Update `conductor/tech-stack.md` and `conductor/workflow.md` to Bun and TypeScript
     - [ ] Run `bun test` and `bun run src/cli/index.ts verify` to ensure clean handshake
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
