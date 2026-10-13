@@ -5,7 +5,7 @@
     - [ ] Create `package.json` with `@modelcontextprotocol/sdk` and `zod`
     - [ ] Configure `tsconfig.json` for Bun and TypeScript strict mode
     - [ ] Run `bun install` and verify environment
-- [ ] Task: Write failing unit tests for TypeScript Engine Core (Red Phase)
+- [~] Task: Write failing unit tests for TypeScript Engine Core (Red Phase)
     - [ ] Create `tests/engine_core.test.ts` covering TrackRepository, PlanDocument AST, IntegrityAuditor, and git notes
     - [ ] Run `bun test` and confirm expected test failures
 - [ ] Task: Implement TypeScript Engine Core in `src/core/` (Green Phase)
