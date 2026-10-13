@@ -1,6 +1,6 @@
 # Implementation Plan: Migrate Conductor Engine to Bun, TypeScript, and Native MCP (Zero Python)
 
-## Phase 1: Bun Project Setup & Core Types (TDD Red -> Green)
+## Phase 1: Bun Project Setup & Core Types [checkpoint: f2249b0] (TDD Red -> Green)
 - [x] Task: Initialize package.json, tsconfig.json, and install Bun dependencies [53512d4]
     - [ ] Create `package.json` with `@modelcontextprotocol/sdk` and `zod`
     - [ ] Configure `tsconfig.json` for Bun and TypeScript strict mode
@@ -13,7 +13,7 @@
     - [ ] Implement `src/core/plan_document.ts` with AST mutation, `advance`, `checkpoint`, and metrics
     - [ ] Implement `src/core/integrity_auditor.ts` and `src/core/git_notes.ts`
     - [ ] Run `bun test` and confirm all Phase 1 tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f2249b0]
 
 ## Phase 2: Dual-Entry CLI Runner in TypeScript (TDD Red -> Green)
 - [ ] Task: Write failing unit tests for Bun CLI runner (Red Phase)
