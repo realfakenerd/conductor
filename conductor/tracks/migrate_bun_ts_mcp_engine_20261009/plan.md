@@ -15,7 +15,7 @@
     - [ ] Run `bun test` and confirm all Phase 1 tests pass
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [f2249b0]
 
-## Phase 2: Dual-Entry CLI Runner in TypeScript (TDD Red -> Green)
+## Phase 2: Dual-Entry CLI Runner in TypeScript [checkpoint: 31b021d] (TDD Red -> Green)
 - [x] Task: Write failing unit tests for Bun CLI runner (Red Phase) [b7e257c]
     - [ ] Create `tests/cli.test.ts` verifying all CLI commands (`verify`, `status`, `list`, `resume`, `track init/start/advance/finish/checkpoint/complete/resolve`)
     - [ ] Run `bun test tests/cli.test.ts` and confirm test failures
@@ -23,7 +23,7 @@
     - [ ] Implement command parser in `src/cli/index.ts`
     - [ ] Add `"bin": { "conductor": "./src/cli/index.ts" }` and script shortcuts in `package.json`
     - [ ] Run `bun test tests/cli.test.ts` and confirm all tests pass
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [31b021d]
 
 ## Phase 3: Native Model Context Protocol (MCP) Server (TDD Red -> Green)
 - [ ] Task: Write failing unit tests for Conductor MCP Server (Red Phase)
@@ -46,4 +46,5 @@
     - [ ] Update `conductor/tech-stack.md` and `conductor/workflow.md` to Bun and TypeScript
     - [ ] Run `bun test` and `bun run src/cli/index.ts verify` to ensure clean handshake
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
