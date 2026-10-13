@@ -9,6 +9,7 @@ describe("Skills and Manifests Integrity", () => {
   it("should have valid SKILL.md frontmatter for all conductor skills", () => {
     const skills = readdirSync(skillsDir);
     expect(skills.length).toBeGreaterThan(0);
+    expect(skills).toContain("conductor-discover");
 
     for (const skill of skills) {
       const skillPath = join(skillsDir, skill, "SKILL.md");
