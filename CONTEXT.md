@@ -66,3 +66,11 @@ _Avoid_: "Plugin API", "backend script", "web server".
 The modular TypeScript engine (`src/core/`) providing deterministic AST mutation, git notes integration, workspace audit, and track repository lifecycle under Bun, completely replacing Python execution scripts.
 _Avoid_: "Node backend", "Python engine", "CLI script".
 
+### Feature Discovery
+The forward-looking ideation and capability exploration workflow (`conductor-discover`) that analyzes product vision, existing tracks, tech stack leverage, and ecosystem neighbors to formulate grounded, high-leverage feature candidates.
+_Avoid_: "Brainstorm session", "feature wish list", "backlog grooming".
+
+### Value-Effort Quadrant
+The structured evaluation matrix used during feature discovery to rank candidates across user impact, strategic alignment, and implementation complexity (Quick Wins, High-Value Bets, Tactical Fill-ins, De-prioritized).
+_Avoid_: "Pros and cons list", "gut feel ranking".
+
