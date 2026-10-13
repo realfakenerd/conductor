@@ -19,7 +19,7 @@
 - [x] Task: Write failing unit tests for Bun CLI runner (Red Phase) [b7e257c]
     - [ ] Create `tests/cli.test.ts` verifying all CLI commands (`verify`, `status`, `list`, `resume`, `track init/start/advance/finish/checkpoint/complete/resolve`)
     - [ ] Run `bun test tests/cli.test.ts` and confirm test failures
-- [ ] Task: Implement `src/cli/index.ts` and wire package.json binary (Green Phase)
+- [~] Task: Implement `src/cli/index.ts` and wire package.json binary (Green Phase)
     - [ ] Implement command parser in `src/cli/index.ts`
     - [ ] Add `"bin": { "conductor": "./src/cli/index.ts" }` and script shortcuts in `package.json`
     - [ ] Run `bun test tests/cli.test.ts` and confirm all tests pass
