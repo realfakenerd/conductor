@@ -8,7 +8,7 @@
 - [x] Task: Write failing unit tests for TypeScript Engine Core (Red Phase) [efb789e]
     - [ ] Create `tests/engine_core.test.ts` covering TrackRepository, PlanDocument AST, IntegrityAuditor, and git notes
     - [ ] Run `bun test` and confirm expected test failures
-- [ ] Task: Implement TypeScript Engine Core in `src/core/` (Green Phase)
+- [~] Task: Implement TypeScript Engine Core in `src/core/` (Green Phase)
     - [ ] Implement `src/core/track_repository.ts` with atomic dual-writes and rollback
     - [ ] Implement `src/core/plan_document.ts` with AST mutation, `advance`, `checkpoint`, and metrics
     - [ ] Implement `src/core/integrity_auditor.ts` and `src/core/git_notes.ts`
