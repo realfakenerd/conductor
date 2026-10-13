@@ -41,11 +41,12 @@
     - [ ] Remove `scripts/conductor_engine.py`, `scripts/resume.py`
     - [ ] Remove `tests/*.py`, `pyproject.toml`, `uv.lock`, `.venv`, and `.pytest_cache`
     - [ ] Verify zero `.py` files remain in repository
-- [~] Task: Modernize all skills and project documentation
+- [x] Task: Modernize all skills and project documentation [d165afa]
     - [ ] Update `skills/*/SKILL.md` to instruct agents to call native Conductor MCP tools first (with Bun CLI fallback)
     - [ ] Update `conductor/tech-stack.md` and `conductor/workflow.md` to Bun and TypeScript
     - [ ] Run `bun test` and `bun run src/cli/index.ts verify` to ensure clean handshake
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
