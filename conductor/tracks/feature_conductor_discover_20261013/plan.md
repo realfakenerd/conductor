@@ -1,7 +1,7 @@
 # Implementation Plan: Add conductor-discover Skill for Codebase Feature Exploration and Ideation
 
 ## Phase 1: Test Suite & Skill Contract (TDD Red Phase)
-- [ ] Task: Extend `tests/skills.test.ts` to expect `conductor-discover` in skill inventory and validate its frontmatter and structure.
+- [x] Task: Extend `tests/skills.test.ts` to expect `conductor-discover` in skill inventory and validate its frontmatter and structure.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: Implementation of conductor-discover Skill & Visual Assets
@@ -10,3 +10,5 @@
 - [ ] Task: Update `assets/catalog.md` and `conductor/product.md` to register `conductor-discover` as a 1st-party skill.
 - [ ] Task: Run `bun test` to verify all test suites pass (Green phase).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
