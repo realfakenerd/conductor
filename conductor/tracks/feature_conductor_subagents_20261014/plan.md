@@ -1,7 +1,7 @@
 # Implementation Plan: Add Conductor Subagents (Worker, Planner, Reviewer, Explorer)
 
 ## Phase 1: Test Suite & Subagents Authoring (TDD Red Phase)
-- [ ] Task: Extend `tests/skills.test.ts` to assert existence and valid structure of `agents/` and all 4 subagent files.
+- [x] Task: Extend `tests/skills.test.ts` to assert existence and valid structure of `agents/` and all 4 subagent files.
 - [ ] Task: Create `agents/conductor-planner.md` defining the Spec & Design Architect agent.
 - [ ] Task: Create `agents/conductor-worker.md` defining the TDD Implementation Runner agent.
 - [ ] Task: Create `agents/conductor-reviewer.md` defining the Principal Auditor agent.
@@ -14,3 +14,5 @@
 - [ ] Task: Run `agy plugin install .` and verify 4 agents are processed and registered.
 - [ ] Task: Run full test suite and confirm 100% pass under `bun test`.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
