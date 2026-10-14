@@ -100,5 +100,40 @@ describe("Bun CLI Runner", () => {
     const adrList = JSON.parse(adrListRes.stdout);
     expect(adrList.length).toBe(1);
     expect(adrList[0].linked_tracks).toContain("t_cli");
+
+    // 9. Agent list, sync, validate
+    mkdirSync(join(root, "agents"), { recursive: true });
+    writeFileSync(
+      join(root, "agents", "mock-agent.md"),
+      `---\nname: mock-agent\ndescription: Mock Agent\ncapabilities:\n  - read\n  - write\n---\nPrompt\n`
+    );
+
+    const agentListRes = spawnSync(
+      "bun",
+      ["run", cliPath, "agent", "list", "--root-dir", root, "--json"],
+      { encoding: "utf-8" }
+    );
+    expect(agentListRes.status).toBe(0);
+    const agentList = JSON.parse(agentListRes.stdout);
+    expect(agentList.length).toBe(1);
+    expect(agentList[0].name).toBe("mock-agent");
+
+    const agentSyncRes = spawnSync(
+      "bun",
+      ["run", cliPath, "agent", "sync", "--host", "antigravity", "--root-dir", root],
+      { encoding: "utf-8" }
+    );
+    expect(agentSyncRes.status).toBe(0);
+    const agentSync = JSON.parse(agentSyncRes.stdout);
+    expect(agentSync.synced.length).toBe(1);
+    expect(agentSync.synced[0].tools).toContain("view_file");
+
+    const agentValRes = spawnSync(
+      "bun",
+      ["run", cliPath, "agent", "validate", "--root-dir", root],
+      { encoding: "utf-8" }
+    );
+    expect(agentValRes.status).toBe(0);
+    expect(JSON.parse(agentValRes.stdout).valid).toBe(true);
   });
 });
