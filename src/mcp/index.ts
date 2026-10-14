@@ -17,6 +17,7 @@ import { determineResumption } from "../core/resume.ts";
 import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
 import { checkPreCommitGuard, installPreCommitGuard, uninstallPreCommitGuard } from "../core/guard.ts";
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
+import { ReviewAuditor } from "../core/review_auditor.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -284,6 +285,19 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             required: ["track_id"],
           },
         },
+        {
+          name: "conductor_review_verify",
+          description: "Audit track plan compliance, commit git notes parity, test execution, and diff boundaries",
+          inputSchema: {
+            type: "object",
+            properties: {
+              track_id: { type: "string", description: "Target track identifier (optional, defaults to active track)" },
+              skip_tests: { type: "boolean", description: "Skip test suite execution" },
+              test_command: { type: "string", description: "Custom test runner command" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
       ],
     };
   });
@@ -436,6 +450,15 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
 
       if (name === "conductor_worktree_remove") {
         const res = removeTrackWorktree(rootDir, a.track_id);
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_review_verify") {
+        const auditor = new ReviewAuditor(rootDir);
+        const res = auditor.audit(a.track_id || null, {
+          skipTests: Boolean(a.skip_tests),
+          testCommand: a.test_command || undefined,
+        });
         return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
       }
 

@@ -61,5 +61,17 @@ describe("Bun CLI Runner", () => {
     });
     expect(statusRes.status).toBe(0);
     expect(JSON.parse(statusRes.stdout).tracks.in_progress).toBe(1);
+
+    // 7. Review check
+    writeFileSync(join(conductorDir, "tracks", "t_cli", "plan.md"), "# Plan\n- [ ] Task: Task 1\n");
+    const reviewRes = spawnSync(
+      "bun",
+      ["run", cliPath, "review", "check", "--track", "t_cli", "--skip-tests", "--root-dir", root, "--json"],
+      { encoding: "utf-8" }
+    );
+    expect(reviewRes.status).toBe(0);
+    const reviewData = JSON.parse(reviewRes.stdout);
+    expect(reviewData.valid).toBe(true);
+    expect(reviewData.track_id).toBe("t_cli");
   });
 });

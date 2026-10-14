@@ -45,6 +45,8 @@ describe("Conductor MCP Server", () => {
     expect(toolNames).toContain("conductor_worktree_create");
     expect(toolNames).toContain("conductor_worktree_list");
     expect(toolNames).toContain("conductor_worktree_remove");
+    expect(toolNames).toContain("conductor_review_verify");
+    expect(toolNames.length).toBe(17);
 
     // 2. Call conductor_verify
     const verifyResult = (await client.callTool({
@@ -94,6 +96,22 @@ describe("Conductor MCP Server", () => {
     expect(guardResult.isError).toBeFalsy();
     const guardContent = JSON.parse(guardResult.content[0].text);
     expect(guardContent.valid).toBe(true);
+
+    // Write a minimal plan to test review verify
+    writeFileSync(join(conductorDir, "tracks", "mcp_track", "plan.md"), "# Plan\n- [ ] Task: Test task\n");
+
+    // 6. Call conductor_review_verify
+    const reviewResult = (await client.callTool({
+      name: "conductor_review_verify",
+      arguments: {
+        track_id: "mcp_track",
+        skip_tests: true,
+      },
+    })) as any;
+    expect(reviewResult.isError).toBeFalsy();
+    const reviewContent = JSON.parse(reviewResult.content[0].text);
+    expect(reviewContent.track_id).toBe("mcp_track");
+    expect(reviewContent.valid).toBe(true);
 
     await client.close();
     await server.close();

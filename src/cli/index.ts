@@ -9,6 +9,7 @@ import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
 import { installPreCommitGuard, uninstallPreCommitGuard, checkPreCommitGuard } from "../core/guard.ts";
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 import { resolveMcpResource, listMcpResources } from "../core/mcp_resources.ts";
+import { ReviewAuditor } from "../core/review_auditor.ts";
 
 function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
   const repo = new TrackRepository(rootDir);
@@ -93,7 +94,7 @@ export async function runCli(argv: string[]) {
 
   if (!command) {
     console.log("Usage: conductor <command> [options]");
-    console.log("Commands: resume, verify, status, list, track, note");
+    console.log("Commands: resume, verify, status, list, track, note, guard, worktree, resource, review");
     process.exit(0);
   }
 
@@ -383,6 +384,40 @@ export async function runCli(argv: string[]) {
     const resolved = resolveMcpResource(uri, rootDir);
     console.log(resolved.text);
     return;
+  }
+
+  if (command === "review") {
+    const sub = positional[1];
+    if (!sub || sub === "verify" || sub === "check") {
+      const trackId = (flags["track"] as string) || null;
+      const skipTests = Boolean(flags["skip-tests"]);
+      const testCmd = (flags["test-command"] as string) || undefined;
+      const auditor = new ReviewAuditor(rootDir);
+      const res = auditor.audit(trackId, { skipTests, testCommand: testCmd });
+      if (jsonMode) {
+        console.log(JSON.stringify(res, null, 2));
+      } else {
+        console.log(`Review Audit for Track: ${res.track_id}`);
+        console.log(`Status: ${res.valid ? "PASS" : "FAIL"}`);
+        console.log(`Plan Tasks: ${res.plan_compliance.completed_tasks}/${res.plan_compliance.total_tasks} completed`);
+        if (res.plan_compliance.missing_shas.length > 0) {
+          console.log(`Missing SHAs (${res.plan_compliance.missing_shas.length}):`);
+          for (const m of res.plan_compliance.missing_shas) console.log(`  - ${m}`);
+        }
+        if (res.plan_compliance.missing_notes.length > 0) {
+          console.log(`Missing Notes (${res.plan_compliance.missing_notes.length}):`);
+          for (const m of res.plan_compliance.missing_notes) console.log(`  - ${m}`);
+        }
+        console.log(`Test Suite: ${res.test_suite.passed ? "PASS" : "FAIL"} (${res.test_suite.command})`);
+        console.log(`Diff: ${res.diff_summary.files_changed.length} files changed (+${res.diff_summary.insertions}, -${res.diff_summary.deletions})`);
+      }
+      if (!res.valid) {
+        process.exit(1);
+      }
+      return;
+    }
+    console.error(`Unknown review subcommand: ${sub}. Supported: verify, check`);
+    process.exit(1);
   }
 
   console.error(`Unknown command: ${command}`);
