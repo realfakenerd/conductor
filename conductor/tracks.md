@@ -43,3 +43,11 @@
 ---
 - [x] **Track: Add specialized Conductor subagents (worker, planner, reviewer, explorer) for isolated task execution**
   *Link: [./tracks/feature_conductor_subagents_20261014/index.md](./tracks/feature_conductor_subagents_20261014/index.md)*
+
+---
+- [ ] **Track: Deterministic Review Auditor Seam (conductor review verify)**
+  *Link: [./tracks/feature_review_auditor_20261014/index.md](./tracks/feature_review_auditor_20261014/index.md)*
+
+---
+- [ ] **Track: First-Class Architecture Decision Records (ADR) Engine**
+  *Link: [./tracks/feature_adr_engine_20261014/index.md](./tracks/feature_adr_engine_20261014/index.md)*
