@@ -35,3 +35,7 @@
 ---
 - [x] **Track: Add git pre-commit verification guard and isolated worktree sandbox**
   *Link: [./tracks/feature_pre_commit_guard_worktree_20261014/index.md](./tracks/feature_pre_commit_guard_worktree_20261014/index.md)*
+
+---
+- [ ] **Track: Add native Model Context Protocol (MCP) resources and prompt templates**
+  *Link: [./tracks/feature_mcp_resources_and_prompts_20261014/index.md](./tracks/feature_mcp_resources_and_prompts_20261014/index.md)*
