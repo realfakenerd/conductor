@@ -8,9 +8,11 @@
 
 ## Phase 2: Server Integration & CLI Resource Reader
 - [x] Task: Register `resources` and `prompts` request handlers in `src/mcp/index.ts`.
-- [ ] Task: Wire `resource` subcommand into `src/cli/index.ts` for direct CLI resource inspection.
+- [x] Task: Wire `resource` subcommand into `src/cli/index.ts` for direct CLI resource inspection.
 - [ ] Task: Run full test suite and confirm all tests pass under `bun test`.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
 
 
 
