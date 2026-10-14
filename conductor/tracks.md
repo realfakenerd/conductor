@@ -41,5 +41,5 @@
   *Link: [./tracks/feature_mcp_resources_and_prompts_20261014/index.md](./tracks/feature_mcp_resources_and_prompts_20261014/index.md)*
 
 ---
-- [ ] **Track: Add specialized Conductor subagents (worker, planner, reviewer, explorer) for isolated task execution**
+- [x] **Track: Add specialized Conductor subagents (worker, planner, reviewer, explorer) for isolated task execution**
   *Link: [./tracks/feature_conductor_subagents_20261014/index.md](./tracks/feature_conductor_subagents_20261014/index.md)*
