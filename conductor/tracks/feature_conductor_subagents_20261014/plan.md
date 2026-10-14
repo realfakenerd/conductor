@@ -11,9 +11,11 @@
 
 ## Phase 2: Documentation & Plugin Installation Verification
 - [x] Task: Update `conductor/product.md` and `assets/catalog.md` to register Conductor subagents.
-- [ ] Task: Run `agy plugin install .` and verify 4 agents are processed and registered.
+- [x] Task: Run `agy plugin install .` and verify 4 agents are processed and registered.
 - [ ] Task: Run full test suite and confirm 100% pass under `bun test`.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
 
 
 
