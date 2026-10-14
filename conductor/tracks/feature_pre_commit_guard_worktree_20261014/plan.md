@@ -7,11 +7,12 @@
 - [x] Task: Run `bun test` to confirm test suite transitions from Red to Green.
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [1f97f0f]
 
-## Phase 2: CLI Commands & MCP Tools Exposure
+## Phase 2: CLI Commands & MCP Tools Exposure [checkpoint: ad40d07]
 - [x] Task: Wire `guard` (`install`, `uninstall`, `check`) and `worktree` (`create`, `list`, `remove`) into `src/cli/index.ts`.
 - [x] Task: Expose `conductor_guard_check`, `conductor_worktree_create`, `conductor_worktree_list`, and `conductor_worktree_remove` in `src/mcp/index.ts`.
 - [x] Task: Update MCP tests and verify all test suites pass.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [ad40d07]
+
 
 
 
