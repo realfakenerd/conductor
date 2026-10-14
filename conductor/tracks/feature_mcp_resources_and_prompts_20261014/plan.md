@@ -6,11 +6,12 @@
 - [x] Task: Run `bun test` to confirm test suite transitions from Red to Green.
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [bb1300e]
 
-## Phase 2: Server Integration & CLI Resource Reader
+## Phase 2: Server Integration & CLI Resource Reader [checkpoint: 69c1cea]
 - [x] Task: Register `resources` and `prompts` request handlers in `src/mcp/index.ts`.
 - [x] Task: Wire `resource` subcommand into `src/cli/index.ts` for direct CLI resource inspection.
 - [x] Task: Run full test suite and confirm all tests pass under `bun test`.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [69c1cea]
+
 
 
 
