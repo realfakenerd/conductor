@@ -3,8 +3,13 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
+  ListPromptsRequestSchema,
+  GetPromptRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
+import { listMcpResources, resolveMcpResource, listMcpPrompts, getMcpPrompt } from "../core/mcp_resources.ts";
 import { TrackRepository } from "../core/track_repository.ts";
 import { PlanDocument } from "../core/plan_document.ts";
 import { IntegrityAuditor } from "../core/integrity_auditor.ts";
@@ -76,6 +81,8 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
     {
       capabilities: {
         tools: {},
+        resources: {},
+        prompts: {},
       },
     }
   );
@@ -439,6 +446,41 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
         content: [{ type: "text", text: String(err?.message || err) }],
       };
     }
+  });
+
+  server.setRequestHandler(ListResourcesRequestSchema, async () => {
+    return {
+      resources: listMcpResources(),
+    };
+  });
+
+  server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+    const { uri } = request.params;
+    const resolved = resolveMcpResource(uri, defaultRootDir);
+    return {
+      contents: [
+        {
+          uri: resolved.uri,
+          mimeType: resolved.mimeType,
+          text: resolved.text,
+        },
+      ],
+    };
+  });
+
+  server.setRequestHandler(ListPromptsRequestSchema, async () => {
+    return {
+      prompts: listMcpPrompts(),
+    };
+  });
+
+  server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+    const { name, arguments: args } = request.params;
+    const res = getMcpPrompt(name, args || {});
+    return {
+      description: res.description,
+      messages: res.messages,
+    };
   });
 
   return server;
