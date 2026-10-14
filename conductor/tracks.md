@@ -51,3 +51,7 @@
 ---
 - [x] **Track: First-Class Architecture Decision Records (ADR) Engine**
   *Link: [./tracks/feature_adr_engine_20261014/index.md](./tracks/feature_adr_engine_20261014/index.md)*
+
+---
+- [~] **Track: Enforce Conductor subagent delegation across standards and skills**
+  *Link: [./tracks/feature_enforce_subagent_delegation_20261014/index.md](./tracks/feature_enforce_subagent_delegation_20261014/index.md)*
