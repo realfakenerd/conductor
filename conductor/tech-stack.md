@@ -8,7 +8,7 @@
 ## Scripting & Automation
 - **Runtime**: Bun 1.x (native TypeScript execution, sub-15ms startup)
 - **Language**: TypeScript (strict mode, zero build step required under Bun)
-- **Protocol**: Model Context Protocol (MCP) over stdio (`@modelcontextprotocol/sdk`, Zod schemas): 16 native tools, 4 core context resources (`conductor://`), and agent prompt templates
+- **Protocol**: Model Context Protocol (MCP) over stdio (`@modelcontextprotocol/sdk`, Zod schemas): 22 native tools, 5 core context resources (`conductor://`), and agent prompt templates
 
 ## Tooling & Host Environments
 - **Supported Hosts**: Antigravity CLI & IDE (`agy`), Claude Code, Cursor, JetBrains

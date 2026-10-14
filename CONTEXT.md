@@ -78,3 +78,8 @@ _Avoid_: "Pros and cons list", "gut feel ranking".
 The deterministic engine subsystem (`src/core/review_auditor.ts`, `conductor review check`) that validates plan task compliance, commit SHA existence, verification Git Notes attachment, test runner status, and file diff boundaries prior to completing or merging a track.
 _Avoid_: "Linter pass", "manual diff check", "review helper".
 
+### Subagent Runtime Adapter
+The deterministic engine subsystem (`src/core/agent_adapter.ts`, `conductor agent sync`, `conductor agent list`) that parses canonical subagent specifications and compiles host-native tool manifests and permissions for Antigravity, Claude Code, and standalone environments, preventing runtime tool resolution crashes.
+_Avoid_: "Agent wrapper", "prompt converter", "subagent script".
+
+
