@@ -22,6 +22,26 @@ describe("Skills and Manifests Integrity", () => {
     }
   });
 
+  it("should have valid agent markdown files in agents/", () => {
+    const agentsDir = join(root, "agents");
+    expect(existsSync(agentsDir)).toBe(true);
+
+    const expectedAgents = [
+      "conductor-planner.md",
+      "conductor-worker.md",
+      "conductor-reviewer.md",
+      "conductor-explorer.md",
+    ];
+
+    const actualAgents = readdirSync(agentsDir);
+    for (const agentFile of expectedAgents) {
+      expect(actualAgents).toContain(agentFile);
+      const content = readFileSync(join(agentsDir, agentFile), "utf-8");
+      expect(content.length).toBeGreaterThan(100);
+      expect(content).toContain("# ");
+    }
+  });
+
   it("should have valid plugin.json and mcp_config.json with MCP server declaration", () => {
     const pluginPath = join(root, "plugin.json");
     expect(existsSync(pluginPath)).toBe(true);
