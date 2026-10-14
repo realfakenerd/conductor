@@ -11,6 +11,7 @@ import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "..
 import { resolveMcpResource, listMcpResources } from "../core/mcp_resources.ts";
 import { ReviewAuditor } from "../core/review_auditor.ts";
 import { AdrRepository } from "../core/adr_repository.ts";
+import { AgentAdapter } from "../core/agent_adapter.ts";
 
 function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
   const repo = new TrackRepository(rootDir);
@@ -95,7 +96,7 @@ export async function runCli(argv: string[]) {
 
   if (!command) {
     console.log("Usage: conductor <command> [options]");
-    console.log("Commands: resume, verify, status, list, track, note, guard, worktree, resource, review, adr");
+    console.log("Commands: resume, verify, status, list, track, note, guard, worktree, resource, review, adr, agent");
     process.exit(0);
   }
 
@@ -471,6 +472,44 @@ export async function runCli(argv: string[]) {
     }
 
     console.error(`Unknown adr subcommand: ${sub}. Supported: list, init, link`);
+    process.exit(1);
+  }
+
+  if (command === "agent") {
+    const sub = positional[1] || "list";
+    const adapter = new AgentAdapter(rootDir);
+
+    if (sub === "list") {
+      const agents = adapter.listAgents();
+      if (jsonMode) {
+        console.log(JSON.stringify(agents, null, 2));
+      } else {
+        console.log(`Discovered ${agents.length} subagents:`);
+        for (const a of agents) {
+          console.log(`- ${a.name}: ${a.description} [${a.capabilities.join(", ")}]`);
+        }
+      }
+      return;
+    }
+
+    if (sub === "sync") {
+      const host = (flags["host"] as "antigravity" | "claude" | "all") || "antigravity";
+      const targetDir = flags["target-dir"] as string | undefined;
+      const res = adapter.syncAgents({ host, targetDir });
+      console.log(JSON.stringify(res, null, 2));
+      return;
+    }
+
+    if (sub === "validate") {
+      const res = adapter.validateAgents();
+      console.log(JSON.stringify(res, null, 2));
+      if (!res.valid) {
+        process.exit(1);
+      }
+      return;
+    }
+
+    console.error(`Unknown agent subcommand: ${sub}. Supported: list, sync, validate`);
     process.exit(1);
   }
 
