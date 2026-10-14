@@ -74,3 +74,7 @@ _Avoid_: "Brainstorm session", "feature wish list", "backlog grooming".
 The structured evaluation matrix used during feature discovery to rank candidates across user impact, strategic alignment, and implementation complexity (Quick Wins, High-Value Bets, Tactical Fill-ins, De-prioritized).
 _Avoid_: "Pros and cons list", "gut feel ranking".
 
+### Review Auditor Seam
+The deterministic engine subsystem (`src/core/review_auditor.ts`, `conductor review check`) that validates plan task compliance, commit SHA existence, verification Git Notes attachment, test runner status, and file diff boundaries prior to completing or merging a track.
+_Avoid_: "Linter pass", "manual diff check", "review helper".
+

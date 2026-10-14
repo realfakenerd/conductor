@@ -48,7 +48,19 @@ Verify project context using the Conductor Engine:
 
 3.  **Confirm Scope:** Ensure you and the user agree on what is being reviewed by asking for confirmation using a **Yes/No question**.
 
-### 2.2 Retrieve Context
+### 2.2 Deterministic Review Verification Seam
+Execute the Conductor review auditor engine to validate plan compliance, git note attachments, and test suite execution programmatically:
+```bash
+bun run conductor review check --track <track_id> --json
+```
+or call MCP tool `conductor_review_verify`.
+- **Validation**:
+  - `valid`: Ensure boolean is `true`.
+  - `plan_compliance`: Ensure `missing_shas` and `missing_notes` are empty.
+  - `test_suite`: Ensure `passed: true`.
+- If `valid` is `false`, note the missing SHAs or failing tests as high-severity blockers in findings.
+
+### 2.3 Retrieve Context
 1.  **Load Project Context:**
     -   Read `product-guidelines.md` and `tech-stack.md`.
     -   **CRITICAL:** Check for the existence of `conductor/code_styleguides/` directory.

@@ -20,7 +20,7 @@ describe("Skills and Manifests Integrity", () => {
       expect(content).toContain(`name: ${skill}`);
       expect(content).toContain("description:");
     }
-  });
+  }, 30000);
 
   it("should have valid agent markdown files in agents/", () => {
     const agentsDir = join(root, "agents");

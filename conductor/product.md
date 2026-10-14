@@ -12,7 +12,7 @@ Conductor transforms AI coding assistants into disciplined, spec-driven engineer
    - `conductor-setup`: Scaffolds project context, guidelines, tech stack, and workflow.
    - `conductor-new-track`: Defines structured specs and actionable task plans for features and bugs.
    - `conductor-implement`: Executes plan tasks step-by-step with strict TDD and git commit checkpoints.
-   - `conductor-review`: Conducts verification against specs and architectural standards.
+   - `conductor-review`: Conducts verification against specs and architectural standards using deterministic review auditing (`conductor review check`).
    - `conductor-status`: Inspects active tracks, phases, and task progress.
    - `conductor-revert`: Intelligently rolls back units of work (tracks, phases, tasks).
    - `conductor-improve`: Diagnoses architectural friction, generates visual HTML reports, and scaffolds refactor tracks.
