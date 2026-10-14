@@ -10,6 +10,8 @@ import { PlanDocument } from "../core/plan_document.ts";
 import { IntegrityAuditor } from "../core/integrity_auditor.ts";
 import { determineResumption } from "../core/resume.ts";
 import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
+import { checkPreCommitGuard, installPreCommitGuard, uninstallPreCommitGuard } from "../core/guard.ts";
+import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -231,6 +233,50 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             required: ["track_id", "phase", "sha"],
           },
         },
+        {
+          name: "conductor_guard_check",
+          description: "Audit repository handshake integrity and pre-commit status",
+          inputSchema: {
+            type: "object",
+            properties: {
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_worktree_create",
+          description: "Create an isolated git worktree sandbox on a dedicated track branch",
+          inputSchema: {
+            type: "object",
+            properties: {
+              track_id: { type: "string", description: "Track identifier" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+            required: ["track_id"],
+          },
+        },
+        {
+          name: "conductor_worktree_list",
+          description: "List all active Conductor track worktrees",
+          inputSchema: {
+            type: "object",
+            properties: {
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_worktree_remove",
+          description: "Safely remove an isolated track worktree and clean up git worktree metadata",
+          inputSchema: {
+            type: "object",
+            properties: {
+              track_id: { type: "string", description: "Track identifier" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+            required: ["track_id"],
+          },
+        },
       ],
     };
   });
@@ -364,6 +410,26 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             },
           ],
         };
+      }
+
+      if (name === "conductor_guard_check") {
+        const res = checkPreCommitGuard(rootDir);
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_worktree_create") {
+        const res = createTrackWorktree(rootDir, a.track_id);
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_worktree_list") {
+        const res = listTrackWorktrees(rootDir);
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_worktree_remove") {
+        const res = removeTrackWorktree(rootDir, a.track_id);
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
       }
 
       throw new Error(`Unknown tool: ${name}`);
