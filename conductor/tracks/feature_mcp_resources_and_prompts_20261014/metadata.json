@@ -1,8 +1,8 @@
 {
   "track_id": "feature_mcp_resources_and_prompts_20261014",
   "type": "feature",
-  "status": "new",
+  "status": "complete",
   "created_at": "2026-10-14T13:09:36.924Z",
-  "updated_at": "2026-10-14T13:09:36.924Z",
+  "updated_at": "2026-10-14T13:24:19.323Z",
   "description": "Add native Model Context Protocol (MCP) resources and prompt templates"
 }
