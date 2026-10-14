@@ -14,10 +14,11 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [afdb05d]
 
 ## Phase 3: MCP Server Integration, Handshake Verification & Final Sync
-- [~] Task: Expose `conductor_agent_list` and `conductor_agent_sync` tools and `conductor://agents` resource in `src/mcp/index.ts`.
+- [x] Task: Expose `conductor_agent_list` and `conductor_agent_sync` tools and `conductor://agents` resource in `src/mcp/index.ts`. [1b34057]
 - [ ] Task: Execute `bun run conductor agent sync` and verify generated manifests.
 - [ ] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
