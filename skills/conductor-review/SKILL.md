@@ -34,6 +34,9 @@ Verify project context using the Conductor Engine:
 ## 2. Review Protocol
 **PROTOCOL: Follow this sequence to perform a code review.**
 
+### Subagent Delegation Invariant
+Whenever `invoke_subagent` is available, orchestrator agents MUST delegate the complete review process to the specialized `conductor-reviewer` subagent to eliminate self-review bias and preserve context limits. If `invoke_subagent` is unavailable, follow the inline review protocol below.
+
 ### 2.1 Identify Scope
 
 1.  **Check for User Input:**

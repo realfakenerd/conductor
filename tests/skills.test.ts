@@ -79,4 +79,28 @@ describe("Skills and Manifests Integrity", () => {
     const pyFiles = findPyFiles(root);
     expect(pyFiles).toEqual([]);
   });
+
+  it("should enforce subagent delegation invariants in conductor_standards.md and skills", () => {
+    const standardsPath = join(root, "rules", "conductor_standards.md");
+    expect(existsSync(standardsPath)).toBe(true);
+    const standards = readFileSync(standardsPath, "utf-8");
+    expect(standards).toContain("Subagent Scope & Delegation Invariant");
+    expect(standards).toContain("conductor-worker");
+    expect(standards).toContain("conductor-reviewer");
+    expect(standards).toContain("conductor-planner");
+    expect(standards).toContain("conductor-explorer");
+
+    // Check that skill files mandate subagent delegation
+    const implementSkill = readFileSync(join(root, "skills", "conductor-implement", "SKILL.md"), "utf-8");
+    expect(implementSkill).toContain("conductor-worker");
+
+    const reviewSkill = readFileSync(join(root, "skills", "conductor-review", "SKILL.md"), "utf-8");
+    expect(reviewSkill).toContain("conductor-reviewer");
+
+    const newTrackSkill = readFileSync(join(root, "skills", "conductor-new-track", "SKILL.md"), "utf-8");
+    expect(newTrackSkill).toContain("conductor-planner");
+
+    const discoverSkill = readFileSync(join(root, "skills", "conductor-discover", "SKILL.md"), "utf-8");
+    expect(discoverSkill).toContain("conductor-explorer");
+  });
 });

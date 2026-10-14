@@ -31,6 +31,9 @@ Before discovering opportunities, verify project context and ground in domain la
 
 ## 2. Multi-Lens Opportunity Exploration
 
+### Subagent Delegation Invariant
+Whenever `invoke_subagent` is available, orchestrator agents MUST delegate codebase seam scanning, Value-Effort matrix formulation, and HTML report drafting to the specialized `conductor-explorer` subagent. If `invoke_subagent` is unavailable, execute exploration inline as specified below.
+
 Examine the codebase through four distinct analytical lenses:
 
 1. **Vision & Mission Lens (`product.md`)**:

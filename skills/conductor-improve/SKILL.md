@@ -39,6 +39,9 @@ Before scanning, verify project context and ground in domain language:
 
 ## 2. Exploration & Friction Discovery
 
+### Subagent Delegation Invariant
+Whenever `invoke_subagent` is available, orchestrator agents MUST delegate architectural friction scanning, deepening opportunity analysis, and HTML report drafting to the specialized `conductor-explorer` subagent. If `invoke_subagent` is unavailable, execute exploration inline as specified below.
+
 **Scope before you scan: YAGNI.**
 
 1.  **Determine Scope:**

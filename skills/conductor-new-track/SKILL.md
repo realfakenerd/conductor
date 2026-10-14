@@ -25,6 +25,9 @@ Verify project context using the Conductor Engine:
 
 ## 2. New Track Initialization
 
+### Subagent Delegation Invariant
+Whenever `invoke_subagent` is available, orchestrator agents MUST delegate the specification and planning phase to the specialized `conductor-planner` subagent. `conductor-planner` conducts Grill with Docs, records ADRs, and scaffolds `spec.md` and `plan.md`. If `invoke_subagent` is unavailable, execute planning inline as specified below.
+
 Adhere to this sequence precisely.
 
 ### 2.1 Track Description & Classification

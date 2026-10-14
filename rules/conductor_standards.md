@@ -30,3 +30,13 @@ These invariant standards govern agent behavior during any Conductor skill execu
 - **Concise Words**: Use plain technical terminology without decoration. Articles (a/an/the) are optional when meaning is unimpacted. Never drop negations (`not`, `never`, `no`).
 - **Preserve Payload**: Keep code blocks, terminal commands, file paths, numbers, parameters, and error outputs 100% exact and uncompressed.
 - **Auto-Clarity Safety Boundary**: Suspend terse compression for destructive operations (`git reset --hard`), error traces/debugging diagnostics, and formal specification acceptance criteria.
+
+## 5. Subagent Scope & Delegation Invariant
+- **Delegation Check**: Whenever a Conductor skill executes, proactively inspect whether the host environment provides subagent dispatch (`invoke_subagent`).
+- **Mandatory Delegation**: When `invoke_subagent` is available, orchestrator agents MUST delegate execution to specialized subagents instead of executing in the main context:
+  - **Planning (`conductor-new-track`)**: Delegate spec interrogation, ADR creation, and plan drafting to `conductor-planner`.
+  - **Implementation (`conductor-implement`)**: Delegate each TDD task to `conductor-worker` in an isolated git worktree sandbox (`conductor_worktree_create`). Orchestrator receives only a terse receipt upon completion.
+  - **Review (`conductor-review`)**: Delegate objective multi-axis quality and spec audit to `conductor-reviewer` to eliminate self-review bias.
+  - **Discovery & Refactoring (`conductor-discover`, `conductor-improve`)**: Delegate codebase seam scanning, Value-Effort matrices, and report drafting to `conductor-explorer`.
+- **Inline Fallback**: Only if `invoke_subagent` is strictly absent in the tool environment may the orchestrator execute planning, implementation, or review inline.
+

@@ -65,9 +65,11 @@ Adhere to this sequence to execute the selected track.
     -   If you fail to read any of these files, halt and inform the user.
     -   Check for installed skills in `.agents/skills/` and `~/.agents/extensions/conductor/skills/`. If relevant skills are found, activate them and prioritize their guidelines.
 
-4.  **Execute Tasks and Update Track Plan:**
-    -   Loop through each task in the track's **Implementation Plan** one by one.
-    -   **Start Task:** Execute the engine to advance the task to in-progress:
+4.  **Execute Tasks and Update Track Plan (Subagent Delegation):**
+    -   **Subagent Delegation Invariant**: Whenever `invoke_subagent` is available, orchestrator agents MUST delegate each task execution to the specialized `conductor-worker` subagent in an isolated git worktree sandbox created via `conductor_worktree_create`. The orchestrator receives a terse receipt upon completion, keeping the main context clean.
+    -   **Inline Fallback (if invoke_subagent absent)**:
+        -   Loop through each task in the track's **Implementation Plan** one by one.
+        -   **Start Task:** Execute the engine to advance the task to in-progress:
         ```bash
         bun run conductor track advance <track_id> --task "<task_name>" --status in_progress
         ```
