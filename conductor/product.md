@@ -17,10 +17,15 @@ Conductor transforms AI coding assistants into disciplined, spec-driven engineer
    - `conductor-revert`: Intelligently rolls back units of work (tracks, phases, tasks).
    - `conductor-improve`: Diagnoses architectural friction, generates visual HTML reports, and scaffolds refactor tracks.
    - `conductor-discover`: Explores multi-lens codebase seams, formulates high-impact feature opportunities, and scaffolds feature tracks.
-2. **Adaptive User Experience (View Layer)**:
+2. **Autonomous Subagents (`agents/*.md`)**:
+   - `conductor-planner`: Spec & Design Architect (Grill with Docs, ADRs, spec and plan generation).
+   - `conductor-worker`: TDD Implementation Runner (Red-Green-Refactor execution in isolated worktrees).
+   - `conductor-reviewer`: Principal Auditor (objective multi-axis review against specs and standards).
+   - `conductor-explorer`: Multi-Lens Discovery Scout (seam mapping, HTML reports, value-effort matrices).
+3. **Adaptive User Experience (View Layer)**:
    - Native GUI interactive modal prompts (`ask_question`) in visual IDE environments.
    - Clean, numbered textual CLI fallback in terminal consoles.
-3. **Cross-Agent Plugin Compatibility**:
+4. **Cross-Agent Plugin Compatibility**:
    - Seamless installation and operation across Antigravity and Claude Code ecosystems.
 
 ## Success Metrics

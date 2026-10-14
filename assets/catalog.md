@@ -140,3 +140,11 @@ Skills for minimizing token consumption, stripping conversational ceremony, and 
 -   **Detection Signals**:
     -   **Keywords**: `caveman`, `terse`, `concise`, `less tokens`, `token diet`, `brevity`, `compact output`
 
+## Conductor Autonomous Subagents
+
+Curated subagents packaged in Conductor for isolated, role-specialized execution:
+- **conductor-planner**: Spec & Design Architect (`agents/conductor-planner.md`).
+- **conductor-worker**: TDD Implementation Runner (`agents/conductor-worker.md`).
+- **conductor-reviewer**: Principal Quality & Standards Auditor (`agents/conductor-reviewer.md`).
+- **conductor-explorer**: Multi-Lens Discovery Scout (`agents/conductor-explorer.md`).
+
