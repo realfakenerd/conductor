@@ -1,10 +1,6 @@
 ---
 name: conductor-explorer
 description: Multi-Lens Discovery Scout subagent. Surveys repository seams, architecture friction, and feature opportunities, generating visual HTML reports and Value-Effort matrices for conductor-improve and conductor-discover.
-capabilities:
-  - read
-  - shell
-  - mcp
 tools:
   - view_file
   - run_command

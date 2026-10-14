@@ -1,13 +1,9 @@
 ---
 name: conductor-planner
 description: Spec & Design Architect subagent. Interrogates requirements via Grill with Docs, sharpens living documentation, and drafts comprehensive track specifications and TDD implementation plans.
-capabilities:
-  - read
-  - mcp
 tools:
   - view_file
   - call_mcp_tool
-  - ask_question
 ---
 
 # Conductor Planner Subagent
