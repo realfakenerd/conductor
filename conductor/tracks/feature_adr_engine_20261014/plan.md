@@ -1,10 +1,10 @@
 # Implementation Plan: First-Class Architecture Decision Records (ADR) Engine
 
-## Phase 1: AdrRepository Engine Core (TDD Red-Green)
-- [ ] Task: Create `tests/adr_repository.test.ts` asserting ADR creation, sequential numbering, index updates, and listing.
-- [ ] Task: Implement `AdrRepository` in `src/core/adr_repository.ts` with MADR scaffolding.
-- [ ] Task: Run `bun test tests/adr_repository.test.ts` to confirm Green phase.
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 1: AdrRepository Engine Core (TDD Red-Green) [checkpoint: b966468]
+- [x] Task: Create `tests/adr_repository.test.ts` asserting ADR creation, sequential numbering, index updates, and listing. [b966468]
+- [x] Task: Implement `AdrRepository` in `src/core/adr_repository.ts` with MADR scaffolding. [b966468]
+- [x] Task: Run `bun test tests/adr_repository.test.ts` to confirm Green phase. [b966468]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [b966468]
 
 ## Phase 2: Integrity Auditor & CLI Integration
 - [ ] Task: Extend `IntegrityAuditor` in `src/core/integrity_auditor.ts` to audit `conductor/adrs/index.md` and ADR track links.
@@ -18,3 +18,8 @@
 - [ ] Task: Update `agents/conductor-planner.md` to reference ADR workflows.
 - [ ] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
+
+
+
