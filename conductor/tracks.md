@@ -55,3 +55,7 @@
 ---
 - [x] **Track: Enforce Conductor subagent delegation across standards and skills**
   *Link: [./tracks/feature_enforce_subagent_delegation_20261014/index.md](./tracks/feature_enforce_subagent_delegation_20261014/index.md)*
+
+---
+- [ ] **Track: Cross-Host Subagent Runtime Adapter**
+  *Link: [./tracks/feature_subagent_runtime_adapter_20261014/index.md](./tracks/feature_subagent_runtime_adapter_20261014/index.md)*
