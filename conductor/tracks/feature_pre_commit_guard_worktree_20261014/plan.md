@@ -10,8 +10,10 @@
 ## Phase 2: CLI Commands & MCP Tools Exposure
 - [x] Task: Wire `guard` (`install`, `uninstall`, `check`) and `worktree` (`create`, `list`, `remove`) into `src/cli/index.ts`.
 - [x] Task: Expose `conductor_guard_check`, `conductor_worktree_create`, `conductor_worktree_list`, and `conductor_worktree_remove` in `src/mcp/index.ts`.
-- [ ] Task: Update MCP tests and verify all test suites pass.
+- [x] Task: Update MCP tests and verify all test suites pass.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
 
 
 
