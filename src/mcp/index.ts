@@ -18,6 +18,7 @@ import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
 import { checkPreCommitGuard, installPreCommitGuard, uninstallPreCommitGuard } from "../core/guard.ts";
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 import { ReviewAuditor } from "../core/review_auditor.ts";
+import { AdrRepository } from "../core/adr_repository.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -298,6 +299,44 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             },
           },
         },
+        {
+          name: "conductor_adr_list",
+          description: "List all Architecture Decision Records (ADRs) with statuses and linked tracks",
+          inputSchema: {
+            type: "object",
+            properties: {
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_adr_init",
+          description: "Initialize and scaffold a new numbered MADR architecture decision record",
+          inputSchema: {
+            type: "object",
+            properties: {
+              title: { type: "string", description: "ADR Title" },
+              status: { type: "string", description: "Status (proposed, accepted, rejected, superseded)" },
+              context: { type: "string", description: "Context and problem statement" },
+              track_id: { type: "string", description: "Associated Conductor track ID" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+            required: ["title"],
+          },
+        },
+        {
+          name: "conductor_adr_link",
+          description: "Link a Conductor track to an existing Architecture Decision Record",
+          inputSchema: {
+            type: "object",
+            properties: {
+              adr_number: { type: "number", description: "ADR number (e.g. 1)" },
+              track_id: { type: "string", description: "Track identifier to link" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+            required: ["adr_number", "track_id"],
+          },
+        },
       ],
     };
   });
@@ -460,6 +499,28 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
           testCommand: a.test_command || undefined,
         });
         return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_adr_list") {
+        const repo = new AdrRepository(rootDir);
+        const res = repo.listAdrs();
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_adr_init") {
+        const repo = new AdrRepository(rootDir);
+        const res = repo.initAdr(a.title, {
+          status: a.status,
+          context: a.context,
+          trackId: a.track_id,
+        });
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_adr_link") {
+        const repo = new AdrRepository(rootDir);
+        const res = repo.linkAdr(Number(a.adr_number), a.track_id);
+        return { content: [{ type: "text", text: JSON.stringify({ adr_number: a.adr_number, track_id: a.track_id, linked: res }, null, 2) }] };
       }
 
       throw new Error(`Unknown tool: ${name}`);

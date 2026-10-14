@@ -46,7 +46,10 @@ describe("Conductor MCP Server", () => {
     expect(toolNames).toContain("conductor_worktree_list");
     expect(toolNames).toContain("conductor_worktree_remove");
     expect(toolNames).toContain("conductor_review_verify");
-    expect(toolNames.length).toBe(17);
+    expect(toolNames).toContain("conductor_adr_list");
+    expect(toolNames).toContain("conductor_adr_init");
+    expect(toolNames).toContain("conductor_adr_link");
+    expect(toolNames.length).toBe(20);
 
     // 2. Call conductor_verify
     const verifyResult = (await client.callTool({
@@ -112,6 +115,36 @@ describe("Conductor MCP Server", () => {
     const reviewContent = JSON.parse(reviewResult.content[0].text);
     expect(reviewContent.track_id).toBe("mcp_track");
     expect(reviewContent.valid).toBe(true);
+
+    // 7. Call conductor_adr_init, conductor_adr_link, conductor_adr_list
+    const adrInitRes = (await client.callTool({
+      name: "conductor_adr_init",
+      arguments: {
+        title: "MCP Architecture Decision",
+        status: "accepted",
+      },
+    })) as any;
+    expect(adrInitRes.isError).toBeFalsy();
+    const adrData = JSON.parse(adrInitRes.content[0].text);
+    expect(adrData.number).toBe(1);
+
+    const adrLinkRes = (await client.callTool({
+      name: "conductor_adr_link",
+      arguments: {
+        adr_number: 1,
+        track_id: "mcp_track",
+      },
+    })) as any;
+    expect(adrLinkRes.isError).toBeFalsy();
+
+    const adrListRes = (await client.callTool({
+      name: "conductor_adr_list",
+      arguments: {},
+    })) as any;
+    expect(adrListRes.isError).toBeFalsy();
+    const adrList = JSON.parse(adrListRes.content[0].text);
+    expect(adrList.length).toBe(1);
+    expect(adrList[0].linked_tracks).toContain("mcp_track");
 
     await client.close();
     await server.close();

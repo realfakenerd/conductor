@@ -68,6 +68,12 @@ export function listMcpResources(): McpResourceDefinition[] {
       description: "Markdown contents of CONTEXT.md defining canonical domain terms",
       mimeType: "text/markdown",
     },
+    {
+      uri: "conductor://adrs",
+      name: "Architecture Decision Records (ADRs)",
+      description: "Markdown contents of conductor/adrs/index.md or ADR catalog",
+      mimeType: "text/markdown",
+    },
   ];
 }
 
@@ -130,6 +136,21 @@ export function resolveMcpResource(uri: string, rootDir: string = "."): Resolved
       text = readFileSync(contextPath, "utf-8");
     } else {
       text = "# Domain Context\nNo CONTEXT.md found in workspace root.";
+    }
+    return {
+      uri,
+      mimeType: "text/markdown",
+      text,
+    };
+  }
+
+  if (uri === "conductor://adrs") {
+    const indexPath = join(rootDir, "conductor", "adrs", "index.md");
+    let text = "";
+    if (existsSync(indexPath)) {
+      text = readFileSync(indexPath, "utf-8");
+    } else {
+      text = "# Architecture Decision Records (ADRs)\nNo ADRs recorded yet.";
     }
     return {
       uri,

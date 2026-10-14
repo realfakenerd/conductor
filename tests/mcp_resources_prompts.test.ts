@@ -38,6 +38,10 @@ describe("MCP Resources & Prompts", () => {
     const tracks = resolveMcpResource("conductor://tracks", root);
     expect(tracks.mimeType).toBe("application/json");
 
+    // 5. Read adrs
+    const adrs = resolveMcpResource("conductor://adrs", root);
+    expect(adrs.text).toContain("Architecture Decision Records");
+
     // 5. Prompts
     const prompts = listMcpPrompts();
     expect(prompts.length).toBeGreaterThanOrEqual(2);

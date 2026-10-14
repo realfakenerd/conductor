@@ -6,6 +6,10 @@
 -   [Product Guidelines](./product-guidelines.md)
 -   [Tech Stack](./tech-stack.md)
 
+## Architecture Decisions
+
+-   [Architecture Decision Records (ADRs)](./adrs/index.md)
+
 ## Workflow
 
 -   [Workflow](./workflow.md)
