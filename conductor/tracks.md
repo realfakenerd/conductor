@@ -49,5 +49,5 @@
   *Link: [./tracks/feature_review_auditor_20261014/index.md](./tracks/feature_review_auditor_20261014/index.md)*
 
 ---
-- [ ] **Track: First-Class Architecture Decision Records (ADR) Engine**
+- [~] **Track: First-Class Architecture Decision Records (ADR) Engine**
   *Link: [./tracks/feature_adr_engine_20261014/index.md](./tracks/feature_adr_engine_20261014/index.md)*
