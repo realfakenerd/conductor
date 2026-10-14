@@ -7,7 +7,7 @@ import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { createConductorMcpServer } from "../src/mcp/index.ts";
 
 describe("Conductor MCP Server", () => {
-  it("should list all 12 tools and execute conductor_verify, conductor_track_init, and conductor_status", async () => {
+  it("should list all 16 tools and execute conductor_verify, conductor_track_init, conductor_guard_check, and conductor_status", async () => {
     const root = mkdtempSync(join(tmpdir(), "cond-mcp-test-"));
     const conductorDir = join(root, "conductor");
     mkdirSync(conductorDir, { recursive: true });
@@ -41,6 +41,10 @@ describe("Conductor MCP Server", () => {
     expect(toolNames).toContain("conductor_track_checkpoint");
     expect(toolNames).toContain("conductor_track_complete");
     expect(toolNames).toContain("conductor_track_resolve");
+    expect(toolNames).toContain("conductor_guard_check");
+    expect(toolNames).toContain("conductor_worktree_create");
+    expect(toolNames).toContain("conductor_worktree_list");
+    expect(toolNames).toContain("conductor_worktree_remove");
 
     // 2. Call conductor_verify
     const verifyResult = (await client.callTool({
@@ -66,6 +70,9 @@ describe("Conductor MCP Server", () => {
     const initContent = JSON.parse(initResult.content[0].text);
     expect(initContent.track_id).toBe("mcp_track");
 
+    // Write track index.md to satisfy integrity parity
+    writeFileSync(join(conductorDir, "tracks", "mcp_track", "index.md"), "# Track\n");
+
     // 4. Call conductor_track_resolve
     const resolveResult = (await client.callTool({
       name: "conductor_track_resolve",
@@ -78,6 +85,15 @@ describe("Conductor MCP Server", () => {
     const resolveContent = JSON.parse(resolveResult.content[0].text);
     expect(resolveContent.status).toBe("matched");
     expect(resolveContent.track.track_id).toBe("mcp_track");
+
+    // 5. Call conductor_guard_check
+    const guardResult = (await client.callTool({
+      name: "conductor_guard_check",
+      arguments: {},
+    })) as any;
+    expect(guardResult.isError).toBeFalsy();
+    const guardContent = JSON.parse(guardResult.content[0].text);
+    expect(guardContent.valid).toBe(true);
 
     await client.close();
     await server.close();
