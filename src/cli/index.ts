@@ -8,6 +8,7 @@ import { determineResumption } from "../core/resume.ts";
 import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
 import { installPreCommitGuard, uninstallPreCommitGuard, checkPreCommitGuard } from "../core/guard.ts";
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
+import { resolveMcpResource, listMcpResources } from "../core/mcp_resources.ts";
 
 function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
   const repo = new TrackRepository(rootDir);
@@ -370,6 +371,18 @@ export async function runCli(argv: string[]) {
     }
     console.error(`Unknown worktree subcommand: ${sub}. Supported: create, list, remove`);
     process.exit(1);
+  }
+
+  if (command === "resource") {
+    const uri = positional[1];
+    if (!uri || uri === "list") {
+      const resources = listMcpResources();
+      console.log(JSON.stringify(resources, null, 2));
+      return;
+    }
+    const resolved = resolveMcpResource(uri, rootDir);
+    console.log(resolved.text);
+    return;
   }
 
   console.error(`Unknown command: ${command}`);
