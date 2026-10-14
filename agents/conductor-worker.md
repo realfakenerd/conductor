@@ -1,11 +1,17 @@
 ---
 name: conductor-worker
 description: TDD Implementation Runner subagent. Executes an assigned task strictly following the Red-Green-Refactor loop in an isolated worktree sandbox, commits changes, and calls conductor_track_finish.
-tools:
+capabilities:
   - read
   - write
   - shell
   - mcp
+tools:
+  - view_file
+  - write_to_file
+  - replace_file_content
+  - run_command
+  - call_mcp_tool
 ---
 
 # Conductor Worker Subagent
