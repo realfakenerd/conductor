@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "conductor": {
+      "command": "/home/luke/.local/share/mise/installs/bun/latest/bin/bun",
+      "args": ["run", "${PLUGIN_ROOT}/src/mcp/index.ts"]
+    }
+  }
+}

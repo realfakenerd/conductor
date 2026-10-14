@@ -22,15 +22,20 @@ describe("Skills and Manifests Integrity", () => {
     }
   });
 
-  it("should have valid plugin.json with MCP server declaration", () => {
+  it("should have valid plugin.json and mcp_config.json with MCP server declaration", () => {
     const pluginPath = join(root, "plugin.json");
     expect(existsSync(pluginPath)).toBe(true);
 
     const plugin = JSON.parse(readFileSync(pluginPath, "utf-8"));
     expect(plugin.name).toBe("conductor");
-    expect(plugin.mcpServers).toBeDefined();
-    expect(plugin.mcpServers.conductor).toBeDefined();
-    expect(plugin.mcpServers.conductor.command).toBe("bun");
+
+    const mcpConfigPath = join(root, "mcp_config.json");
+    expect(existsSync(mcpConfigPath)).toBe(true);
+
+    const mcpConfig = JSON.parse(readFileSync(mcpConfigPath, "utf-8"));
+    expect(mcpConfig.mcpServers).toBeDefined();
+    expect(mcpConfig.mcpServers.conductor).toBeDefined();
+    expect(mcpConfig.mcpServers.conductor.args).toContain("${PLUGIN_ROOT}/src/mcp/index.ts");
   });
 
   it("should enforce zero python files across repository", () => {
