@@ -6,6 +6,8 @@ import { PlanDocument } from "../core/plan_document.ts";
 import { IntegrityAuditor } from "../core/integrity_auditor.ts";
 import { determineResumption } from "../core/resume.ts";
 import { attachGitNote, attachPhaseCheckpointNote } from "../core/git_notes.ts";
+import { installPreCommitGuard, uninstallPreCommitGuard, checkPreCommitGuard } from "../core/guard.ts";
+import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 
 function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
   const repo = new TrackRepository(rootDir);
@@ -313,6 +315,61 @@ export async function runCli(argv: string[]) {
     const ok = attachGitNote(sha, task, summary, files, rootDir);
     console.log(JSON.stringify({ success: ok }));
     return;
+  }
+
+  if (command === "guard") {
+    const sub = positional[1];
+    if (sub === "install") {
+      const result = installPreCommitGuard(rootDir);
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    if (sub === "uninstall") {
+      const result = uninstallPreCommitGuard(rootDir);
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    if (sub === "check") {
+      const result = checkPreCommitGuard(rootDir);
+      console.log(JSON.stringify(result, null, 2));
+      if (!result.valid) {
+        process.exit(1);
+      }
+      return;
+    }
+    console.error(`Unknown guard subcommand: ${sub}. Supported: install, uninstall, check`);
+    process.exit(1);
+  }
+
+  if (command === "worktree") {
+    const sub = positional[1];
+    if (sub === "create") {
+      const trackId = positional[2] || (flags["track"] as string);
+      if (!trackId) {
+        console.error("Missing track_id for worktree create");
+        process.exit(1);
+      }
+      const result = createTrackWorktree(rootDir, trackId);
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    if (sub === "list") {
+      const result = listTrackWorktrees(rootDir);
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    if (sub === "remove") {
+      const trackId = positional[2] || (flags["track"] as string);
+      if (!trackId) {
+        console.error("Missing track_id for worktree remove");
+        process.exit(1);
+      }
+      const result = removeTrackWorktree(rootDir, trackId);
+      console.log(JSON.stringify(result, null, 2));
+      return;
+    }
+    console.error(`Unknown worktree subcommand: ${sub}. Supported: create, list, remove`);
+    process.exit(1);
   }
 
   console.error(`Unknown command: ${command}`);
