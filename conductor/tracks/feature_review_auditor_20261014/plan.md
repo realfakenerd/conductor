@@ -12,11 +12,15 @@
 - [x] Task: Add integration tests in `tests/cli.test.ts` and `tests/mcp_server.test.ts`. [1c290b7]
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [1c290b7]
 
-## Phase 3: Skill & Agent Wiring, Context & Audit
-- [ ] Task: Update `skills/conductor-review/SKILL.md` and `agents/conductor-reviewer.md` with programmatic review verification protocol.
-- [ ] Task: Update `conductor/product.md` and `CONTEXT.md` to document the Review Auditor seam.
-- [ ] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`).
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+## Phase 3: Skill & Agent Wiring, Context & Audit [checkpoint: 96ecd85]
+- [x] Task: Update `skills/conductor-review/SKILL.md` and `agents/conductor-reviewer.md` with programmatic review verification protocol. [96ecd85]
+- [x] Task: Update `conductor/product.md` and `CONTEXT.md` to document the Review Auditor seam. [96ecd85]
+- [x] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`). [96ecd85]
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [96ecd85]
+
+
+
+
 
 
 
