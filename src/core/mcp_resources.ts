@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { TrackRepository } from "./track_repository.ts";
 import { PlanDocument } from "./plan_document.ts";
+import { AgentAdapter } from "./agent_adapter.ts";
 import { EngineError } from "./types.ts";
 
 export interface McpResourceDefinition {
@@ -73,6 +74,12 @@ export function listMcpResources(): McpResourceDefinition[] {
       name: "Architecture Decision Records (ADRs)",
       description: "Markdown contents of conductor/adrs/index.md or ADR catalog",
       mimeType: "text/markdown",
+    },
+    {
+      uri: "conductor://agents",
+      name: "Conductor Subagents",
+      description: "JSON array of all configured subagents and tool capabilities",
+      mimeType: "application/json",
     },
   ];
 }
@@ -156,6 +163,16 @@ export function resolveMcpResource(uri: string, rootDir: string = "."): Resolved
       uri,
       mimeType: "text/markdown",
       text,
+    };
+  }
+
+  if (uri === "conductor://agents") {
+    const adapter = new AgentAdapter(rootDir);
+    const agents = adapter.listAgents();
+    return {
+      uri,
+      mimeType: "application/json",
+      text: JSON.stringify(agents, null, 2),
     };
   }
 

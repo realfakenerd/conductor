@@ -19,6 +19,7 @@ import { checkPreCommitGuard, installPreCommitGuard, uninstallPreCommitGuard } f
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 import { ReviewAuditor } from "../core/review_auditor.ts";
 import { AdrRepository } from "../core/adr_repository.ts";
+import { AgentAdapter } from "../core/agent_adapter.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -337,6 +338,28 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             required: ["adr_number", "track_id"],
           },
         },
+        {
+          name: "conductor_agent_list",
+          description: "List all configured subagents with capabilities, tools, and system prompts",
+          inputSchema: {
+            type: "object",
+            properties: {
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_agent_sync",
+          description: "Compile and synchronize subagent definitions into host-native tool manifests",
+          inputSchema: {
+            type: "object",
+            properties: {
+              host: { type: "string", description: "Target host (antigravity, claude, all)" },
+              target_dir: { type: "string", description: "Optional custom output directory" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
       ],
     };
   });
@@ -521,6 +544,20 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
         const repo = new AdrRepository(rootDir);
         const res = repo.linkAdr(Number(a.adr_number), a.track_id);
         return { content: [{ type: "text", text: JSON.stringify({ adr_number: a.adr_number, track_id: a.track_id, linked: res }, null, 2) }] };
+      }
+
+      if (name === "conductor_agent_list") {
+        const adapter = new AgentAdapter(rootDir);
+        const res = adapter.listAgents();
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_agent_sync") {
+        const adapter = new AgentAdapter(rootDir);
+        const host = (a.host as "antigravity" | "claude" | "all") || "antigravity";
+        const targetDir = a.target_dir as string | undefined;
+        const res = adapter.syncAgents({ host, targetDir });
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
       }
 
       throw new Error(`Unknown tool: ${name}`);

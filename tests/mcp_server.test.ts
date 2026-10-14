@@ -49,7 +49,9 @@ describe("Conductor MCP Server", () => {
     expect(toolNames).toContain("conductor_adr_list");
     expect(toolNames).toContain("conductor_adr_init");
     expect(toolNames).toContain("conductor_adr_link");
-    expect(toolNames.length).toBe(20);
+    expect(toolNames).toContain("conductor_agent_list");
+    expect(toolNames).toContain("conductor_agent_sync");
+    expect(toolNames.length).toBe(22);
 
     // 2. Call conductor_verify
     const verifyResult = (await client.callTool({
@@ -145,6 +147,30 @@ describe("Conductor MCP Server", () => {
     const adrList = JSON.parse(adrListRes.content[0].text);
     expect(adrList.length).toBe(1);
     expect(adrList[0].linked_tracks).toContain("mcp_track");
+
+    // 9. Agent tools
+    mkdirSync(join(root, "agents"), { recursive: true });
+    writeFileSync(
+      join(root, "agents", "mcp-agent.md"),
+      `---\nname: mcp-agent\ndescription: Agent via MCP\ncapabilities:\n  - read\n---\nPrompt\n`
+    );
+
+    const agentListRes = (await client.callTool({
+      name: "conductor_agent_list",
+      arguments: {},
+    })) as any;
+    expect(agentListRes.isError).toBeFalsy();
+    const agentList = JSON.parse(agentListRes.content[0].text);
+    expect(agentList.length).toBe(1);
+    expect(agentList[0].name).toBe("mcp-agent");
+
+    const agentSyncRes = (await client.callTool({
+      name: "conductor_agent_sync",
+      arguments: { host: "antigravity" },
+    })) as any;
+    expect(agentSyncRes.isError).toBeFalsy();
+    const agentSync = JSON.parse(agentSyncRes.content[0].text);
+    expect(agentSync.synced.length).toBe(1);
 
     await client.close();
     await server.close();
