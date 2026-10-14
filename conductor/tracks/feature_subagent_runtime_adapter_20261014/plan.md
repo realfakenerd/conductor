@@ -3,7 +3,7 @@
 ## Phase 1: AgentAdapter Engine Core (TDD Red-Green)
 - [x] Task: Create `tests/agent_adapter.test.ts` asserting agent markdown parsing, capability mapping, and host compilation. [6b46640]
 - [x] Task: Implement `AgentAdapter` in `src/core/agent_adapter.ts` supporting Antigravity and Claude Code targets. [6e40a66]
-- [ ] Task: Run `bun test tests/agent_adapter.test.ts` to confirm Green phase.
+- [~] Task: Run `bun test tests/agent_adapter.test.ts` to confirm Green phase.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: CLI, Integrity Auditor & Agent Definitions Alignment
@@ -18,6 +18,7 @@
 - [ ] Task: Execute `bun run conductor agent sync` and verify generated manifests.
 - [ ] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
