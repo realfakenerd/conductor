@@ -10,6 +10,7 @@ import { installPreCommitGuard, uninstallPreCommitGuard, checkPreCommitGuard } f
 import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "../core/worktree.ts";
 import { resolveMcpResource, listMcpResources } from "../core/mcp_resources.ts";
 import { ReviewAuditor } from "../core/review_auditor.ts";
+import { AdrRepository } from "../core/adr_repository.ts";
 
 function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
   const repo = new TrackRepository(rootDir);
@@ -94,7 +95,7 @@ export async function runCli(argv: string[]) {
 
   if (!command) {
     console.log("Usage: conductor <command> [options]");
-    console.log("Commands: resume, verify, status, list, track, note, guard, worktree, resource, review");
+    console.log("Commands: resume, verify, status, list, track, note, guard, worktree, resource, review, adr");
     process.exit(0);
   }
 
@@ -417,6 +418,59 @@ export async function runCli(argv: string[]) {
       return;
     }
     console.error(`Unknown review subcommand: ${sub}. Supported: verify, check`);
+    process.exit(1);
+  }
+
+  if (command === "adr") {
+    const sub = positional[1];
+    const repo = new AdrRepository(rootDir);
+
+    if (!sub || sub === "list") {
+      const adrs = repo.listAdrs();
+      if (jsonMode) {
+        console.log(JSON.stringify(adrs, null, 2));
+      } else {
+        if (adrs.length === 0) {
+          console.log("No registered ADRs found.");
+        } else {
+          console.log("Architecture Decision Records (ADRs):");
+          for (const a of adrs) {
+            const tracksStr = a.linked_tracks.length > 0 ? ` [tracks: ${a.linked_tracks.join(", ")}]` : "";
+            console.log(`- ${String(a.number).padStart(4, "0")}: ${a.title} (${a.status})${tracksStr}`);
+          }
+        }
+      }
+      return;
+    }
+
+    if (sub === "init") {
+      const title = positional[2];
+      if (!title) {
+        console.error("Missing title for ADR init");
+        process.exit(1);
+      }
+      const status = (flags["status"] as string) || "proposed";
+      const context = (flags["context"] as string) || undefined;
+      const trackId = (flags["track"] as string) || undefined;
+      const res = repo.initAdr(title, { status, context, trackId });
+      console.log(JSON.stringify(res, null, 2));
+      return;
+    }
+
+    if (sub === "link") {
+      const numStr = positional[2];
+      const trackId = (flags["track"] as string) || positional[3];
+      if (!numStr || !trackId) {
+        console.error("Usage: conductor adr link <adr_number> --track <track_id>");
+        process.exit(1);
+      }
+      const num = parseInt(numStr, 10);
+      const res = repo.linkAdr(num, trackId);
+      console.log(JSON.stringify({ adr_number: num, track_id: trackId, linked: res }, null, 2));
+      return;
+    }
+
+    console.error(`Unknown adr subcommand: ${sub}. Supported: list, init, link`);
     process.exit(1);
   }
 

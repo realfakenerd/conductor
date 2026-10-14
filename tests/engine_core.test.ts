@@ -96,6 +96,15 @@ describe("TypeScript Engine Core", () => {
       expect(validRes.valid).toBe(true);
       expect(validRes.total_links).toBe(1);
       expect(validRes.missing_links.length).toBe(0);
+
+      // Create broken ADR index link
+      const adrsDir = join(conductorDir, "adrs");
+      mkdirSync(adrsDir, { recursive: true });
+      writeFileSync(join(adrsDir, "index.md"), "# ADRs\n[0001-missing.md](./0001-missing.md)");
+
+      const brokenAdrRes = auditor.audit();
+      expect(brokenAdrRes.valid).toBe(false);
+      expect(brokenAdrRes.missing_links).toContain("conductor/adrs/./0001-missing.md");
     });
   });
 

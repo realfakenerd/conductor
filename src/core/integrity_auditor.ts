@@ -78,6 +78,24 @@ export class IntegrityAuditor {
       };
     }
 
+    // 2. ADR index link validation
+    const adrsDir = join(this.conductorDir, "adrs");
+    const adrIndex = join(adrsDir, "index.md");
+    if (existsSync(adrsDir) && existsSync(adrIndex)) {
+      const adrContent = readFileSync(adrIndex, "utf-8");
+      const adrLinkPattern = /\[.*?\]\((.*?)\)/g;
+      let am: RegExpExecArray | null;
+      while ((am = adrLinkPattern.exec(adrContent)) !== null) {
+        totalLinks++;
+        const link = am[1];
+        if (link.startsWith("http") || link.startsWith("#")) continue;
+        const target = resolve(adrsDir, link);
+        if (!existsSync(target)) {
+          missingLinks.push(`conductor/adrs/${link}`);
+        }
+      }
+    }
+
     // 2. Track parity validation
     const brokenTracks: BrokenTrack[] = [];
     if (existsSync(this.registryFile)) {

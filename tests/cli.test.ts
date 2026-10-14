@@ -73,5 +73,32 @@ describe("Bun CLI Runner", () => {
     const reviewData = JSON.parse(reviewRes.stdout);
     expect(reviewData.valid).toBe(true);
     expect(reviewData.track_id).toBe("t_cli");
+
+    // 8. ADR init, list, link
+    const adrInitRes = spawnSync(
+      "bun",
+      ["run", cliPath, "adr", "init", "Test Architecture Decision", "--status", "accepted", "--root-dir", root],
+      { encoding: "utf-8" }
+    );
+    expect(adrInitRes.status).toBe(0);
+    const adrData = JSON.parse(adrInitRes.stdout);
+    expect(adrData.number).toBe(1);
+
+    const adrLinkRes = spawnSync(
+      "bun",
+      ["run", cliPath, "adr", "link", "1", "--track", "t_cli", "--root-dir", root],
+      { encoding: "utf-8" }
+    );
+    expect(adrLinkRes.status).toBe(0);
+
+    const adrListRes = spawnSync(
+      "bun",
+      ["run", cliPath, "adr", "list", "--root-dir", root, "--json"],
+      { encoding: "utf-8" }
+    );
+    expect(adrListRes.status).toBe(0);
+    const adrList = JSON.parse(adrListRes.stdout);
+    expect(adrList.length).toBe(1);
+    expect(adrList[0].linked_tracks).toContain("t_cli");
   });
 });
