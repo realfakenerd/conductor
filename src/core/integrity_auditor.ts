@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import { AgentAdapter } from "./agent_adapter.ts";
 
 export interface BrokenTrack {
   track_id: string;
@@ -20,6 +21,7 @@ export interface AuditResult {
   missing_links: string[];
   broken_tracks: BrokenTrack[];
   ghost_commits: GhostCommit[];
+  subagent_errors?: string[];
   error?: string;
 }
 
@@ -163,7 +165,22 @@ export class IntegrityAuditor {
       }
     }
 
-    const isValid = missingLinks.length === 0 && brokenTracks.length === 0 && ghostCommits.length === 0;
+    // 4. Subagent definitions validation
+    const subagentErrors: string[] = [];
+    const agentsDir = join(this.rootDir, "agents");
+    if (existsSync(agentsDir)) {
+      const adapter = new AgentAdapter(this.rootDir, agentsDir);
+      const val = adapter.validateAgents();
+      if (!val.valid) {
+        subagentErrors.push(...val.errors);
+      }
+    }
+
+    const isValid =
+      missingLinks.length === 0 &&
+      brokenTracks.length === 0 &&
+      ghostCommits.length === 0 &&
+      subagentErrors.length === 0;
 
     return {
       valid: isValid,
@@ -171,6 +188,7 @@ export class IntegrityAuditor {
       missing_links: missingLinks,
       broken_tracks: brokenTracks,
       ghost_commits: ghostCommits,
+      subagent_errors: subagentErrors,
     };
   }
 }
