@@ -10,7 +10,7 @@
 - [x] Task: Extend `IntegrityAuditor` in `src/core/integrity_auditor.ts` to validate subagent configurations in `agents/`. [e6f743f]
 - [x] Task: Add `agent` subcommand (`list`, `sync`) to `src/cli/index.ts`. [69449ea]
 - [x] Task: Update `agents/*.md` definitions to specify canonical capabilities with host-compliant defaults. [a4eacc2]
-- [ ] Task: Add integration tests in `tests/cli.test.ts`.
+- [~] Task: Add integration tests in `tests/cli.test.ts`.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3: MCP Server Integration, Handshake Verification & Final Sync
@@ -18,6 +18,7 @@
 - [ ] Task: Execute `bun run conductor agent sync` and verify generated manifests.
 - [ ] Task: Run full test suite and confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
