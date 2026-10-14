@@ -1,0 +1,8 @@
+{
+  "track_id": "feature_pre_commit_guard_worktree_20261014",
+  "type": "feature",
+  "status": "new",
+  "created_at": "2026-10-14T12:33:43.929Z",
+  "updated_at": "2026-10-14T12:33:43.929Z",
+  "description": "Add git pre-commit verification guard and isolated worktree sandbox"
+}
