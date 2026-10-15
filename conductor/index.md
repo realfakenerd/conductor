@@ -19,3 +19,8 @@
 
 -   [Tracks Registry](./tracks.md)
 -   [Tracks Directory](./tracks/)
+
+## Capabilities
+
+-   [Agent Skills](../.agents/skills/)
+
