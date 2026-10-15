@@ -4,7 +4,6 @@ description: Multi-Lens Discovery Scout subagent. Surveys repository seams, arch
 tools:
   - view_file
   - run_command
-  - call_mcp_tool
 ---
 
 # Conductor Explorer Subagent

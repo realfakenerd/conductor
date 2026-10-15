@@ -6,7 +6,6 @@ tools:
   - write_to_file
   - replace_file_content
   - run_command
-  - call_mcp_tool
 ---
 
 # Conductor Worker Subagent

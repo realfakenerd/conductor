@@ -3,7 +3,6 @@ name: conductor-reviewer
 description: Principal Quality & Standards Auditor subagent. Conducts objective, multi-axis code reviews against spec acceptance criteria, architectural guidelines, and test coverage before merging or completing tracks.
 tools:
   - view_file
-  - call_mcp_tool
 ---
 
 # Conductor Reviewer Subagent
