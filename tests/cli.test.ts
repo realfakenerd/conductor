@@ -120,13 +120,13 @@ describe("Bun CLI Runner", () => {
 
     const agentSyncRes = spawnSync(
       "bun",
-      ["run", cliPath, "agent", "sync", "--host", "antigravity", "--root-dir", root],
+      ["run", cliPath, "agent", "sync", "--host", "antigravity", "--exclude-mcp", "--available-tools", "view_file,write_to_file", "--root-dir", root],
       { encoding: "utf-8" }
     );
     expect(agentSyncRes.status).toBe(0);
     const agentSync = JSON.parse(agentSyncRes.stdout);
     expect(agentSync.synced.length).toBe(1);
-    expect(agentSync.synced[0].tools).toContain("view_file");
+    expect(agentSync.synced[0].tools).toEqual(["view_file", "write_to_file"]);
 
     const agentValRes = spawnSync(
       "bun",
@@ -137,3 +137,4 @@ describe("Bun CLI Runner", () => {
     expect(JSON.parse(agentValRes.stdout).valid).toBe(true);
   });
 });
+

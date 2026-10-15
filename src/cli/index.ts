@@ -444,13 +444,30 @@ export async function runCli(argv: string[]) {
     if (sub === "sync") {
       const host = (flags["host"] as "antigravity" | "claude" | "all") || "antigravity";
       const targetDir = flags["target-dir"] as string | undefined;
-      const res = adapter.syncAgents({ host, targetDir });
+      const excludeMcp = Boolean(flags["exclude-mcp"]);
+      const availableTools = flags["available-tools"]
+        ? (flags["available-tools"] as string).split(",").map((s) => s.trim())
+        : undefined;
+      const unsupportedTools = flags["unsupported-tools"]
+        ? (flags["unsupported-tools"] as string).split(",").map((s) => s.trim())
+        : undefined;
+
+      const res = adapter.syncAgents({
+        host,
+        targetDir,
+        compileOptions: {
+          excludeMcpTool: excludeMcp,
+          availableTools,
+          unsupportedTools,
+        },
+      });
       console.log(JSON.stringify(res, null, 2));
       return;
     }
 
     if (sub === "validate") {
-      const res = adapter.validateAgents();
+      const dir = flags["dir"] as string | undefined;
+      const res = adapter.validateAgents(dir);
       console.log(JSON.stringify(res, null, 2));
       if (!res.valid) {
         process.exit(1);
