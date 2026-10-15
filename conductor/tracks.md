@@ -65,7 +65,7 @@
   *Link: [./tracks/improve_consolidate_status_track_repository_20261015/index.md](./tracks/improve_consolidate_status_track_repository_20261015/index.md)*
 
 ---
-- [ ] **Track: Subagent Dynamic Capability Negotiation & Self-Healing Adapter**
+- [~] **Track: Subagent Dynamic Capability Negotiation & Self-Healing Adapter**
   *Link: [./tracks/feature_subagent_capability_adapter_20261015/index.md](./tracks/feature_subagent_capability_adapter_20261015/index.md)*
 
 ---
