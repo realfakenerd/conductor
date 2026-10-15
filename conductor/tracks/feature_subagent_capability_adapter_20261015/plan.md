@@ -3,7 +3,7 @@
 ## Phase 1: Dynamic Tool Mapping & Sanitization in AgentAdapter (TDD Red-Green)
 - [x] Task: Create `tests/agent_adapter.test.ts` asserting host tool sanitization, capability filtering, and manifest compilation. [b6d47ae]
 - [x] Task: Refactor `ANTIGRAVITY_TOOL_MAP` and `compileManifest` in `src/core/agent_adapter.ts` to sanitize tool declarations. [1fe1015]
-- [ ] Task: Run `bun test tests/agent_adapter.test.ts` to confirm Green phase.
+- [x] Task: Run `bun test tests/agent_adapter.test.ts` to confirm Green phase. [ea74526]
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: Agent Sync, Validation & Host Detection
@@ -16,6 +16,8 @@
 - [ ] Task: Execute `bun test` across full test suite.
 - [ ] Task: Execute `bun run conductor verify` to confirm project integrity.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
+
 
 
 
