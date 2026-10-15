@@ -40,6 +40,48 @@ describe("TypeScript Engine Core", () => {
       const resolvedMissing = repo.resolveTrack("non_existent");
       expect(resolvedMissing.status).toBe("not_found");
     });
+
+    it("should calculate aggregate status metrics and resolve active track summary", () => {
+      const root = mkdtempSync(join(tmpdir(), "cond-repo-status-test-"));
+      const repo = new TrackRepository(root);
+
+      // Empty repo status
+      const emptyStatus = repo.getStatus();
+      expect(emptyStatus.tracks.total).toBe(0);
+      expect(emptyStatus.tracks.complete).toBe(0);
+      expect(emptyStatus.active_track).toBeNull();
+
+      // Init and start track
+      repo.initTrack("t_active", "feature", "Active Track");
+      repo.startTrack("t_active");
+
+      // Write sample plan.md for t_active
+      const planContent = [
+        "# Implementation Plan: Active",
+        "",
+        "## Phase 1: Core",
+        "- [x] Task: Done task [abc1234]",
+        "- [~] Task: In-progress task",
+        "- [ ] Task: Pending task",
+      ].join("\n");
+      writeFileSync(join(root, "conductor", "tracks", "t_active", "plan.md"), planContent);
+
+      const status = repo.getStatus();
+      expect(status.tracks.total).toBe(1);
+      expect(status.tracks.in_progress).toBe(1);
+      expect(status.active_track).not.toBeNull();
+      expect(status.active_track?.track_id).toBe("t_active");
+      expect(status.active_track?.title).toBe("Active Track");
+      expect(status.active_track?.total_tasks).toBe(3);
+      expect(status.active_track?.completed_tasks).toBe(1);
+      expect(status.active_track?.in_progress_tasks).toBe(1);
+      expect(status.active_track?.pending_tasks).toBe(1);
+      expect(status.active_track?.progress_percent).toBe(33);
+
+      // Query by specific trackId
+      const specific = repo.getStatus("t_active");
+      expect(specific.active_track?.track_id).toBe("t_active");
+    });
   });
 
   describe("PlanDocument", () => {
