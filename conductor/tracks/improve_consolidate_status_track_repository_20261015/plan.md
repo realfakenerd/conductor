@@ -7,7 +7,7 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [fe64962]
 
 ## Phase 2: Callers Refactoring & Duplication Removal
-- [ ] Task: Refactor `src/cli/index.ts` to use `repo.getStatus()` and remove local `getProjectStatus`.
+- [~] Task: Refactor `src/cli/index.ts` to use `repo.getStatus()` and remove local `getProjectStatus`.
 - [ ] Task: Refactor `src/mcp/index.ts` to use `repo.getStatus()` and remove local `getProjectStatus`.
 - [ ] Task: Refactor `src/core/mcp_resources.ts` active-track resolver to use `repo.getStatus()`.
 - [ ] Task: Run integration tests (`tests/cli.test.ts`, `tests/mcp_server.test.ts`, `tests/mcp_resources_prompts.test.ts`).
@@ -17,6 +17,7 @@
 - [ ] Task: Run full test suite (`bun test`) and verify 100% pass rate.
 - [ ] Task: Confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
