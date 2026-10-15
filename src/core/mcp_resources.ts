@@ -1,7 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { TrackRepository } from "./track_repository.ts";
-import { PlanDocument } from "./plan_document.ts";
 import { AgentAdapter } from "./agent_adapter.ts";
 import { EngineError } from "./types.ts";
 
@@ -97,21 +96,27 @@ export function resolveMcpResource(uri: string, rootDir: string = "."): Resolved
 
   if (uri === "conductor://active-track") {
     const repo = new TrackRepository(rootDir);
-    const tracks = repo.listTracks();
-    const active = tracks.find((t) => t.status === "in_progress") || tracks.find((t) => t.status === "new" || t.status === "pending") || null;
+    const status = repo.getStatus();
+    const active = status.active_track;
 
     let details: any = { active_track: null };
     if (active) {
-      const planFile = join(rootDir, "conductor", "tracks", active.track_id, "plan.md");
-      let planSummary = null;
-      if (existsSync(planFile)) {
-        const planDoc = PlanDocument.fromFile(planFile);
-        planSummary = planDoc.summary();
-      }
       details = {
         active_track: {
-          ...active,
-          plan: planSummary,
+          track_id: active.track_id,
+          title: active.title,
+          status: active.status,
+          path: `tracks/${active.track_id}`,
+          plan: {
+            current_phase: active.current_phase,
+            current_task: active.current_task,
+            next_pending_task: active.next_pending_task,
+            total_tasks: active.total_tasks,
+            completed_tasks: active.completed_tasks,
+            in_progress_tasks: active.in_progress_tasks,
+            pending_tasks: active.pending_tasks,
+            progress_percent: active.progress_percent,
+          },
         },
       };
     }
