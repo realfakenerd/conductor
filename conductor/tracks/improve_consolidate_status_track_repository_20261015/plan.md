@@ -1,7 +1,7 @@
 # Implementation Plan: Consolidate getProjectStatus into TrackRepository
 
 ## Phase 1: Engine Core Deepening (TDD Red-Green)
-- [ ] Task: Add unit test in `tests/engine_core.test.ts` asserting `TrackRepository.getStatus()` behavior and active track resolution.
+- [~] Task: Add unit test in `tests/engine_core.test.ts` asserting `TrackRepository.getStatus()` behavior and active track resolution.
 - [ ] Task: Define `ProjectStatus` interfaces in `src/core/types.ts` and implement `getStatus()` on `TrackRepository`.
 - [ ] Task: Run `bun test tests/engine_core.test.ts` to confirm Green phase.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
@@ -17,3 +17,4 @@
 - [ ] Task: Run full test suite (`bun test`) and verify 100% pass rate.
 - [ ] Task: Confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
