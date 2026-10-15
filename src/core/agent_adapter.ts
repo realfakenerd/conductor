@@ -56,6 +56,12 @@ const CLAUDE_TOOL_MAP: Record<string, string[]> = {
   subagents: ["subagent"],
 };
 
+export interface CompileOptions {
+  availableTools?: string[];
+  unsupportedTools?: string[];
+  excludeMcpTool?: boolean;
+}
+
 export class AgentAdapter {
   private rootDir: string;
   private defaultAgentsDir: string;
@@ -135,7 +141,8 @@ export class AgentAdapter {
 
   public compileForHost(
     agent: AgentDefinition,
-    host: "antigravity" | "claude"
+    host: "antigravity" | "claude",
+    options?: CompileOptions
   ): CompiledAgentManifest {
     const toolSet = new Set<string>();
     const map = host === "antigravity" ? ANTIGRAVITY_TOOL_MAP : CLAUDE_TOOL_MAP;
@@ -150,11 +157,30 @@ export class AgentAdapter {
       }
     }
 
+    if (options?.excludeMcpTool) {
+      toolSet.delete("call_mcp_tool");
+    }
+
+    if (options?.unsupportedTools && options.unsupportedTools.length > 0) {
+      const unsupported = new Set(options.unsupportedTools);
+      for (const t of Array.from(toolSet)) {
+        if (unsupported.has(t)) {
+          toolSet.delete(t);
+        }
+      }
+    }
+
+    let finalTools = Array.from(toolSet);
+    if (options?.availableTools && options.availableTools.length > 0) {
+      const available = new Set(options.availableTools);
+      finalTools = finalTools.filter((t) => available.has(t));
+    }
+
     return {
       host,
       name: agent.name,
       description: agent.description,
-      tools: Array.from(toolSet),
+      tools: finalTools,
       systemPrompt: agent.systemPrompt,
     };
   }
@@ -162,6 +188,7 @@ export class AgentAdapter {
   public syncAgents(options?: {
     host?: "antigravity" | "claude" | "all";
     targetDir?: string;
+    compileOptions?: CompileOptions;
   }): SyncResult {
     const host = options?.host || "antigravity";
     const targetDir = options?.targetDir || join(this.rootDir, "agents");
@@ -174,7 +201,7 @@ export class AgentAdapter {
 
     for (const agent of agents) {
       const targetHost = host === "all" ? "antigravity" : host;
-      const compiled = this.compileForHost(agent, targetHost);
+      const compiled = this.compileForHost(agent, targetHost, options?.compileOptions);
       synced.push(compiled);
 
       const toolsYaml = compiled.tools.map((t) => `  - ${t}`).join("\n");
