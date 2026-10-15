@@ -61,5 +61,5 @@
   *Link: [./tracks/feature_subagent_runtime_adapter_20261014/index.md](./tracks/feature_subagent_runtime_adapter_20261014/index.md)*
 
 ---
-- [ ] **Track: Consolidate getProjectStatus into TrackRepository**
+- [~] **Track: Consolidate getProjectStatus into TrackRepository**
   *Link: [./tracks/improve_consolidate_status_track_repository_20261015/index.md](./tracks/improve_consolidate_status_track_repository_20261015/index.md)*
