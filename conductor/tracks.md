@@ -63,3 +63,15 @@
 ---
 - [x] **Track: Consolidate getProjectStatus into TrackRepository**
   *Link: [./tracks/improve_consolidate_status_track_repository_20261015/index.md](./tracks/improve_consolidate_status_track_repository_20261015/index.md)*
+
+---
+- [ ] **Track: Subagent Dynamic Capability Negotiation & Self-Healing Adapter**
+  *Link: [./tracks/feature_subagent_capability_adapter_20261015/index.md](./tracks/feature_subagent_capability_adapter_20261015/index.md)*
+
+---
+- [ ] **Track: Automated Spec & Implementation Drift Auditor**
+  *Link: [./tracks/feature_spec_drift_auditor_20261015/index.md](./tracks/feature_spec_drift_auditor_20261015/index.md)*
+
+---
+- [ ] **Track: Interactive Visual Track Dashboard & HTML Report Generator**
+  *Link: [./tracks/feature_visual_track_dashboard_20261015/index.md](./tracks/feature_visual_track_dashboard_20261015/index.md)*
