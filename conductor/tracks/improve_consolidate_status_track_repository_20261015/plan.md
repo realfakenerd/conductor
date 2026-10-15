@@ -10,13 +10,14 @@
 - [x] Task: Refactor `src/cli/index.ts` to use `repo.getStatus()` and remove local `getProjectStatus`. [b3b892c]
 - [x] Task: Refactor `src/mcp/index.ts` to use `repo.getStatus()` and remove local `getProjectStatus`. [a6f16f0]
 - [x] Task: Refactor `src/core/mcp_resources.ts` active-track resolver to use `repo.getStatus()`. [fba7337]
-- [ ] Task: Run integration tests (`tests/cli.test.ts`, `tests/mcp_server.test.ts`, `tests/mcp_resources_prompts.test.ts`).
+- [~] Task: Run integration tests (`tests/cli.test.ts`, `tests/mcp_server.test.ts`, `tests/mcp_resources_prompts.test.ts`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3: Handshake Integrity & Final Verification
 - [ ] Task: Run full test suite (`bun test`) and verify 100% pass rate.
 - [ ] Task: Confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
