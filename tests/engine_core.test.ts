@@ -76,7 +76,7 @@ describe("TypeScript Engine Core", () => {
       expect(status.active_track?.completed_tasks).toBe(1);
       expect(status.active_track?.in_progress_tasks).toBe(1);
       expect(status.active_track?.pending_tasks).toBe(1);
-      expect(status.active_track?.progress_percent).toBe(33);
+      expect(status.active_track?.progress_percent).toBe(33.3);
 
       // Query by specific trackId
       const specific = repo.getStatus("t_active");

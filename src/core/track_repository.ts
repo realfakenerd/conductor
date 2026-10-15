@@ -1,6 +1,15 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
-import { EngineError, type TrackInfo, type TrackMetadata, type TrackStatus, type ResolveTrackResult } from "./types.ts";
+import {
+  EngineError,
+  type TrackInfo,
+  type TrackMetadata,
+  type TrackStatus,
+  type ResolveTrackResult,
+  type ProjectStatus,
+  type ActiveTrackSummary,
+} from "./types.ts";
+import { PlanDocument } from "./plan_document.ts";
 
 export class TrackRepository {
   private rootDir: string;
@@ -64,6 +73,57 @@ export class TrackRepository {
   getTrack(trackId: string): TrackInfo | null {
     const tracks = this.listTracks();
     return tracks.find((t) => t.track_id === trackId) || null;
+  }
+
+  getStatus(trackId?: string | null): ProjectStatus {
+    const tracks = this.listTracks();
+    const totalTracks = tracks.length;
+    const completedTracks = tracks.filter((t) => t.status === "complete").length;
+    const inProgressTracks = tracks.filter((t) => t.status === "in_progress").length;
+    const pendingTracks = tracks.filter((t) => t.status === "new" || t.status === "pending").length;
+
+    let activeTarget = null;
+    if (trackId) {
+      activeTarget = tracks.find((t) => t.track_id === trackId) || null;
+    } else if (inProgressTracks > 0) {
+      activeTarget = tracks.find((t) => t.status === "in_progress") || null;
+    } else if (pendingTracks > 0) {
+      activeTarget = tracks.find((t) => t.status === "new" || t.status === "pending") || null;
+    }
+
+    let activeSummary: ActiveTrackSummary | null = null;
+    if (activeTarget) {
+      const tid = activeTarget.track_id;
+      const planFile = join(this.tracksDir, tid, "plan.md");
+      if (existsSync(planFile)) {
+        const planDoc = PlanDocument.fromFile(planFile);
+        const planData = planDoc.summary();
+        activeSummary = {
+          track_id: tid,
+          title: activeTarget.title,
+          status: activeTarget.status,
+          current_phase: planData.current_phase,
+          current_task: planData.current_task,
+          next_pending_task: planData.next_pending_task,
+          total_tasks: planData.total_tasks,
+          completed_tasks: planData.completed_tasks,
+          in_progress_tasks: planData.in_progress_tasks,
+          pending_tasks: planData.pending_tasks,
+          progress_percent: planData.progress_percent,
+        };
+      }
+    }
+
+    return {
+      timestamp: new Date().toISOString(),
+      tracks: {
+        total: totalTracks,
+        complete: completedTracks,
+        in_progress: inProgressTracks,
+        pending: pendingTracks,
+      },
+      active_track: activeSummary,
+    };
   }
 
   resolveTrack(query?: string | null): ResolveTrackResult {

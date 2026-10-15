@@ -50,3 +50,30 @@ export interface PlanSummary {
   next_pending_task: string | null;
   progress_percent: number;
 }
+
+export interface ProjectTrackCounts {
+  total: number;
+  complete: number;
+  in_progress: number;
+  pending: number;
+}
+
+export interface ActiveTrackSummary {
+  track_id: string;
+  title: string;
+  status: TrackStatus;
+  current_phase: string | null;
+  current_task: string | null;
+  next_pending_task: string | null;
+  total_tasks: number;
+  completed_tasks: number;
+  in_progress_tasks: number;
+  pending_tasks: number;
+  progress_percent: number;
+}
+
+export interface ProjectStatus {
+  timestamp: string;
+  tracks: ProjectTrackCounts;
+  active_track: ActiveTrackSummary | null;
+}
