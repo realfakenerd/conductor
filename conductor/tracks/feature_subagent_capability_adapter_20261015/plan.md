@@ -8,7 +8,7 @@
 
 ## Phase 2: Agent Sync, Validation & Host Detection
 - [x] Task: Update `conductor agent validate` and `conductor agent sync` in `src/cli/index.ts` to support capability filtering. [cd9177d]
-- [~] Task: Audit `agents/*.md` manifests to ensure accurate capability declarations.
+- [x] Task: Audit `agents/*.md` manifests to ensure accurate capability declarations. [06cc063]
 - [ ] Task: Run `bun run conductor agent validate` to verify all agent definitions.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
 
@@ -16,6 +16,7 @@
 - [ ] Task: Execute `bun test` across full test suite.
 - [ ] Task: Execute `bun run conductor verify` to confirm project integrity.
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
