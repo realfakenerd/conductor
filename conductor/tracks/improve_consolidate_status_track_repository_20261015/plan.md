@@ -13,10 +13,11 @@
 - [x] Task: Run integration tests (`tests/cli.test.ts`, `tests/mcp_server.test.ts`, `tests/mcp_resources_prompts.test.ts`). [44cd384]
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [45d0864]
 
-## Phase 3: Handshake Integrity & Final Verification
+## Phase 3: Handshake Integrity & Final Verification [checkpoint: d95167e]
 - [x] Task: Run full test suite (`bun test`) and verify 100% pass rate. [c7744c3]
 - [x] Task: Confirm handshake integrity (`bun run conductor verify`). [6e62246]
-- [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [d95167e]
+
 
 
 
