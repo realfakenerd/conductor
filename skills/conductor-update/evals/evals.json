@@ -1,0 +1,41 @@
+{
+  "skill_name": "conductor-update",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Update this conductor workspace to the latest version. The workflow and styleguides were created with an earlier conductor release.",
+      "expected_output": "Detects older workflow and missing ADR / agent links in index, preserves existing custom rules in workflow.md, merges new standard sections, verifies integrity with conductor verify, and stages changes.",
+      "files": [],
+      "expectations": [
+        "Updated workflow.md contains TDD Red-Green-Refactor phase definitions",
+        "Updated workflow.md contains Git Notes summary attachment steps",
+        "Updated index.md maintains relative path integrity to core documents",
+        "Summary output reports updated components and verification state"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My conductor/workflow.md has custom test coverage requirements of 95% and custom commit message formats. Can you update the conductor setup to support ADRs and subagents without losing my custom settings?",
+      "expected_output": "Performs three-way merge on workflow.md keeping the 95% coverage setting and commit format while adding ADR and subagent sections, updating index.md to link adrs, and passing conductor verify.",
+      "files": [],
+      "expectations": [
+        "Updated workflow.md preserves custom 95% code coverage threshold",
+        "Updated workflow.md preserves custom commit message format myapp(scope): message",
+        "Updated workflow.md incorporates Subagents and Git Notes sections",
+        "Index handshake preserves existing links without breaking syntax"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Check if my conductor files are out of date and upgrade anything needed.",
+      "expected_output": "Audits workspace, identifies missing sections, presents migration choices to user, executes update, and verifies with bun run conductor verify.",
+      "files": [],
+      "expectations": [
+        "Pre-update audit detects missing or outdated sections",
+        "Updated workflow.md contains operational standards and review checkpoints",
+        "Integrity verification passes or confirms zero broken relative links in index.md",
+        "Output summary details migration breakdown"
+      ]
+    }
+  ]
+}

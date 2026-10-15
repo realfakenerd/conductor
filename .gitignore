@@ -208,5 +208,6 @@ __marimo__/
 
 # Conductor
 tmp/
+skills/*-workspace/
 
 .gemini/

@@ -7,7 +7,7 @@ describe("Skills and Manifests Integrity", () => {
   const skillsDir = join(root, "skills");
 
   it("should have valid SKILL.md frontmatter for all conductor skills", () => {
-    const skills = readdirSync(skillsDir);
+    const skills = readdirSync(skillsDir).filter((name) => !name.endsWith("-workspace") && !name.startsWith("."));
     expect(skills.length).toBeGreaterThan(0);
     expect(skills).toContain("conductor-discover");
 

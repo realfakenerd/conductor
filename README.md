@@ -265,6 +265,7 @@ Command                          | Description                                  
 `/conductor:conductor-status`    | Displays the current progress of the tracks file and active tracks.                     | Reads `conductor/tracks.md`
 `/conductor:conductor-revert`    | Reverts a track, phase, or task by analyzing git history.                               | Reverts git history
 `/conductor:conductor-review`    | Reviews completed work against guidelines and the plan.                                 | Reads `plan.md`, `product-guidelines.md`
+`/conductor:conductor-update`    | Migrates older Conductor workspaces to the latest standards with 3-way merge.           | Updates `conductor/workflow.md`, `index.md`, styleguides
 
 --------------------------------------------------------------------------------
 
