@@ -29,7 +29,7 @@ A structural refactoring candidate that consolidates scattered wrappers or shall
 _Avoid_: "Clean code refactor", "file cleanup", "re-architecting".
 
 ### Query & Inspection Seam
-A deterministic engine interface (`status`, `list`) exposing aggregate project progress, active track details, and task metrics, eliminating caller-side markdown parsing and regex heuristics.
+A deterministic engine interface (`status`, `list`, `TrackRepository.getStatus()`) exposing aggregate project progress, active track details, and task metrics, eliminating caller-side markdown parsing and regex heuristics.
 
 ### Track Lifecycle State Machine
 The closed set of deterministic state transitions (`init` -> `start` -> `complete` -> `reset`) governing track progression across `tracks.md` and `metadata.json` without direct caller file mutation.
@@ -39,7 +39,7 @@ The operational invariant enforcing maximum signal-to-noise communication across
 _Avoid_: "Chatty persona", "pleasantries", "filler intros".
 
 ### Track Repository
-The encapsulated data store within Conductor Engine responsible for atomic synchronization between human-readable markdown (`tracks.md`) and machine metadata (`metadata.json`).
+The encapsulated data store within Conductor Engine responsible for atomic synchronization between human-readable markdown (`tracks.md`) and machine metadata (`metadata.json`), providing unified project inspection via `TrackRepository.getStatus()`.
 _Avoid_: "Tracks helper", "registry writer".
 
 ### Plan Document Model
