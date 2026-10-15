@@ -14,9 +14,10 @@
 - [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [45d0864]
 
 ## Phase 3: Handshake Integrity & Final Verification
-- [ ] Task: Run full test suite (`bun test`) and verify 100% pass rate.
+- [~] Task: Run full test suite (`bun test`) and verify 100% pass rate.
 - [ ] Task: Confirm handshake integrity (`bun run conductor verify`).
 - [ ] Task: Phase Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
