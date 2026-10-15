@@ -13,58 +13,6 @@ import { ReviewAuditor } from "../core/review_auditor.ts";
 import { AdrRepository } from "../core/adr_repository.ts";
 import { AgentAdapter } from "../core/agent_adapter.ts";
 
-function getProjectStatus(rootDir: string = ".", trackId?: string | null) {
-  const repo = new TrackRepository(rootDir);
-  const tracks = repo.listTracks();
-  const totalTracks = tracks.length;
-  const completedTracks = tracks.filter((t) => t.status === "complete").length;
-  const inProgressTracks = tracks.filter((t) => t.status === "in_progress").length;
-  const pendingTracks = tracks.filter((t) => t.status === "new" || t.status === "pending").length;
-
-  let activeTarget = null;
-  if (trackId) {
-    activeTarget = tracks.find((t) => t.track_id === trackId) || null;
-  } else if (inProgressTracks > 0) {
-    activeTarget = tracks.find((t) => t.status === "in_progress") || null;
-  } else if (pendingTracks > 0) {
-    activeTarget = tracks.find((t) => t.status === "new" || t.status === "pending") || null;
-  }
-
-  let activeSummary = null;
-  if (activeTarget) {
-    const tid = activeTarget.track_id;
-    const planFile = join(rootDir, "conductor", "tracks", tid, "plan.md");
-    if (existsSync(planFile)) {
-      const planDoc = PlanDocument.fromFile(planFile);
-      const planData = planDoc.summary();
-      activeSummary = {
-        track_id: tid,
-        title: activeTarget.title,
-        status: activeTarget.status,
-        current_phase: planData.current_phase,
-        current_task: planData.current_task,
-        next_pending_task: planData.next_pending_task,
-        total_tasks: planData.total_tasks,
-        completed_tasks: planData.completed_tasks,
-        in_progress_tasks: planData.in_progress_tasks,
-        pending_tasks: planData.pending_tasks,
-        progress_percent: planData.progress_percent,
-      };
-    }
-  }
-
-  return {
-    timestamp: new Date().toISOString(),
-    tracks: {
-      total: totalTracks,
-      complete: completedTracks,
-      in_progress: inProgressTracks,
-      pending: pendingTracks,
-    },
-    active_track: activeSummary,
-  };
-}
-
 export function parseArgs(args: string[]) {
   const flags: Record<string, string | boolean> = {};
   const positional: string[] = [];
@@ -136,7 +84,8 @@ export async function runCli(argv: string[]) {
   if (command === "status") {
     const trackId = (flags["track"] as string) || null;
     const verbose = Boolean(flags["verbose"]);
-    const status = getProjectStatus(rootDir, trackId);
+    const repo = new TrackRepository(rootDir);
+    const status = repo.getStatus(trackId);
 
     if (jsonMode) {
       console.log(JSON.stringify(status, null, 2));
