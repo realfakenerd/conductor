@@ -105,4 +105,39 @@ Prompt
     expect(validation.errors.length).toBeGreaterThan(0);
     expect(validation.errors[0]).toContain("teleportation");
   });
+
+  it("filters out unsupported tools when availableTools filter is specified", () => {
+    const adapter = new AgentAdapter(testDir);
+    const agents = adapter.listAgents();
+    const compiled = adapter.compileForHost(agents[0], "antigravity", {
+      availableTools: ["view_file", "run_command"],
+    });
+
+    expect(compiled.tools).toEqual(["view_file", "run_command"]);
+    expect(compiled.tools).not.toContain("call_mcp_tool");
+    expect(compiled.tools).not.toContain("write_to_file");
+  });
+
+  it("filters out explicitly unsupported tools", () => {
+    const adapter = new AgentAdapter(testDir);
+    const agents = adapter.listAgents();
+    const compiled = adapter.compileForHost(agents[0], "antigravity", {
+      unsupportedTools: ["call_mcp_tool"],
+    });
+
+    expect(compiled.tools).not.toContain("call_mcp_tool");
+    expect(compiled.tools).toContain("view_file");
+    expect(compiled.tools).toContain("run_command");
+  });
+
+  it("allows omitting call_mcp_tool by default when excludeMcpTool is enabled", () => {
+    const adapter = new AgentAdapter(testDir);
+    const agents = adapter.listAgents();
+    const compiled = adapter.compileForHost(agents[0], "antigravity", {
+      excludeMcpTool: true,
+    });
+
+    expect(compiled.tools).not.toContain("call_mcp_tool");
+  });
 });
+
