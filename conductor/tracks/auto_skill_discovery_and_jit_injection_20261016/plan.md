@@ -38,7 +38,7 @@
   - [ ] Verify MCP tests pass
 - [ ] Task: Phase 2 Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 3: Integration, Skills Update & Full Verification
+## Phase 3: Integration, Skills Update & Full Verification [checkpoint: cbe8543]
 - [x] Task: Update conductor-setup, conductor-new-track, and conductor-implement to use SkillRepository [16bfd9b]
   - [ ] Update skill recommendation sections in skills to reference `conductor skill discover` and `SkillRepository`
   - [ ] Update `conductor/workflow.md` to document plan-bound `[skills: ...]` tagging
@@ -47,6 +47,7 @@
 - [x] Task: Execute bun run conductor verify for complete handshake integrity [0007f3c]
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
