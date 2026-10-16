@@ -32,7 +32,7 @@
   - [ ] Implement `skill` CLI commands with JSON output support
   - [ ] Add tests in `tests/cli.test.ts` covering skill subcommands
   - [ ] Verify CLI tests pass
-- [ ] Task: Expose MCP tools (conductor_skill_discover, conductor_skill_list, conductor_skill_install) in src/mcp/index.ts
+- [~] Task: Expose MCP tools (conductor_skill_discover, conductor_skill_list, conductor_skill_install) in src/mcp/index.ts
   - [ ] Add MCP tool definitions and handlers in `src/mcp/index.ts`
   - [ ] Add tests in `tests/mcp.test.ts` for skill MCP tools
   - [ ] Verify MCP tests pass
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
