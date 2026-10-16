@@ -20,7 +20,7 @@
 - [ ] Task: Phase 1 Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 2: JIT Injection, Plan Tagging & Engine Seams (TDD)
-- [ ] Task: Extend PlanDocument to parse and serialize [skills: ...] task markers
+- [~] Task: Extend PlanDocument to parse and serialize [skills: ...] task markers
   - [ ] Write unit tests in `tests/plan_document.test.ts` for `[skills: ...]` metadata extraction and preservation
   - [ ] Update `src/core/plan_document.ts` to support skill annotations on tasks
   - [ ] Verify all plan document tests pass
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
