@@ -15,7 +15,20 @@ The root context document (`conductor/index.md`) that serves as the single sourc
 A global plugin rule (`rules/conductor_standards.md`) establishing invariant operational constraints for AI agents: tool output validation, path integrity, non-interactive execution, and sequential dialog protocols.
 
 ### Skill Catalog
-A canonical registry (`assets/catalog.md`) enumerating curated 1st-party and 3rd-party agent capabilities with detection signals, security trust disclosures, and frozen installation URLs.
+A canonical curriculum and registry enumerating curated 1st-party and 3rd-party agent capabilities with detection signals, security trust disclosures, and frozen installation sources.
+
+### Skill Scanner
+The core inspection subsystem (`SkillScanner`) that analyzes project dependency manifests, technology stack documents, and source file patterns to discover and rank relevant agent skills from local and remote registries.
+_Avoid_: "Dependency scraper", "package finder".
+
+### Project Skill Catalog
+The dual-layer project registry (`conductor/skills.json` and `conductor/skills/index.md`) tracking authorized, project-tailored agent capabilities, trigger heuristics, and trust levels linked directly in `conductor/index.md`.
+_Avoid_: "Local skill dump", "tools list".
+
+### Plan-Bound Skill Injection
+The Just-In-Time (JIT) capability mechanism where the track planner tags discrete tasks in `plan.md` with required skills, and the worker execution runner injects only the targeted `SKILL.md` instructions into the isolated subagent sandbox.
+_Avoid_: "Global tool prompt", "context stuffing".
+
 
 ### Phase & Task Lifecycle
 A strict progression within a track's plan following Test-Driven Development (TDD): Red Phase (failing tests) -> Green Phase (passing implementation) -> Refactor -> Commit & Git Note -> Phase Verification Checkpoint.
