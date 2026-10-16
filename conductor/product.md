@@ -27,6 +27,11 @@ Conductor transforms AI coding assistants into disciplined, spec-driven engineer
    - Clean, numbered textual CLI fallback in terminal consoles.
 4. **Cross-Agent Plugin Compatibility**:
    - Seamless installation and operation across Antigravity and Claude Code ecosystems.
+5. **Dynamic Skill Discovery & JIT Injection**:
+   - `conductor skill discover`: Automatically analyzes project manifests and detects tailored agent skills from local and remote registries.
+   - `conductor skill install/list`: Curates a dual-layer project catalog (`conductor/skills.json` and `conductor/skills/index.md`).
+   - Plan-bound task tagging (`[skills: ...]`) with Just-In-Time injection into isolated subagent sandboxes (`conductor-worker`), preventing prompt bloat and context dilution.
+
 
 ## Success Metrics
 - Zero-drift spec adherence across automated code generations.
