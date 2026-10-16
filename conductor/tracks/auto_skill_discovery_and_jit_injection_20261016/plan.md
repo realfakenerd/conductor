@@ -39,7 +39,7 @@
 - [ ] Task: Phase 2 Verification & Checkpoint (Refer to workflow.md)
 
 ## Phase 3: Integration, Skills Update & Full Verification
-- [~] Task: Update conductor-setup, conductor-new-track, and conductor-implement to use SkillRepository
+- [x] Task: Update conductor-setup, conductor-new-track, and conductor-implement to use SkillRepository [16bfd9b]
   - [ ] Update skill recommendation sections in skills to reference `conductor skill discover` and `SkillRepository`
   - [ ] Update `conductor/workflow.md` to document plan-bound `[skills: ...]` tagging
 - [ ] Task: Run full test suite (bun test) across all tests
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
