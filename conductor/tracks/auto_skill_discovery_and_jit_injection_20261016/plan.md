@@ -13,7 +13,7 @@
   - [ ] Write tests in `tests/skill_repository.test.ts` for reading, writing, and syncing dual-layer files
   - [ ] Write tests for trust level enforcement (1p vs 3p SHA pinning)
   - [ ] Verify tests fail (Red Phase)
-- [ ] Task: Implement SkillRepository in src/core/skill_repository.ts
+- [~] Task: Implement SkillRepository in src/core/skill_repository.ts
   - [ ] Implement atomic read/write synchronization between `conductor/skills.json` and `conductor/skills/index.md`
   - [ ] Implement registration, listing, and handshake verification
   - [ ] Verify `tests/skill_repository.test.ts` passes (Green Phase)
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
