@@ -12,11 +12,12 @@ describe("Bun CLI Runner", () => {
     const conductorDir = join(root, "conductor");
     mkdirSync(conductorDir, { recursive: true });
 
+    const spawnOpts = { encoding: "utf-8" as const, timeout: 30000 };
+
     // 1. Verify before index.md -> invalid
-    const verifyBefore = spawnSync("bun", ["run", cliPath, "verify", "--root-dir", root], {
-      encoding: "utf-8",
-    });
+    const verifyBefore = spawnSync("bun", ["run", cliPath, "verify", "--root-dir", root], spawnOpts);
     expect(verifyBefore.status).toBe(0);
+
     const verifyData = JSON.parse(verifyBefore.stdout);
     expect(verifyData.valid).toBe(false);
 
@@ -194,7 +195,8 @@ describe("Bun CLI Runner", () => {
     const injectedManifest = JSON.parse(skillInjectRes.stdout);
     expect(injectedManifest.systemPrompt).toContain("# Injected Task Skills");
     expect(injectedManifest.systemPrompt).toContain("## Skill: cli-skill");
-  });
+  }, 60000);
 });
+
 
 

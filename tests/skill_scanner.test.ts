@@ -29,16 +29,26 @@ describe("SkillScanner (Discovery & Detection)", () => {
       `[package]\nname = "my-crate"\nversion = "0.1.0"\n\n[dependencies]\nesp-hal = "0.22"\n`
     );
 
+    // 3. Setup pyproject.toml
+    writeFileSync(
+      join(root, "pyproject.toml"),
+      `[project]\nname = "my-py-app"\ndependencies = [\n  "fastapi>=0.100.0",\n  "uvicorn",\n]\n`
+    );
+
     const scanner = new SkillScanner();
     const profile = scanner.inspectProject(root);
 
     expect(profile.ecosystems).toContain("npm");
     expect(profile.ecosystems).toContain("cargo");
+    expect(profile.ecosystems).toContain("python");
     expect(profile.dependencies).toContain("svelte");
     expect(profile.dependencies).toContain("firebase");
     expect(profile.dependencies).toContain("typescript");
     expect(profile.dependencies).toContain("esp-hal");
+    expect(profile.dependencies).toContain("fastapi");
+    expect(profile.dependencies).toContain("uvicorn");
   });
+
 
   it("should discover and rank candidate skills matching project signals", () => {
     const root = mkdtempSync(join(tmpdir(), "cond-scan-test-"));

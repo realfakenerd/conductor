@@ -22,5 +22,7 @@
 
 ## Capabilities
 
+-   [Project Skills](./skills/index.md)
 -   [Agent Skills](../.agents/skills/)
+
 

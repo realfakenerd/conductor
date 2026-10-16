@@ -103,9 +103,10 @@ export class SkillScanner {
         if (match) {
           const items = match[1].split(",");
           for (const item of items) {
-            const clean = item.replace(/["'\\s]/g, "").split(/[><=~]/)[0];
+            const clean = item.replace(/["'\s]/g, "").split(/[><=~;]/)[0];
             if (clean) dependencies.add(clean.toLowerCase());
           }
+
         }
       } catch {
         // ignore

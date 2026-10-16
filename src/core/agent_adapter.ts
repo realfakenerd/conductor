@@ -195,8 +195,9 @@ export class AgentAdapter {
     host: "antigravity" | "claude",
     skillNames: string[],
     options?: CompileOptions,
-    skillRepo?: any
+    skillRepo?: { getSkillContent(name: string): string | null }
   ): CompiledAgentManifest {
+
     const baseManifest = this.compileForHost(agent, host, options);
     if (!skillNames || skillNames.length === 0) {
       return baseManifest;
