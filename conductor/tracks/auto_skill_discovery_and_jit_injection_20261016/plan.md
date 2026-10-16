@@ -1,7 +1,7 @@
 # Implementation Plan: Dynamic Skill Discovery, Curated Project Catalog, and Just-In-Time Subagent Injection
 
 ## Phase 1: Core Skill Discovery, Catalog & Scanning (TDD)
-- [ ] Task: Unit tests for SkillScanner (dependency detection, glob matching, local & remote sources)
+- [~] Task: Unit tests for SkillScanner (dependency detection, glob matching, local & remote sources)
   - [ ] Write tests in `tests/skill_scanner.test.ts` for manifest parsing (`package.json`, `Cargo.toml`, `pyproject.toml`)
   - [ ] Write tests for local skills search and relevance scoring against keywords and globs
   - [ ] Verify tests fail (Red Phase)
@@ -47,3 +47,4 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
