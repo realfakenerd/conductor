@@ -24,7 +24,7 @@
   - [ ] Write unit tests in `tests/plan_document.test.ts` for `[skills: ...]` metadata extraction and preservation
   - [ ] Update `src/core/plan_document.ts` to support skill annotations on tasks
   - [ ] Verify all plan document tests pass
-- [ ] Task: Implement JIT skill prompt compiler in src/core/agent_adapter.ts
+- [~] Task: Implement JIT skill prompt compiler in src/core/agent_adapter.ts
   - [ ] Write unit tests in `tests/agent_adapter.test.ts` for task-bound skill prompt injection
   - [ ] Update `AgentAdapter` to load target `SKILL.md` content into worker prompt when requested
   - [ ] Verify agent adapter tests pass
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
