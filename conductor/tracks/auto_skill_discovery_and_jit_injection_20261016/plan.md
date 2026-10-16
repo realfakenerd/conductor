@@ -17,7 +17,8 @@
   - [ ] Implement atomic read/write synchronization between `conductor/skills.json` and `conductor/skills/index.md`
   - [ ] Implement registration, listing, and handshake verification
   - [ ] Verify `tests/skill_repository.test.ts` passes (Green Phase)
-- [ ] Task: Phase 1 Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase 1 Verification & Checkpoint (Refer to workflow.md) [7db8c4a]
+
 
 ## Phase 2: JIT Injection, Plan Tagging & Engine Seams (TDD) [checkpoint: 08b81be]
 - [x] Task: Extend PlanDocument to parse and serialize [skills: ...] task markers [a9558ee]
@@ -36,7 +37,8 @@
   - [ ] Add MCP tool definitions and handlers in `src/mcp/index.ts`
   - [ ] Add tests in `tests/mcp.test.ts` for skill MCP tools
   - [ ] Verify MCP tests pass
-- [ ] Task: Phase 2 Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase 2 Verification & Checkpoint (Refer to workflow.md) [08b81be]
+
 
 ## Phase 3: Integration, Skills Update & Full Verification [checkpoint: cbe8543]
 - [x] Task: Update conductor-setup, conductor-new-track, and conductor-implement to use SkillRepository [16bfd9b]
@@ -46,7 +48,8 @@
   - [ ] Execute `bun test` and ensure zero failures
 - [x] Task: Execute bun run conductor verify for complete handshake integrity [0007f3c]
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
-- [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+- [x] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md) [cbe8543]
+
 
 
 

@@ -146,7 +146,8 @@ export class PlanDocument {
     const newLines: string[] = [];
     let inTargetPhase = false;
 
-    const checkpointTaskRegex = /^(\s*-\s*)\[[ x~]\](\s*Task:\s*Phase Verification & Checkpoint(?: \(.*?\))?)(?:\s*\[[a-f0-9]+\])?(.*)$/i;
+    const checkpointTaskRegex = /^(\s*-\s*)\[[ x~]\](\s*Task:\s*.*?Verification & Checkpoint(?: \(.*?\))?)(?:\s*\[[a-f0-9]+\])?(.*)$/i;
+
 
     for (const line of this.lines) {
       let m = headerRegex.exec(line);
