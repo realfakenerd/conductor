@@ -9,7 +9,7 @@
   - [ ] Implement manifest detection logic for npm, cargo, python, and go projects
   - [ ] Implement skill discovery scanner reading local host dirs and catalog assets
   - [ ] Verify `tests/skill_scanner.test.ts` passes (Green Phase)
-- [~] Task: Unit tests for SkillRepository (dual-layer conductor/skills.json & conductor/skills/index.md)
+- [x] Task: Unit tests for SkillRepository (dual-layer conductor/skills.json & conductor/skills/index.md) [fdc3f67]
   - [ ] Write tests in `tests/skill_repository.test.ts` for reading, writing, and syncing dual-layer files
   - [ ] Write tests for trust level enforcement (1p vs 3p SHA pinning)
   - [ ] Verify tests fail (Red Phase)
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
