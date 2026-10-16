@@ -19,7 +19,7 @@
   - [ ] Verify `tests/skill_repository.test.ts` passes (Green Phase)
 - [ ] Task: Phase 1 Verification & Checkpoint (Refer to workflow.md)
 
-## Phase 2: JIT Injection, Plan Tagging & Engine Seams (TDD)
+## Phase 2: JIT Injection, Plan Tagging & Engine Seams (TDD) [checkpoint: 08b81be]
 - [x] Task: Extend PlanDocument to parse and serialize [skills: ...] task markers [a9558ee]
   - [ ] Write unit tests in `tests/plan_document.test.ts` for `[skills: ...]` metadata extraction and preservation
   - [ ] Update `src/core/plan_document.ts` to support skill annotations on tasks
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
