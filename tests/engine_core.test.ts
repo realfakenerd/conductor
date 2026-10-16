@@ -117,7 +117,32 @@ describe("TypeScript Engine Core", () => {
       expect(doc.lines.some((l) => l.includes("## Phase 1: Setup [checkpoint: fedcba9]"))).toBe(true);
       expect(doc.lines.some((l) => l.includes("- [x] Task: Phase Verification & Checkpoint (Refer to workflow.md) [fedcba9]"))).toBe(true);
     });
+
+    it("should parse and preserve [skills: ...] metadata on tasks during mutation", () => {
+      const rawPlan = [
+        "# Implementation Plan: Skills",
+        "",
+        "## Phase 1: Core",
+        "- [ ] Task: Task With Skill [skills: svelte5-best-practices, tdd]",
+      ].join("\n");
+
+      const doc = new PlanDocument(rawPlan);
+      const summary = doc.summary();
+      expect(summary.tasks[0].skills).toEqual(["svelte5-best-practices", "tdd"]);
+      expect(summary.tasks[0].task).toBe("Task With Skill");
+
+      // Advance task to in_progress
+      doc.advance("Task With Skill", "in_progress");
+      expect(doc.rawContent).toContain("- [~] Task: Task With Skill [skills: svelte5-best-practices, tdd]");
+
+      // Advance task to done
+      doc.advance("Task With Skill", "done", "abcdef123456");
+      const updatedSummary = doc.summary();
+      expect(updatedSummary.tasks[0].skills).toEqual(["svelte5-best-practices", "tdd"]);
+      expect(doc.rawContent).toContain("- [x] Task: Task With Skill [abcdef1] [skills: svelte5-best-practices, tdd]");
+    });
   });
+
 
   describe("IntegrityAuditor", () => {
     it("should validate handshake links and track workspace parity", () => {

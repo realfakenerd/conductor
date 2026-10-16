@@ -36,7 +36,9 @@ export interface TaskSummary {
   phase: string | null;
   task: string;
   status: "complete" | "in_progress" | "pending";
+  skills?: string[];
 }
+
 
 export interface PlanSummary {
   phases: string[];

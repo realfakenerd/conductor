@@ -25,7 +25,7 @@ export class PlanDocument {
     let currentPhaseName: string | null = null;
 
     const phaseRegex = /^##\s+(?:Phase\s+\d+:?\s*)?(.*?)(?:\s*\[.*\])?$/;
-    const taskRegex = /^-\s*\[([ x~])\]\s*Task:\s*(.*?)(?:\s*\[[a-f0-9]+\])?$/;
+    const taskRegex = /^-\s*\[([ x~])\]\s*Task:\s*(.*?)$/;
 
     for (const line of this.lines) {
       const lineStr = line.trim();
@@ -39,15 +39,33 @@ export class PlanDocument {
       const taskM = taskRegex.exec(lineStr);
       if (taskM) {
         const marker = taskM[1];
-        const taskDesc = taskM[2].trim();
+        let taskDesc = taskM[2].trim();
         const status = marker === "x" ? "complete" : marker === "~" ? "in_progress" : "pending";
+
+        const skillsMatch = /\[skills?:\s*([^\]]+)\]/i.exec(taskDesc);
+        let skills: string[] | undefined;
+        if (skillsMatch) {
+          skills = skillsMatch[1]
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean);
+        }
+
+        // Clean task description of [skills: ...] and commit sha [1234567]
+        taskDesc = taskDesc
+          .replace(/\[skills?:\s*[^\]]+\]/gi, "")
+          .replace(/\[[a-f0-9]{7,40}\]/gi, "")
+          .trim();
+
         tasks.push({
           phase: currentPhaseName,
           task: taskDesc,
           status,
+          skills,
         });
       }
     }
+
 
     const total = tasks.length;
     const completed = tasks.filter((t) => t.status === "complete").length;
