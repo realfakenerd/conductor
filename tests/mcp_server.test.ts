@@ -51,7 +51,11 @@ describe("Conductor MCP Server", () => {
     expect(toolNames).toContain("conductor_adr_link");
     expect(toolNames).toContain("conductor_agent_list");
     expect(toolNames).toContain("conductor_agent_sync");
-    expect(toolNames.length).toBe(22);
+    expect(toolNames).toContain("conductor_skill_discover");
+    expect(toolNames).toContain("conductor_skill_list");
+    expect(toolNames).toContain("conductor_skill_install");
+    expect(toolNames.length).toBe(25);
+
 
     // 2. Call conductor_verify
     const verifyResult = (await client.callTool({
@@ -172,7 +176,30 @@ describe("Conductor MCP Server", () => {
     const agentSync = JSON.parse(agentSyncRes.content[0].text);
     expect(agentSync.synced.length).toBe(1);
 
+    // 10. Skill tools via MCP
+    const skillInstallRes = (await client.callTool({
+      name: "conductor_skill_install",
+      arguments: {
+        name: "mcp-test-skill",
+        party: "1p",
+        description: "Skill installed via MCP",
+      },
+    })) as any;
+    expect(skillInstallRes.isError).toBeFalsy();
+    const installed = JSON.parse(skillInstallRes.content[0].text);
+    expect(installed.name).toBe("mcp-test-skill");
+
+    const skillListRes = (await client.callTool({
+      name: "conductor_skill_list",
+      arguments: {},
+    })) as any;
+    expect(skillListRes.isError).toBeFalsy();
+    const skillList = JSON.parse(skillListRes.content[0].text);
+    expect(skillList.length).toBe(1);
+    expect(skillList[0].name).toBe("mcp-test-skill");
+
     await client.close();
     await server.close();
   });
 });
+

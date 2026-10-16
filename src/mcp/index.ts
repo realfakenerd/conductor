@@ -20,8 +20,11 @@ import { createTrackWorktree, listTrackWorktrees, removeTrackWorktree } from "..
 import { ReviewAuditor } from "../core/review_auditor.ts";
 import { AdrRepository } from "../core/adr_repository.ts";
 import { AgentAdapter } from "../core/agent_adapter.ts";
+import { SkillScanner } from "../core/skill_scanner.ts";
+import { SkillRepository } from "../core/skill_repository.ts";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+
 
 export function createConductorMcpServer(defaultRootDir: string = ".") {
   const server = new Server(
@@ -308,9 +311,50 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
             },
           },
         },
+        {
+          name: "conductor_skill_discover",
+          description: "Discover and rank relevant agent skills based on project dependencies and tech stack",
+          inputSchema: {
+            type: "object",
+            properties: {
+              min_score: { type: "number", description: "Minimum relevance score threshold (default: 1)" },
+              catalog_path: { type: "string", description: "Optional path to custom catalog.md" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_skill_list",
+          description: "List all curated agent skills currently registered in the project catalog",
+          inputSchema: {
+            type: "object",
+            properties: {
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+          },
+        },
+        {
+          name: "conductor_skill_install",
+          description: "Register a skill into the project catalog and update handshake",
+          inputSchema: {
+            type: "object",
+            properties: {
+              name: { type: "string", description: "Skill name" },
+              party: { type: "string", description: "Trust party (1p or 3p)" },
+              description: { type: "string", description: "Skill description" },
+              commit_sha: { type: "string", description: "Immutable commit SHA (required for 3p)" },
+              path: { type: "string", description: "Path to SKILL.md" },
+              source: { type: "string", description: "Source (local or remote)" },
+              triggers: { type: "array", items: { type: "string" }, description: "File/path trigger globs" },
+              root_dir: { type: "string", description: "Root workspace directory" },
+            },
+            required: ["name"],
+          },
+        },
       ],
     };
   });
+
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const { name, arguments: args } = request.params;
@@ -509,7 +553,36 @@ export function createConductorMcpServer(defaultRootDir: string = ".") {
         return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
       }
 
+      if (name === "conductor_skill_discover") {
+        const scanner = new SkillScanner();
+        const minScore = a.min_score !== undefined ? Number(a.min_score) : 1;
+        const catalogPath = a.catalog_path as string | undefined;
+        const res = scanner.scan(rootDir, { minScore, catalogPath });
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_skill_list") {
+        const repo = new SkillRepository(rootDir);
+        const res = repo.list();
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
+      if (name === "conductor_skill_install") {
+        const repo = new SkillRepository(rootDir);
+        const res = repo.register({
+          name: a.name,
+          party: (a.party || "1p") as "1p" | "3p",
+          description: a.description || `Skill ${a.name}`,
+          commitSha: a.commit_sha,
+          path: a.path || `.agents/skills/${a.name}/SKILL.md`,
+          source: (a.source || "local") as "local" | "remote",
+          triggers: a.triggers,
+        });
+        return { content: [{ type: "text", text: JSON.stringify(res, null, 2) }] };
+      }
+
       throw new Error(`Unknown tool: ${name}`);
+
     } catch (err: any) {
       return {
         isError: true,
