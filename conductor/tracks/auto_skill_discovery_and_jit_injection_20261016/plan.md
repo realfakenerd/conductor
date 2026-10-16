@@ -28,7 +28,7 @@
   - [ ] Write unit tests in `tests/agent_adapter.test.ts` for task-bound skill prompt injection
   - [ ] Update `AgentAdapter` to load target `SKILL.md` content into worker prompt when requested
   - [ ] Verify agent adapter tests pass
-- [ ] Task: Add CLI subcommands (conductor skill discover, list, install, inject) in src/cli/index.ts
+- [~] Task: Add CLI subcommands (conductor skill discover, list, install, inject) in src/cli/index.ts
   - [ ] Implement `skill` CLI commands with JSON output support
   - [ ] Add tests in `tests/cli.test.ts` covering skill subcommands
   - [ ] Verify CLI tests pass
@@ -47,6 +47,7 @@
 - [ ] Task: Execute bun run conductor verify for complete handshake integrity
   - [ ] Verify `conductor verify` validates the updated workspace and handshake
 - [ ] Task: Phase 3 Verification & Checkpoint (Refer to workflow.md)
+
 
 
 
