@@ -12,6 +12,9 @@ import { resolveMcpResource, listMcpResources } from "../core/mcp_resources.ts";
 import { ReviewAuditor } from "../core/review_auditor.ts";
 import { AdrRepository } from "../core/adr_repository.ts";
 import { AgentAdapter } from "../core/agent_adapter.ts";
+import { SkillScanner } from "../core/skill_scanner.ts";
+import { SkillRepository } from "../core/skill_repository.ts";
+
 
 export function parseArgs(args: string[]) {
   const flags: Record<string, string | boolean> = {};
@@ -479,9 +482,101 @@ export async function runCli(argv: string[]) {
     process.exit(1);
   }
 
+  if (command === "skill") {
+    const sub = positional[1];
+    const scanner = new SkillScanner();
+    const repo = new SkillRepository(rootDir);
+
+    if (!sub || sub === "discover") {
+      const minScore = flags["min-score"] ? Number(flags["min-score"]) : 1;
+      const catalogPath = flags["catalog-path"] as string | undefined;
+      const candidates = scanner.scan(rootDir, { minScore, catalogPath });
+
+      if (jsonMode) {
+        console.log(JSON.stringify(candidates, null, 2));
+      } else {
+        console.log(`Discovered ${candidates.length} candidate skills:`);
+        for (const c of candidates) {
+          console.log(`- ${c.name} (score: ${c.score}, party: ${c.party}): ${c.description}`);
+          console.log(`  Signals: ${c.matchedSignals.join(", ")}`);
+        }
+      }
+      return;
+    }
+
+    if (sub === "list") {
+      const skills = repo.list();
+      if (jsonMode) {
+        console.log(JSON.stringify(skills, null, 2));
+      } else {
+        console.log(`Registered ${skills.length} project skills:`);
+        for (const s of skills) {
+          console.log(`- ${s.name} [${s.party}]: ${s.description} (${s.path})`);
+        }
+      }
+      return;
+    }
+
+    if (sub === "install") {
+      const name = positional[2];
+      if (!name) {
+        console.error("Usage: conductor skill install <name> [--party <1p|3p>] [--sha <sha>] [--desc <desc>] [--path <path>]");
+        process.exit(1);
+      }
+
+      const party = ((flags["party"] as string) || "1p") as "1p" | "3p";
+      const commitSha = flags["sha"] as string | undefined;
+      const description = (flags["desc"] as string) || (flags["description"] as string) || `Skill ${name}`;
+      const skillPath = (flags["path"] as string) || `.agents/skills/${name}/SKILL.md`;
+      const source = ((flags["source"] as string) || "local") as "local" | "remote";
+      const triggers = flags["triggers"]
+        ? (flags["triggers"] as string).split(",").map((s) => s.trim())
+        : undefined;
+
+      const registered = repo.register({
+        name,
+        party,
+        description,
+        path: skillPath,
+        source,
+        commitSha,
+        triggers,
+      });
+
+      console.log(JSON.stringify(registered, null, 2));
+      return;
+    }
+
+    if (sub === "inject") {
+      const name = positional[2];
+      const agentName = (flags["agent"] as string) || "conductor-worker";
+      const host = ((flags["host"] as string) || "antigravity") as "antigravity" | "claude";
+
+      const adapter = new AgentAdapter(rootDir);
+      const agent = adapter.getAgent(agentName);
+      if (!agent) {
+        console.error(`Agent '${agentName}' not found`);
+        process.exit(1);
+      }
+
+      const skillNames = name ? [name] : [];
+      if (flags["skills"]) {
+        skillNames.push(...(flags["skills"] as string).split(",").map((s) => s.trim()));
+      }
+
+      const compiled = adapter.compileWithSkills(agent, host, skillNames, undefined, repo);
+      console.log(JSON.stringify(compiled, null, 2));
+      return;
+    }
+
+    console.error(`Unknown skill subcommand: ${sub}. Supported: discover, list, install, inject`);
+    process.exit(1);
+  }
+
   console.error(`Unknown command: ${command}`);
   process.exit(1);
 }
+
 
 if (import.meta.main) {
   runCli(process.argv.slice(2)).catch((err) => {

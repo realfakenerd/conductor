@@ -91,7 +91,12 @@ export class AgentAdapter {
     return agents;
   }
 
+  public getAgent(name: string, customDir?: string): AgentDefinition | undefined {
+    return this.listAgents(customDir).find((a) => a.name === name);
+  }
+
   public parseAgentFile(filePath: string): AgentDefinition | null {
+
     if (!existsSync(filePath)) {
       return null;
     }

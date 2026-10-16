@@ -135,6 +135,66 @@ describe("Bun CLI Runner", () => {
     );
     expect(agentValRes.status).toBe(0);
     expect(JSON.parse(agentValRes.stdout).valid).toBe(true);
+
+    // 10. Skill install, list, inject
+    const skillInstallRes = spawnSync(
+      "bun",
+      [
+        "run",
+        cliPath,
+        "skill",
+        "install",
+        "cli-skill",
+        "--party",
+        "1p",
+        "--desc",
+        "CLI Test Skill",
+        "--triggers",
+        "*.ts",
+        "--root-dir",
+        root,
+      ],
+      { encoding: "utf-8" }
+    );
+    expect(skillInstallRes.status).toBe(0);
+    const installedSkill = JSON.parse(skillInstallRes.stdout);
+    expect(installedSkill.name).toBe("cli-skill");
+
+    const skillListRes = spawnSync(
+      "bun",
+      ["run", cliPath, "skill", "list", "--root-dir", root, "--json"],
+      { encoding: "utf-8" }
+    );
+    expect(skillListRes.status).toBe(0);
+    const skillList = JSON.parse(skillListRes.stdout);
+    expect(skillList.length).toBe(1);
+    expect(skillList[0].name).toBe("cli-skill");
+
+    // Write a dummy skill file to test JIT inject
+    const skillPath = join(root, ".agents", "skills", "cli-skill");
+    mkdirSync(skillPath, { recursive: true });
+    writeFileSync(join(skillPath, "SKILL.md"), "# CLI Skill Instructions");
+
+    const skillInjectRes = spawnSync(
+      "bun",
+      [
+        "run",
+        cliPath,
+        "skill",
+        "inject",
+        "cli-skill",
+        "--agent",
+        "mock-agent",
+        "--root-dir",
+        root,
+      ],
+      { encoding: "utf-8" }
+    );
+    expect(skillInjectRes.status).toBe(0);
+    const injectedManifest = JSON.parse(skillInjectRes.stdout);
+    expect(injectedManifest.systemPrompt).toContain("# Injected Task Skills");
+    expect(injectedManifest.systemPrompt).toContain("## Skill: cli-skill");
   });
 });
+
 
