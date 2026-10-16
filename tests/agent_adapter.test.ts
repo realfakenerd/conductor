@@ -139,5 +139,22 @@ Prompt
 
     expect(compiled.tools).not.toContain("call_mcp_tool");
   });
+
+  it("compiles agent with JIT task-bound skill injection", () => {
+    // Setup a skill in testDir
+    const skillDir = join(testDir, ".agents", "skills", "test-tdd");
+    mkdirSync(skillDir, { recursive: true });
+    writeFileSync(join(skillDir, "SKILL.md"), "# Test TDD Skill\nFollow strict Red-Green-Refactor.");
+
+    const adapter = new AgentAdapter(testDir);
+    const agents = adapter.listAgents();
+    const compiled = adapter.compileWithSkills(agents[0], "antigravity", ["test-tdd"]);
+
+    expect(compiled.systemPrompt).toContain("# Sample Worker Prompt");
+    expect(compiled.systemPrompt).toContain("# Injected Task Skills");
+    expect(compiled.systemPrompt).toContain("## Skill: test-tdd");
+    expect(compiled.systemPrompt).toContain("Follow strict Red-Green-Refactor.");
+  });
 });
+
 

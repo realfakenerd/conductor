@@ -185,6 +185,48 @@ export class AgentAdapter {
     };
   }
 
+  public compileWithSkills(
+    agent: AgentDefinition,
+    host: "antigravity" | "claude",
+    skillNames: string[],
+    options?: CompileOptions,
+    skillRepo?: any
+  ): CompiledAgentManifest {
+    const baseManifest = this.compileForHost(agent, host, options);
+    if (!skillNames || skillNames.length === 0) {
+      return baseManifest;
+    }
+
+    const injectedSections: string[] = [];
+
+    for (const skillName of skillNames) {
+      let content: string | null = null;
+      if (skillRepo && typeof skillRepo.getSkillContent === "function") {
+        content = skillRepo.getSkillContent(skillName);
+      }
+      if (!content) {
+        const localPath1 = join(this.rootDir, ".agents", "skills", skillName, "SKILL.md");
+        const localPath2 = join(this.rootDir, "skills", skillName, "SKILL.md");
+        if (existsSync(localPath1)) {
+          content = readFileSync(localPath1, "utf-8");
+        } else if (existsSync(localPath2)) {
+          content = readFileSync(localPath2, "utf-8");
+        }
+      }
+
+      if (content) {
+        injectedSections.push(`## Skill: ${skillName}\n${content.trim()}`);
+      }
+    }
+
+    if (injectedSections.length > 0) {
+      baseManifest.systemPrompt = `${baseManifest.systemPrompt.trimEnd()}\n\n# Injected Task Skills\n\n${injectedSections.join("\n\n")}\n`;
+    }
+
+    return baseManifest;
+  }
+
+
   public syncAgents(options?: {
     host?: "antigravity" | "claude" | "all";
     targetDir?: string;
