@@ -103,8 +103,8 @@ Transform track specification from flat Q&A into a relentless, context-grounded 
 ### 2.4 Interactive Skill Recommendation
 
 1.  **Analyze Needs & Trust Model:**
-    -   Read the skill catalog from `assets/catalog.md` in the project root.
-    -   Analyze the confirmed `spec.md` and `plan.md` against the `Detection Signals` in the loaded `catalog.md`.
+    -   Execute `bun run conductor skill discover --json` (or MCP tool `conductor_skill_discover`) to detect capabilities matching `spec.md` and project dependencies.
+    -   Check registered skills in `conductor/skills.json` via `bun run conductor skill list --json`.
     -   Identify any relevant skills that are NOT yet installed.
     -   **Trust Assessment:** Note the `Party` status (1p or 3p) for each identified skill.
 
@@ -114,14 +114,15 @@ Transform track specification from flat Q&A into a relentless, context-grounded 
         -   **1p (Official):** Present as a verified Conductor skill.
         -   **3p (Community):** Present as a third-party skill. You MUST warn the user: *"Attention: This is a third-party skill. It will be installed as a frozen version (commit <sha>) for your safety."*
     -   **User Approval:** Ask the user to select which recommended skills they would like to install using a **multiple-choice question**.
-    -   **Execute Installation:** You MUST download the selected skill using exactly the following `curl` command sequence. Do not modify the parameters or add flags:
-
+    -   **Execute Installation:** Register and install the selected skill using the Conductor Engine:
         ```bash
-        mkdir -p .agents/skills/<skill_name>
-        curl -sSL <URL>SKILL.md -o .agents/skills/<skill_name>/SKILL.md
+        bun run conductor skill install <skill_name> --party <1p|3p> --sha <commit_sha>
         ```
-    -   **Verify:** Confirm that the skill folder has been successfully created in the local `.agents/skills/` directory.
+    -   **Plan-Bound Task Tagging:** When generating or revising `plan.md`, bind required skills to relevant tasks using metadata markers:
+        `- [ ] Task: <task_name> [skills: <skill_name>]`
+    -   **Verify:** Confirm that the skill is recorded in `conductor/skills.json` and cataloged in `conductor/skills/index.md`.
     -   **If no missing skills found:** Skip this section.
+
 
 3.  **Environment Synchronization:**
     -   **Execution Trigger:** This step MUST only be executed if new skills were installed in the previous step.

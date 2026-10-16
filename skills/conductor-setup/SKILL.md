@@ -153,26 +153,22 @@ Configure the operational rules for the project.
 ### 2.6 Agent Skill Selection (Optional)
 
 1. **Analyze Needs & Trust Model:**
-    - Read the skill catalog from `assets/catalog.md` in the project root.
-    - Analyze the project context (e.g., `product.md`, `tech-stack.md`) against the `Detection Signals` in the loaded `catalog.md` to identify relevant skills NOT yet installed.
+    - Execute `bun run conductor skill discover --json` (or MCP tool `conductor_skill_discover`) to scan project manifests, `tech-stack.md`, and local/catalog curriculum.
+    - Check already registered project skills via `bun run conductor skill list --json`.
     - **Trust Disclosure:** For each recommendation, disclose the `Party` status:
         - **1p (Official):** Present as a verified, official Conductor skill.
         - **3p (Community):** Present as a third-party skill. You MUST warn the user: *"Warning: This is a third-party skill. It will be installed as a frozen version (commit <sha>) for your safety."*
 
 2. **Recommendation & Installation Loop:**
     - **Identify Recommendations:** If relevant missing skills are found, present them to the user, explaining their value for the project.
-    - **Trust Disclosure:** For each recommendation, disclose its status:
-        - **1p (Official):** Present as a verified Conductor skill.
-        - **3p (Community):** Present as a third-party skill. You MUST warn the user: *"Attention: This is a third-party skill. It will be installed as a frozen version (commit <sha>) for your safety."*
     - **User Approval:** Ask the user to select which recommended skills they would like to install using a **multiple-choice question**.
-    - **Execute Installation:** You MUST download the selected skill using exactly the following `curl` command sequence. Do not modify the parameters or add flags:
-      
+    - **Execute Installation:** Register and install the selected skill using the Conductor Engine:
         ```bash
-        mkdir -p .agents/skills/<skill_name>
-        curl -sSL <URL>SKILL.md -o .agents/skills/<skill_name>/SKILL.md
+        bun run conductor skill install <skill_name> --party <1p|3p> --sha <commit_sha>
         ```
-    - **Verify:** Confirm that the skill folder has been successfully created in the local `.agents/skills/` directory.
+    - **Verify:** Confirm that the skill is recorded in `conductor/skills.json` and cataloged in `conductor/skills/index.md`.
     - **If no missing skills found:** Skip this section.
+
 
 3. **Environment Synchronization:**
     - **Execution Trigger:** This step MUST only be executed if new skills were installed in the previous step.

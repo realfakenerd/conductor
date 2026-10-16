@@ -90,7 +90,16 @@ All tasks follow a strict lifecycle:
     -   **Action:** Commit this change with a descriptive message (e.g.,
         `conductor(plan): Mark task 'Create user model' as complete`).
 
+### Plan-Bound Agent Skills & Just-In-Time (JIT) Injection
+
+To prevent prompt bloat and context dilution, agent capabilities and skills are bound at task granularity:
+1. **Curated Catalog:** Project skills are registered in `conductor/skills.json` and documented in `conductor/skills/index.md`.
+2. **Plan-Bound Markers:** The planner tags discrete tasks in `plan.md` with required skills using metadata markers:
+   `- [ ] Task: <task_name> [skills: <skill_a>, <skill_b>]`
+3. **Just-In-Time Subagent Injection:** When delegating task execution to `conductor-worker`, the orchestrator executes `bun run conductor skill inject <skill_name> --agent conductor-worker` or injects the target skill's `SKILL.md` directly into the worker's prompt payload. Non-targeted tasks run with a clean, minimal worker prompt.
+
 ### Task Correction & Plan Amendment Workflows
+
 
 When an implemented task or phase requires corrections, amendments, or additions, follow these standard workflows to maintain plan integrity and avoid untracked code drift:
 
